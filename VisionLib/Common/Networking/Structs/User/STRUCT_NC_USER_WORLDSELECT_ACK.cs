@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VisionLib.Common.Enums;
+﻿using VisionLib.Common.Enums;
 
 namespace VisionLib.Common.Networking.Structs.User
 {
@@ -23,7 +20,7 @@ namespace VisionLib.Common.Networking.Structs.User
             ConnectionHash = connectionHash;
         }
 
-        public STRUCT_NC_USER_WORLDSELECT_ACK(FiestaNetPacket packet) : base(packet)
+        public STRUCT_NC_USER_WORLDSELECT_ACK(FiestaNetPacket packet)
         {
             WorldStatus = (WorldServerStatus)packet.ReadByte();
             WorldIPv4 = packet.ReadString(WorldIPv4Len);
@@ -33,12 +30,11 @@ namespace VisionLib.Common.Networking.Structs.User
 
         public override FiestaNetPacket ToPacket()
         {
-            throw new NotImplementedException();
+            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_WORLDSELECT_ACK);
+            pkt.Write((byte)WorldStatus);
+            return pkt;
         }
 
-        public override string ToString()
-        {
-            return $"Status: {WorldStatus.ToMessage()}, IP: {WorldIPv4}, Port: {WorldPort}";
-        }
+        public override string ToString() => $"\tStatus: {WorldStatus.ToMessage()}, IP: {WorldIPv4}, Port: {WorldPort}";
     }
 }

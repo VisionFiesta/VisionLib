@@ -1,7 +1,6 @@
-﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Structs.User;
+﻿using VisionLib.Common.Networking.Structs.User;
 
-namespace VisionLib.Common.Network.Protocols.User
+namespace VisionLib.Common.Networking.Protocols.User
 {
     public class PROTO_NC_USER_CLIENT_VERSION_CHECK_REQ : FiestaNetPacket
     {

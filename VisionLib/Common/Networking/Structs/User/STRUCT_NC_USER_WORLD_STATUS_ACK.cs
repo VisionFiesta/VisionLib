@@ -1,8 +1,7 @@
 ﻿using System;
 using VisionLib.Common.Enums;
-using VisionLib.Common.Networking;
 
-namespace VisionLib.Common.Network.Structs.User
+namespace VisionLib.Common.Networking.Structs.User
 {
     class STRUCT_NC_USER_WORLD_STATUS_ACK : FiestaNetStruct
     {
@@ -15,7 +14,7 @@ namespace VisionLib.Common.Network.Structs.User
             WorldStatuses = worldStatuses;
         }
 
-        public STRUCT_NC_USER_WORLD_STATUS_ACK(FiestaNetPacket packet) : base(packet)
+        public STRUCT_NC_USER_WORLD_STATUS_ACK(FiestaNetPacket packet)
         {
             if (packet.Command != FiestaNetCommand.NC_USER_WORLD_STATUS_ACK)
             {
@@ -59,7 +58,7 @@ namespace VisionLib.Common.Network.Structs.User
             {
                 foreach(var w in WorldStatuses)
                 {
-                    str += "\n";
+                    str += "\n    ";
                     str += $"ID: {w.WorldID}, Name: {w.WorldName}, Status: {w.WorldStatus}";
                 }
             }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using VisionLib.Common.Network.Protocols.User;
+using VisionLib.Common.Networking.Protocols.User;
 
 namespace VisionLib.Common.Networking.Structs.User
 {
@@ -20,12 +18,6 @@ namespace VisionLib.Common.Networking.Structs.User
             ClientBinMD5 = clientBinMd5;
             ExtraData = allExtraData;
         }
-
-        //public STRUCT_NC_USER_CLIENT_VERSION_CHECK_REQ(string clientBinMd5, string versionDate, byte[] extraData)
-        //{
-        //    ClientBinMD5 = clientBinMd5;
-        //    ExtraData = extraData;
-        //}
 
         public STRUCT_NC_USER_CLIENT_VERSION_CHECK_REQ(FiestaNetPacket packet)
         {

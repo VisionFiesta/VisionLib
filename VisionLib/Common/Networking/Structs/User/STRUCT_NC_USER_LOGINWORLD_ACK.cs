@@ -1,33 +1,40 @@
-﻿namespace VisionLib.Common.Networking.Structs.User
+﻿using VisionLib.Common.Game;
+
+namespace VisionLib.Common.Networking.Structs.User
 {
     public class STRUCT_NC_USER_LOGINWORLD_ACK : FiestaNetStruct
     {
-        // dw worldmanager
-        // db numofavatar
-        // PROTO_AVATARINFORMATION[] avatar
-
-        public readonly ushort WorldManager;
+        public readonly ushort WorldManagerHandle;
         public byte AvatarCount;
         public PROTO_AVATARINFORMATION[] Avatars;
 
+        public STRUCT_NC_USER_LOGINWORLD_ACK(ushort worldManagerHandle, byte avatarCount, PROTO_AVATARINFORMATION[] avatars)
+        {
+            WorldManagerHandle = worldManagerHandle;
+            AvatarCount = avatarCount;
+            Avatars = avatars;
+        }
+
         public STRUCT_NC_USER_LOGINWORLD_ACK(FiestaNetPacket packet)
         {
-            WorldManager = packet.ReadUInt16();
+            WorldManagerHandle = packet.ReadUInt16();
             AvatarCount = packet.ReadByte();
 
-            if (AvatarCount > 0)
+            if (AvatarCount <= 0) return;
+            Avatars = new PROTO_AVATARINFORMATION[AvatarCount];
+            for (var i = 0; i < AvatarCount; i++)
             {
-                Avatars = new PROTO_AVATARINFORMATION[AvatarCount];
-                for (var i = 0; i < AvatarCount; i++)
-                {
-                    Avatars[i] = new PROTO_AVATARINFORMATION(packet);
-                }
+                Avatars[i] = new PROTO_AVATARINFORMATION(packet);
             }
         }
 
         public override FiestaNetPacket ToPacket()
         {
-            throw new System.NotImplementedException();
+            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_LOGINWORLD_ACK);
+            pkt.Write(WorldManagerHandle);
+            pkt.Write(AvatarCount);
+            // TOOD: ToPacket for remaining struct parts
+            return pkt;
         }
     }
 
@@ -47,6 +54,7 @@
         public PROTO_AVATAR_DELETE_INFO delinfo;
         public PROTO_AVATAR_SHAPE_INFO shape;
         public PROTO_EQUIPMENT equip;
+        public PROTO_REFINEMENT refinement;
         public int nKQHandle;
         public string sKQMapName; // Name3
         public SHINE_XY_TYPE nKQCoord;
@@ -64,12 +72,18 @@
             delinfo = new PROTO_AVATAR_DELETE_INFO(packet);
             shape = new PROTO_AVATAR_SHAPE_INFO(packet);
             equip = new PROTO_EQUIPMENT(packet);
+            refinement = new PROTO_REFINEMENT(packet);
             nKQHandle = packet.ReadInt32();
             sKQMapName = packet.ReadString(12);
             nKQCoord = new SHINE_XY_TYPE(packet);
             dKQDate = new SHINE_DATETIME(packet);
             CharIDChangeData = new CHAR_ID_CHANGE_DATA(packet);
             TutorialInfo = new PROTO_TUTORIAL_INFO(packet);
+        }
+
+        public override string ToString()
+        {
+            return $"Name: {name}, Level:, {level}, Class: {shape.JobGender}, Map:{loginmap}";
         }
     }
 
@@ -93,17 +107,17 @@
 
     public class PROTO_AVATAR_SHAPE_INFO
     {
-        public byte _bf0;
-        public byte _bf1;
-        public byte _bf2;
-        public byte _bf3;
+        public CharacterClass JobGender;
+        public byte Hair;
+        public byte HairColor;
+        public byte Face;
 
         public PROTO_AVATAR_SHAPE_INFO(FiestaNetPacket packet)
         {
-            _bf0 = packet.ReadByte();
-            _bf1 = packet.ReadByte();
-            _bf2 = packet.ReadByte();
-            _bf3 = packet.ReadByte();
+            JobGender = (CharacterClass)packet.ReadByte();
+            Hair = packet.ReadByte();
+            HairColor = packet.ReadByte();
+            Face = packet.ReadByte();
         }
     }
 
@@ -168,6 +182,20 @@
             _bf0 = packet.ReadByte();
             _bf1 = packet.ReadByte();
             _bf2 = packet.ReadByte();
+        }
+    }
+
+    public class PROTO_REFINEMENT
+    {
+        public byte ref0;
+        public byte ref1;
+        public byte ref2;
+
+        public PROTO_REFINEMENT(FiestaNetPacket packet)
+        {
+            ref0 = packet.ReadByte();
+            ref1 = packet.ReadByte();
+            ref2 = packet.ReadByte();
         }
     }
 

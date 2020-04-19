@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace VisionLib.Common.Networking.Structs.User
+﻿namespace VisionLib.Common.Networking.Structs.User
 {
     public class STRUCT_NC_USER_LOGINWORLD_REQ : FiestaNetStruct
     {

@@ -1,21 +1,15 @@
-﻿using System;
-
-namespace VisionLib.Common.Networking.Structs.Common
+﻿namespace VisionLib.Common.Networking.Structs.Common
 {
-    public class STRUCT_PROTO_ERRORCODE : FiestaNetStruct
+    public class STRUCT_PROTO_ERRORCODE
     {
-        public readonly PROTO_ERRORCODE err;
-        public STRUCT_PROTO_ERRORCODE(PROTO_ERRORCODE err)
+        public readonly PROTO_ERRORCODE ErrorCode;
+
+        public STRUCT_PROTO_ERRORCODE(PROTO_ERRORCODE errorCode)
         {
-            this.err = err;
+            ErrorCode = errorCode;
         }
 
         public STRUCT_PROTO_ERRORCODE(FiestaNetPacket packet) : this((PROTO_ERRORCODE)packet.ReadUInt16()) {}
-
-        public override FiestaNetPacket ToPacket()
-        {
-            throw new NotImplementedException();
-        }
 
         public enum PROTO_ERRORCODE : ushort
         {
