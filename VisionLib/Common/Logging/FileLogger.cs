@@ -28,7 +28,7 @@ namespace VisionLib.Common.Logging
 			}
 		}
 
-		public void SetFileLogLevel(byte logLevel) => MaxFileLogLevel = logLevel;
+		public void SetFileLogLevel(LogLevel logLevel) => MaxFileLogLevel = (byte)logLevel;
 
 		public void Write(LogType logType, LogLevel logSubType, string message, params object[] args)
 		{

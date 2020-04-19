@@ -108,6 +108,8 @@ namespace VisionLib.Common.Networking
         /// <returns>Remote endpoint IP address</returns>
         public string GetRemoteIP => (socket.RemoteEndPoint as IPEndPoint)?.Address.ToString();
 
+        public IPEndPoint RemoteEndPoint => socket.RemoteEndPoint as IPEndPoint;
+
         /// <summary>
         /// Gets the socket's connection state.
         /// </summary>
@@ -198,6 +200,7 @@ namespace VisionLib.Common.Networking
             //Client?.Connections.Remove(this);
             // TODO: child class for ServerConnection and ClientConnection
 
+            Log.Write(LogType.SocketLog, LogLevel.Info, $"Disconnected from target: {DestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
             socket?.Close(); // Close() will call Dispose() automatically for us.
             socket = null;
         }
@@ -271,6 +274,7 @@ namespace VisionLib.Common.Networking
             try
             {
                 socket.EndConnect(e);
+                Log.Write(LogType.SocketLog, LogLevel.Info, $"Connected to target: {DestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
                 BeginReceivingData();
             }
             catch

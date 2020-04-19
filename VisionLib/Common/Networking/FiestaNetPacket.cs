@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 
 namespace VisionLib.Common.Networking
@@ -253,10 +254,9 @@ namespace VisionLib.Common.Networking
 		/// <param name="connection">The connection to send the message to.</param>
 		public void Send(FiestaNetConnection connection)
 		{
-			// TODO: require annotated logger or smth?
-			Log.Write(LogType.SocketLog, LogLevel.Debug, $"Sending {Command} packet to endpoint {connection.GetRemoteIP}");
 			connection?.SendData(ToArray(connection));
-			Destroy(this);
+            Log.Write(LogType.SocketLog, LogLevel.Debug, $"Sent {Command} packet to endpoint {connection.RemoteEndPoint.ToSimpleString()}");
+            Destroy(this);
 		}
 
 		/// <summary>

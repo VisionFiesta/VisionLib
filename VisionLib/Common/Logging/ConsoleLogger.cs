@@ -17,17 +17,17 @@ namespace VisionLib.Common.Logging
 			IOLocker = new object();
 		}
 
-		public void SetConsoleLevel(byte logLevel)
+		public void SetConsoleLevel(LogLevel logLevel)
 		{
-			ConsoleLogLevel = logLevel;
+			ConsoleLogLevel = (byte)logLevel;
 		}
 
-		public void WriteLine(LogType logTypeName, LogLevel logSubtype, string message)
+		public void WriteLine(LogType logType, LogLevel logLevel, string message)
 		{
-			if ((byte)logSubtype > ConsoleLogLevel) return;
+			if ((byte)logLevel > ConsoleLogLevel) return;
 			lock (IOLocker)
 			{
-				if (!ConsoleColors.GetColor(logTypeName, logSubtype, out var pColor)) return;
+				if (!ConsoleColors.GetColor(logType, logLevel, out var pColor)) return;
 
 				Console.ForegroundColor = pColor;
 				Console.WriteLine("\r" + message);
@@ -35,13 +35,14 @@ namespace VisionLib.Common.Logging
 			}
 		}
 
-		public void WriteLine(LogType logTypeName, LogLevel logSubtype, string message, params object[] args)
-		{
-			if ((byte)logSubtype > ConsoleLogLevel) return;
+		public void WriteLine(LogType logType, LogLevel logLevel, string message, params object[] args)
+        {
+            var levelByte = (byte) logLevel;
+			if (levelByte <= ConsoleLogLevel) return;
 			lock (IOLocker)
 			{
-				if (!ConsoleColors.GetColor(logTypeName, logSubtype, out var pColor)) return;
-				var msg = string.Format($"[{logTypeName}][{logSubtype}] {string.Format(message, args)}");
+				if (!ConsoleColors.GetColor(logType, logLevel, out var pColor)) return;
+				var msg = string.Format($"[{logType}][{logLevel}] {string.Format(message, args)}");
 
 				Console.ForegroundColor = pColor;
 				Console.WriteLine(msg);
