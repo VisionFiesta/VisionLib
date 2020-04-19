@@ -57,7 +57,7 @@ namespace VisionLib.Common.Configuration
 
         private static T Initialize(out string message)
         {
-            var fullTypeName = typeof(T).FullName.Replace("FakeClient.Config.", "");
+            var fullTypeName = typeof(T).FullName.Replace("VisionLib.Client.Configuration.", "");
             var shortTypeName = fullTypeName.Replace("Configuration", "");
 
             try

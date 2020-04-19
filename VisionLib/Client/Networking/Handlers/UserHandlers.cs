@@ -1,27 +1,27 @@
-﻿using VisionLib.Common.Logging;
-using VisionLib.Common.Network.Protocols.User;
-using VisionLib.Common.Networking;
-using VisionLib.Client;
-using VisionLib.Common.Networking.Structs.User;
-using FakeClientV1.Enums;
-using VisionLib.Common.Network.Structs.User;
-using System.Threading;
-using System;
-using VisionLib.Common.Networking.Protocols.User;
+﻿using System.Diagnostics.CodeAnalysis;
+using VisionLib.Client.Configuration;
 using VisionLib.Common.Enums;
+using VisionLib.Common.Logging;
+using VisionLib.Common.Networking;
+using VisionLib.Common.Networking.Protocols.Misc;
+using VisionLib.Common.Networking.Protocols.User;
 using VisionLib.Common.Networking.Structs.Common;
+using VisionLib.Common.Networking.Structs.User;
 
-namespace VisionLib.Common.Network.Packets
+namespace VisionLib.Client.Networking.Handlers
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class UserHandlers
     {
+        private static readonly ClientConfiguration Config = FiestaClient.Config;
+
         [FiestaNetPacketHandlerAttritube(FiestaNetCommand.NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK)]
         public static void NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             Log.Write(LogType.GameLog, LogLevel.Info, "Client version check passed!");
 
-            new STRUCT_NC_USER_US_LOGIN_REQ(FiestaClient.Config.FiestaUsername, FiestaClient.Config.FiestaPassword).ToPacket().Send(connection);
-            new STRUCT_NC_USER_XTRAP_REQ((byte)FiestaClient.Config.XTrapVersionHash.Length, FiestaClient.Config.XTrapVersionHash).ToPacket().Send(connection);
+            new STRUCT_NC_USER_US_LOGIN_REQ(Config.FiestaUsername, Config.FiestaPassword).ToPacket().Send(connection);
+            new STRUCT_NC_USER_XTRAP_REQ((byte)Config.XTrapVersionHash.Length, Config.XTrapVersionHash).ToPacket().Send(connection);
         }
 
         [FiestaNetPacketHandlerAttritube(FiestaNetCommand.NC_USER_CLIENT_WRONGVERSION_CHECK_ACK)]

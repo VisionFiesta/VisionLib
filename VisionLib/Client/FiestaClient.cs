@@ -1,4 +1,5 @@
 ﻿using VisionLib.Client.Configuration;
+using VisionLib.Common.Logging;
 using VisionLib.Common.Networking;
 
 namespace VisionLib.Client
@@ -15,6 +16,14 @@ namespace VisionLib.Client
         public static void Begin()
         {
             FiestaNetPacketHandlerLoader.LoadHandlers();
+            if (!Config.Load(out var message))
+            {
+                Log.Write(LogType.EngineLog, LogLevel.Error, "Config load failed! Message: " + message);
+            }
+            else
+            {
+                Config = ClientConfiguration.Instance;
+            }
         }
     }
 }
