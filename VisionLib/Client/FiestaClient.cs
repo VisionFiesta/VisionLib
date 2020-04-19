@@ -11,7 +11,20 @@ namespace VisionLib.Client
         public static FiestaNetConnection WorldClient = new FiestaNetConnection(FiestaNetConnDest.FNCDEST_WORLDMANAGER, FiestaNetConnDir.FNCDIR_TO_SERVER);
         public static FiestaNetConnection ZoneClient = new FiestaNetConnection(FiestaNetConnDest.FNCDEST_ZONE, FiestaNetConnDir.FNCDIR_TO_SERVER);
 
-        public static byte[] ConnectionHash;
+        public static class LoginData
+        {
+            public static byte[] WmTransferKey;
+        }
+
+        public static class WorldData
+        {
+
+        }
+
+        public static class ZoneData
+        {
+
+        }
 
         public static void Begin()
         {

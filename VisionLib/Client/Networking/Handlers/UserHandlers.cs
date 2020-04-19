@@ -55,7 +55,7 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_WORLD_STATUS_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var result = new STRUCT_NC_USER_WORLD_STATUS_ACK(packet);
-            Log.Write(LogType.GameLog, LogLevel.Info, "Got world list! " + result.ToString());
+            Log.Write(LogType.GameLog, LogLevel.Info, "Got world list: " + result);
 
             new PROTO_NC_USER_WORLDSELECT_REQ(0).Send(connection);
         }
@@ -64,16 +64,16 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_WORLDSELECT_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var result = new STRUCT_NC_USER_WORLDSELECT_ACK(packet);
-            Log.Write(LogType.GameLog, LogLevel.Info, "Got world select ack! " + result.ToString());
+            Log.Write(LogType.GameLog, LogLevel.Info, "Got world select ack: " + result);
             if (result.WorldStatus.IsJoinable())
             {
-                Log.Write(LogType.GameLog, LogLevel.Info, "Joining world...");
-                FiestaClient.ConnectionHash = result.ConnectionHash;
+                Log.Write(LogType.GameLog, LogLevel.Info, "Connecting to world server...");
+                FiestaClient.LoginData.WmTransferKey = result.ConnectionHash;
                 FiestaClient.WorldClient.Connect(result.WorldIPv4, result.WorldPort);
             }
             else
             {
-                Log.Write(LogType.GameLog, LogLevel.Warning, "World not joinable.");
+                Log.Write(LogType.GameLog, LogLevel.Warning, $"Unable to join world: {result.WorldStatus.ToMessage()}");
             }
         }
 
@@ -81,14 +81,25 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_LOGINWORLD_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var result = new STRUCT_NC_USER_LOGINWORLD_ACK(packet);
-            Log.Write(LogType.GameLog, LogLevel.Info, "Got world login ack!");
+            var avatarStr = "";
+            if (result.AvatarCount > 0)
+            {
+                foreach (var avatar in result.Avatars)
+                {
+                    avatarStr += "\n    ";
+                    avatarStr += avatar.ToString();
+                }
+            }
+            Log.Write(LogType.GameLog, LogLevel.Info, $"Got world login ack. Found {result.AvatarCount} avatars." + avatarStr);
+
+            new PROTO_NC_MISC_GAMETIME_REQ().Send(connection);
         }
 
         [FiestaNetPacketHandlerAttritube(FiestaNetCommand.NC_USER_LOGINWORLDFAIL_ACK)]
         public static void NC_USER_LOGINWORLDFAIL_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var message = new STRUCT_PROTO_ERRORCODE(packet);
-            Log.Write(LogType.GameLog, LogLevel.Warning, "World login failed: " + message.err);
+            Log.Write(LogType.GameLog, LogLevel.Warning, "World login failed: " + message.ErrorCode);
         }
     }
 }
