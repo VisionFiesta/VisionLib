@@ -1,4 +1,6 @@
-﻿namespace VisionLib.Common.Networking.Protocols.User
+﻿using VisionLib.Common.Networking.Packet;
+
+namespace VisionLib.Common.Networking.Protocols.User
 {
     public class PROTO_NC_USER_WORLD_STATUS_REQ : FiestaNetPacket
     {

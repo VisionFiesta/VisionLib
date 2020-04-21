@@ -1,10 +1,10 @@
 ﻿using System;
-using VisionLib.Common.Networking.Protocols.User;
+using VisionLib.Common.Networking.Packet;
 using VisionLib.Common.Utils;
 
 namespace VisionLib.Common.Networking.Structs.User
 {
-    public class STRUCT_NC_USER_US_LOGIN_REQ : FiestaNetStruct
+    public class STRUCT_NC_USER_US_LOGIN_REQ : FiestaNetPacketStruct
     {
         internal const int UsernameLen = 260;
         internal const int PasswordMD5Len = 36;
@@ -30,7 +30,16 @@ namespace VisionLib.Common.Networking.Structs.User
 
         public override FiestaNetPacket ToPacket()
         {
-            return new PROTO_NC_USER_US_LOGIN_REQ(this);
+            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_US_LOGIN_REQ);
+            WriteToPacket(pkt);
+            return pkt;
+        }
+
+        public override void WriteToPacket(FiestaNetPacket pkt)
+        {
+            pkt.Write(Username, UsernameLen);
+            pkt.Write(PasswordMD5, PasswordMD5Len);
+            pkt.Write(SpawnApp, StartupAppLen);
         }
     }
 }

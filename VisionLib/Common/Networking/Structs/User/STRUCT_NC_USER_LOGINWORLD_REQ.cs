@@ -1,6 +1,8 @@
-﻿namespace VisionLib.Common.Networking.Structs.User
+﻿using VisionLib.Common.Networking.Packet;
+
+namespace VisionLib.Common.Networking.Structs.User
 {
-    public class STRUCT_NC_USER_LOGINWORLD_REQ : FiestaNetStruct
+    public class STRUCT_NC_USER_LOGINWORLD_REQ : FiestaNetPacketStruct
     {
         public const int UsernameLen = 256;
         public const int ConnectionHashLen = 64;
@@ -23,9 +25,14 @@
         public override FiestaNetPacket ToPacket()
         {
             var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_LOGINWORLD_REQ);
+            WriteToPacket(pkt);
+            return pkt;
+        }
+
+        public override void WriteToPacket(FiestaNetPacket pkt)
+        {
             pkt.Write(Username, UsernameLen);
             pkt.Write(ConnectionHash, ConnectionHashLen);
-            return pkt;
         }
     }
 }

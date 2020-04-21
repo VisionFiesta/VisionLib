@@ -1,6 +1,8 @@
-﻿namespace VisionLib.Common.Networking.Structs.Map
+﻿using VisionLib.Common.Networking.Packet;
+
+namespace VisionLib.Common.Networking.Structs.Map
 {
-    public class STRUCT_MAP_LOGIN_REQ : FiestaNetStruct
+    public class STRUCT_MAP_LOGIN_REQ : FiestaNetPacketStruct
     {
         public const int SHNHashLen_1_02_274 = 1792;
 
@@ -25,10 +27,16 @@
         public override FiestaNetPacket ToPacket()
         {
             var pkt = new FiestaNetPacket(FiestaNetCommand.NC_MAP_LOGIN_REQ);
+            WriteToPacket(pkt);
+            return pkt;
+        }
+
+        public override void WriteToPacket(FiestaNetPacket pkt)
+        {
+            if (pkt == null) return;
             pkt.Write(WorldManagerHandle);
             pkt.Write(CharacterName, NameN.Name5Len);
             pkt.Write(SHNHash); // don't limit length here
-            return pkt;
         }
     }
 }

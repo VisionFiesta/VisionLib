@@ -4,7 +4,7 @@ using System.Reflection;
 using VisionLib.Common.Collections;
 using VisionLib.Common.Logging;
 
-namespace VisionLib.Common.Networking
+namespace VisionLib.Common.Networking.Packet
 {
     public static class FiestaNetPacketHandlerLoader
     {

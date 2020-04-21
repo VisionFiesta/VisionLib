@@ -1,8 +1,8 @@
-﻿using VisionLib.Common.Networking.Protocols.User;
+﻿using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Structs.User
 {
-    public class STRUCT_NC_USER_XTRAP_REQ : FiestaNetStruct
+    public class STRUCT_NC_USER_XTRAP_REQ : FiestaNetPacketStruct
     {
         public readonly byte XTrapHashLength;
         public readonly string XTrapVersionHash;
@@ -21,7 +21,15 @@ namespace VisionLib.Common.Networking.Structs.User
 
         public override FiestaNetPacket ToPacket()
         {
-            return new PROTO_NC_USER_XTRAP_REQ(this);
+            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_XTRAP_REQ);
+            WriteToPacket(pkt);
+            return pkt;
+        }
+
+        public override void WriteToPacket(FiestaNetPacket pkt)
+        {
+            pkt.Write(XTrapHashLength);
+            pkt.Write(XTrapVersionHash, XTrapHashLength);
         }
     }
 }

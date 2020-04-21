@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VisionLib.Common.Networking
+namespace VisionLib.Common.Networking.Packet
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public class FiestaNetPacketHandlerAttritube : Attribute

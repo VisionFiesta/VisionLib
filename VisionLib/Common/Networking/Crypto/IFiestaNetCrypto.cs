@@ -1,4 +1,4 @@
-﻿namespace VisionLib.Common.Networking
+﻿namespace VisionLib.Common.Networking.Crypto
 {
     public interface IFiestaNetCrypto
     {

@@ -1,8 +1,9 @@
 ﻿using System;
+using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Structs.Misc
 {
-    public class STRUCT_GAMETIME_ACK : FiestaNetStruct
+    public class STRUCT_GAMETIME_ACK : FiestaNetPacketStruct
     {
         public readonly byte Hour;
         public readonly byte Minute;
@@ -31,10 +32,16 @@ namespace VisionLib.Common.Networking.Structs.Misc
         public override FiestaNetPacket ToPacket()
         {
             var pkt = new FiestaNetPacket(FiestaNetCommand.NC_MISC_GAMETIME_ACK);
+            WriteToPacket(pkt);
+            return pkt;
+        }
+
+        public override void WriteToPacket(FiestaNetPacket pkt)
+        {
+            if (pkt == null) return;
             pkt.Write(Hour);
             pkt.Write(Minute);
             pkt.Write(Second);
-            return pkt;
         }
 
         public static DateTime ToDateTime(STRUCT_GAMETIME_ACK gametime)

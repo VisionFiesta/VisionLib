@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace VisionLib.Common.Networking
+﻿namespace VisionLib.Common.Networking.Crypto
 {
     public class FiestaNetCrypto_NA2020 : IFiestaNetCrypto
     {
@@ -55,35 +51,35 @@ namespace VisionLib.Common.Networking
             0xB3, 0x9A, 0x6E, 0x36, 0xEE, 0x8D, 0xEB
         };
 
-        private ushort Seed;
-        private bool SeedSet;
+        private ushort _seed;
+        private bool _seedSet;
 
         public void SetSeed(ushort seed)
         {
-            Seed = seed;
-            SeedSet = true;
+            _seed = seed;
+            _seedSet = true;
         }
 
         public bool WasSeedSet()
         {
-            return SeedSet;
+            return _seedSet;
         }
 
         public ushort GetSeed()
         {
-            return Seed;
+            return _seed;
         }
 
         public void XorBuffer(byte[] buffer, int offset, int length)
         {
             for (var i = 0; i < length; i++)
             {
-                buffer[offset + i] = (byte)(buffer[offset + i] ^ XorTable[Seed]);
-                Seed++;
+                buffer[offset + i] = (byte)(buffer[offset + i] ^ XorTable[_seed]);
+                _seed++;
 
-                if (Seed >= 499)
+                if (_seed >= 499)
                 {
-                    Seed = 0;
+                    _seed = 0;
                 }
             }
         }

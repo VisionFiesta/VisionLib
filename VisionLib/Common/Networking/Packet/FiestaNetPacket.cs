@@ -4,7 +4,7 @@ using System.Text;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 
-namespace VisionLib.Common.Networking
+namespace VisionLib.Common.Networking.Packet
 {
     /// <summary>
 	/// Class that represents a network message sent to and from a

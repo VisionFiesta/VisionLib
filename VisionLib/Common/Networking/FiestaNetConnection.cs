@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
+using VisionLib.Common.Networking.Crypto;
+using VisionLib.Common.Networking.Packet;
 using VisionLib.Common.Utils;
 
 namespace VisionLib.Common.Networking

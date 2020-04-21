@@ -1,4 +1,4 @@
-﻿namespace FakeClientV1.Enums
+﻿namespace VisionLib.Common.Enums
 {
     public enum LoginResponse : byte
     {

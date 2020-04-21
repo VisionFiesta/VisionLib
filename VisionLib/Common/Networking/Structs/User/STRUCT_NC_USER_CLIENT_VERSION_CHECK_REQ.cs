@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
-using VisionLib.Common.Networking.Protocols.User;
+using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Structs.User
 {
-    public class STRUCT_NC_USER_CLIENT_VERSION_CHECK_REQ : FiestaNetStruct
+    public class STRUCT_NC_USER_CLIENT_VERSION_CHECK_REQ : FiestaNetPacketStruct
     {
         internal const int ClientBinMD5Len = 32;
         //internal const int VersionDateLen = 14;
@@ -46,7 +46,19 @@ namespace VisionLib.Common.Networking.Structs.User
 
         public override FiestaNetPacket ToPacket()
         {
-            return new PROTO_NC_USER_CLIENT_VERSION_CHECK_REQ(this);
+            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_CLIENT_VERSION_CHECK_REQ);
+            WriteToPacket(pkt);
+            return pkt;
+        }
+
+        public override void WriteToPacket(FiestaNetPacket pkt)
+        {
+            if (pkt == null) return;
+            pkt.Write(ClientBinMD5, ClientBinMD5Len);
+            pkt.Write(ExtraData, ExtraDataLen);
+
+            // unused for now
+            //Write(data.VersionDate, STRUCT_NC_USER_CLIENT_VERSION_CHECK_REQ.VersionDateLen);
         }
     }
 }

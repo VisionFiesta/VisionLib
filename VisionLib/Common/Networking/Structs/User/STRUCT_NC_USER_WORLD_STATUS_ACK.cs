@@ -1,9 +1,10 @@
 ﻿using System;
 using VisionLib.Common.Enums;
+using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Structs.User
 {
-    class STRUCT_NC_USER_WORLD_STATUS_ACK : FiestaNetStruct
+    class STRUCT_NC_USER_WORLD_STATUS_ACK : FiestaNetPacketStruct
     {
         public readonly byte WorldCount;
         public readonly WORLD_STATUS[] WorldStatuses;
@@ -34,7 +35,19 @@ namespace VisionLib.Common.Networking.Structs.User
 
         public override FiestaNetPacket ToPacket()
         {
-            throw new NotImplementedException("Not yet implemented");
+            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_WORLD_STATUS_ACK);
+            WriteToPacket(pkt);
+            return pkt;
+        }
+
+        public override void WriteToPacket(FiestaNetPacket pkt)
+        {
+            if (pkt == null) return;
+            pkt.Write(WorldCount);
+            foreach (var ws in WorldStatuses)
+            {
+                ws.WriteToPacket(pkt);
+            }
         }
 
         public class WORLD_STATUS
@@ -48,6 +61,14 @@ namespace VisionLib.Common.Networking.Structs.User
                 WorldID = worldId;
                 WorldName = worldName;
                 WorldStatus = (WorldServerStatus)worldStatus;
+            }
+
+            public void WriteToPacket(FiestaNetPacket pkt)
+            {
+                if (pkt == null) return;
+                pkt.Write(WorldID);
+                pkt.Write(WorldName, 16);
+                pkt.Write((byte)WorldStatus);
             }
         }
 

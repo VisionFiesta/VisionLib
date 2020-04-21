@@ -17,7 +17,7 @@ namespace VisionLib.Common.Configuration
             return message == string.Empty;
         }
 
-        private void CreateDefaultFolder()
+        private static void CreateDefaultFolder()
         {
             if (!Directory.Exists(ConfigFolder))
             {
@@ -45,7 +45,7 @@ namespace VisionLib.Common.Configuration
             };
 
             var path = Path.Combine(ConfigFolder, $"{configName ?? typeof(T).Name}.json");
-            if (!File.Exists(path)) return default(T);
+            if (!File.Exists(path)) return default;
 
             using (var file = File.OpenText(path))
             {
@@ -73,19 +73,19 @@ namespace VisionLib.Common.Configuration
                 if (!Write(out var pConfig))
                 {
                     message = $"Failed to create default {fullTypeName}.";
-                    return default(T);
+                    return default;
                 }
                 pConfig.WriteJson();
 
                 Log.Write(LogType.EngineLog, LogLevel.Info, $"Successfully generated {shortTypeName} config.");
                 message = $"No {fullTypeName} found! Please edit generated config.";
-                return default(T);
+                return default;
             }
             catch (Exception ex)
             {
                 Log.Write(LogType.EngineLog, LogLevel.Error, $"Failed to load {shortTypeName} config:\n {0}", ex);
                 message = $"Failed to load {fullTypeName}:\n {ex.StackTrace}";
-                return default(T);
+                return default;
             }
         }
 

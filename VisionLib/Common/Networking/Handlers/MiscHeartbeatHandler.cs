@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Handlers
 {
