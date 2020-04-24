@@ -11,7 +11,7 @@ namespace VisionLib.Common.Configuration
 
         public static T Instance { get; set; }
 
-        public bool Load(out string message)
+        public static bool Load(out string message)
         {
             Instance = Initialize(out message);
             return message == string.Empty;

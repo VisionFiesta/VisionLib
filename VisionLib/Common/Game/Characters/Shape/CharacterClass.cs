@@ -1,4 +1,4 @@
-﻿namespace VisionLib.Common.Game
+﻿namespace VisionLib.Common.Game.Characters.Shape
 {
     /// <summary>
     /// Enum that represents a class, or job, of a character.
