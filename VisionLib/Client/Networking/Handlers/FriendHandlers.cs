@@ -8,7 +8,7 @@ namespace VisionLib.Client.Networking.Handlers
 {
     public static class FriendHandlers
     {
-        [FiestaNetPacketHandlerAttritube(FiestaNetCommand.NC_FRIEND_SET_CONFIRM_REQ)]
+        [FiestaNetPacketHandler(FiestaNetCommand.NC_FRIEND_SET_CONFIRM_REQ, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_FRIEND_SET_CONFIRM_REQ(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var receiver = packet.ReadString(20); // me

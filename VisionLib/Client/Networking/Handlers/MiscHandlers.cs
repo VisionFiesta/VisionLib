@@ -1,50 +1,51 @@
 ﻿using VisionLib.Client.Enums;
-using VisionLib.Client.Services;
+using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Crypto;
 using VisionLib.Common.Networking.Packet;
-using VisionLib.Common.Networking.Structs.Char;
-using VisionLib.Common.Networking.Structs.Map;
 using VisionLib.Common.Networking.Structs.Misc;
-using VisionLib.Common.Networking.Structs.User;
 
 namespace VisionLib.Client.Networking.Handlers
 {
     public static class MiscHandlers
     {
-        [FiestaNetPacketHandlerAttritube(FiestaNetCommand.NC_MISC_SEED_ACK)]
+        [FiestaNetPacketHandler(FiestaNetCommand.NC_MISC_SEED_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_MISC_SEED_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var seed = packet.ReadUInt16();
-            Log.Write(LogType.GameLog, LogLevel.Debug, $"Got seed packet from {connection.DestinationType.ToMessage()}. Seed: {seed}");
-            ((FiestaNetCrypto_NA2020)connection.Crypto).SetSeed(seed);
+            connection.Crypto.SetSeed(seed);
+            Log.Write(LogType.GameLog, LogLevel.Debug, $"Got seed packet from {connection.TransmitDestinationType.ToMessage()}. Seed: {seed}");
 
-            switch (connection.DestinationType)
+            switch (connection.TransmitDestinationType)
             {
                 case FiestaNetConnDest.FNCDEST_LOGIN:
-                    LoginService.SetStatus(ClientLoginStatus.CLS_CONNECTED);
+                    connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_CONNECTED);
                     break;
                 case FiestaNetConnDest.FNCDEST_WORLDMANAGER:
-                    new STRUCT_NC_USER_LOGINWORLD_REQ(FiestaConsoleClient.Config.FiestaUsername, FiestaConsoleClient.LoginData.WmTransferKey).ToPacket().Send(connection);
+                    connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_CONNECTED);
+                    // TODO: Move to ClientWorldService
+                    // 
                     break;
                 case FiestaNetConnDest.FNCDEST_ZONE:
-                    new STRUCT_MAP_LOGIN_REQ(FiestaConsoleClient.LoginData.WmHandle, "SVT_0001", FiestaConsoleClient.Config.SHNHash).ToPacket().Send(connection);
+                    // TODO: Move to ClientZoneService
+                    // new STRUCT_MAP_LOGIN_REQ(FiestaConsoleClient.LoginData.WmHandle, "SVT_0001", FiestaConsoleClient.Config.SHNHash).ToPacket().Send(connection);
                     break;
                 case FiestaNetConnDest.FNCDEST_CLIENT:
                     break;
             }
         }
 
-        [FiestaNetPacketHandlerAttritube(FiestaNetCommand.NC_MISC_GAMETIME_ACK)]
+        [FiestaNetPacketHandler(FiestaNetCommand.NC_MISC_GAMETIME_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_MISC_GAMETIME_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var ack = new STRUCT_GAMETIME_ACK(packet);
+            Log.Write(LogType.GameLog, LogLevel.Info, $"Got GameTime: {ack.GameTime}");
 
-            switch (connection.DestinationType)
+            switch (connection.TransmitDestinationType)
             {
                 case FiestaNetConnDest.FNCDEST_WORLDMANAGER:
-                    new STRUCT_NC_CHAR_LOGIN_REQ(0).ToPacket().Send(connection);
+                    // TODO: Move to ClientWorldService
+                    // new STRUCT_NC_CHAR_LOGIN_REQ(0).ToPacket().Send(connection);
                     break;
             }
         }

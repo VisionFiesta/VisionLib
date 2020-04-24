@@ -104,5 +104,38 @@ namespace VisionLib.Common.Extensions
 			}
 			return numArray;
 		}
+
+        public static void GetChars(this string str, int srcBegin, int srcEnd, char[] dst, int dstBegin)
+        {
+			CheckBoundsBeginEnd(srcBegin, srcEnd, str.Length);
+			CheckBoundsOffCount(dstBegin, srcEnd - srcBegin, dst.Length);
+            if (srcBegin < srcEnd)
+            {
+                CheckBoundsOffCount(srcBegin, srcEnd - srcBegin, str.Length);
+			}
+
+            for (int i = srcBegin; i < srcEnd; i++)
+            {
+                dst[dstBegin++] = str[i];
+            }
+		}
+
+		private static void CheckBoundsBeginEnd(int begin, int end, int length)
+        {
+            if (begin < 0 || begin > end || end > length)
+            {
+                throw new IndexOutOfRangeException(
+                    "begin " + begin + ", end " + end + ", length " + length);
+            }
+        }
+
+		private static void CheckBoundsOffCount(int offset, int count, int length)
+        {
+            if (offset < 0 || count < 0 || offset > length - count)
+            {
+				throw new IndexOutOfRangeException(
+					"offset " + offset + ", count " + count + ", length " + length);
+            }
+		}
 	}
 }

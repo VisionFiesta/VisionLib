@@ -10,7 +10,9 @@ namespace VisionLib.Common.Game.Characters.Shape
         public CharacterHairColor HairColor;
         public CharacterFace Face;
 
-        public CharacterShape(PROTO_AVATAR_SHAPE_INFO rawInfo)
+        public CharacterShape() { }
+
+        public CharacterShape(ProtoAvatarShapeInfo rawInfo)
         {
             Class = rawInfo.Job;
             Gender = rawInfo.Gender;
