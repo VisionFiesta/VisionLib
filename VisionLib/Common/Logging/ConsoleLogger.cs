@@ -38,7 +38,7 @@ namespace VisionLib.Common.Logging
 		public void WriteLine(LogType logType, LogLevel logLevel, string message, params object[] args)
         {
             var levelByte = (byte) logLevel;
-			if (levelByte <= ConsoleLogLevel) return;
+			if (levelByte < ConsoleLogLevel) return;
 			lock (IOLocker)
 			{
 				if (!ConsoleColors.GetColor(logType, logLevel, out var pColor)) return;
