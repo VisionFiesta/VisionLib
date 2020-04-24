@@ -1,4 +1,5 @@
-﻿namespace VisionLib.Common.Networking
+﻿// ReSharper disable InconsistentNaming
+namespace VisionLib.Common.Networking
 {
     /// <summary>
     /// Identifies the type of network message.

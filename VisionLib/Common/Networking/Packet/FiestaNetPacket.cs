@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
+using VisionLib.Core.Stream;
 
 namespace VisionLib.Common.Networking.Packet
 {
@@ -20,17 +21,17 @@ namespace VisionLib.Common.Networking.Packet
 		/// <summary>
 		/// Object to read data from the message.
 		/// </summary>
-		private readonly BinaryReader reader;
+		private readonly BinaryReader _reader;
 
 		/// <summary>
 		/// The stream that contains the message data.
 		/// </summary>
-		private readonly MemoryStream stream;
+		private readonly MemoryStream _stream;
 
 		/// <summary>
 		/// Object to write data to the message.
 		/// </summary>
-		private readonly BinaryWriter writer;
+		private readonly BinaryWriter _writer;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="FiestaNetPacket"/> class.
@@ -38,8 +39,10 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="buffer">The message data.</param>
 		public FiestaNetPacket(byte[] buffer)
 		{
-			stream = new MemoryStream(buffer);
-			reader = new BinaryReader(stream);
+			var rs = new ReaderStream(buffer).Dump();
+            // var rsDump = rs.Dump();
+			_stream = new MemoryStream(buffer);
+			_reader = new BinaryReader(_stream);
 			Command = (FiestaNetCommand)ReadUInt16();
 		}
 
@@ -49,8 +52,8 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="command">The type of message.</param>
 		public FiestaNetPacket(FiestaNetCommand command)
 		{
-			stream = new MemoryStream();
-			writer = new BinaryWriter(stream);
+			_stream = new MemoryStream();
+			_writer = new BinaryWriter(_stream);
 			Command = command;
 
 			Write((ushort)command);
@@ -91,8 +94,8 @@ namespace VisionLib.Common.Networking.Packet
 		{
 			get
 			{
-				var length = stream?.Length;
-				var position = stream?.Position;
+				var length = _stream?.Length;
+				var position = _stream?.Position;
 				return (int)((length.HasValue & position.HasValue ? length.GetValueOrDefault() - position.GetValueOrDefault() : new long?()) ?? 0L);
 			}
 		}
@@ -104,7 +107,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public bool ReadBoolean()
 		{
-			return reader.ReadBoolean();
+			return _reader.ReadBoolean();
 		}
 
 		/// <summary>
@@ -112,7 +115,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public byte ReadByte()
 		{
-			return reader.ReadByte();
+			return _reader.ReadByte();
 		}
 
 		/// <summary>
@@ -121,7 +124,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="count">The number of bytes to read.</param>
 		public byte[] ReadBytes(int count)
 		{
-			return reader.ReadBytes(count);
+			return _reader.ReadBytes(count);
 		}
 
 		/// <summary>
@@ -129,7 +132,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public char ReadChar()
 		{
-			return reader.ReadChar();
+			return _reader.ReadChar();
 		}
 
 		/// <summary>
@@ -137,7 +140,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public decimal ReadDecimal()
 		{
-			return reader.ReadDecimal();
+			return _reader.ReadDecimal();
 		}
 
 		/// <summary>
@@ -145,7 +148,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public double ReadDouble()
 		{
-			return reader.ReadDouble();
+			return _reader.ReadDouble();
 		}
 
 		/// <summary>
@@ -153,7 +156,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public short ReadInt16()
 		{
-			return reader.ReadInt16();
+			return _reader.ReadInt16();
 		}
 
 		/// <summary>
@@ -161,7 +164,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public int ReadInt32()
 		{
-			return reader.ReadInt32();
+			return _reader.ReadInt32();
 		}
 
 		/// <summary>
@@ -170,7 +173,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <returns></returns>
 		public long ReadInt64()
 		{
-			return reader.ReadInt64();
+			return _reader.ReadInt64();
 		}
 
 		/// <summary>
@@ -179,7 +182,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <returns></returns>
 		public float ReadSingle()
 		{
-			return reader.ReadSingle();
+			return _reader.ReadSingle();
 		}
 
 		/// <summary>
@@ -200,7 +203,7 @@ namespace VisionLib.Common.Networking.Packet
 			var buffer = new byte[length];
 			var count = 0;
 
-			stream.Read(buffer, 0, buffer.Length);
+			_stream.Read(buffer, 0, buffer.Length);
 
 			if (buffer[length - 1] != 0)
 			{
@@ -227,7 +230,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public ushort ReadUInt16()
 		{
-			return reader.ReadUInt16();
+			return _reader.ReadUInt16();
 		}
 
 		/// <summary>
@@ -235,7 +238,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public uint ReadUInt32()
 		{
-			return reader.ReadUInt32();
+			return _reader.ReadUInt32();
 		}
 
 		/// <summary>
@@ -243,7 +246,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public ulong ReadUInt64()
 		{
-			return reader.ReadUInt64();
+			return _reader.ReadUInt64();
 		}
 
 		#endregion
@@ -255,7 +258,8 @@ namespace VisionLib.Common.Networking.Packet
 		public void Send(FiestaNetConnection connection)
 		{
 			connection?.SendData(ToArray(connection));
-            Log.Write(LogType.SocketLog, LogLevel.Debug, $"Sent {Command} packet to endpoint {connection.RemoteEndPoint.ToSimpleString()}");
+            var endpointStr = connection == null ? "Connection Null" : connection.RemoteEndPoint.ToSimpleString();
+            Log.Write(LogType.SocketLog, LogLevel.Debug, $"Sent {Command} packet to endpoint {endpointStr}");
             Destroy(this);
 		}
 
@@ -266,13 +270,13 @@ namespace VisionLib.Common.Networking.Packet
 		public byte[] ToArray(FiestaNetConnection connection = null)
 		{
 			byte[] ret;
-			var buffer = stream.ToArray();
+			var buffer = _stream.ToArray();
 
 			if (connection != null)
 			{
 				// TODO: fix??
-				bool isClient = connection.DirectionType.IsFromClient();
-				bool isToClient = connection.DestinationType.IsToClient();
+				var isClient = connection.ReceiveDestinationType.IsClient();
+				var isToClient = connection.TransmitDestinationType.IsClient();
 				while (!connection.Crypto.WasSeedSet()) { }
 				if (isClient && !isToClient && connection.IsEstablished)
 				{
@@ -303,7 +307,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public override string ToString()
 		{
-			return $"Command=0x{Command:X} ({Command}), Length={stream.Length - 2}";
+			return $"Command=0x{Command:X} ({Command}), Length={_stream.Length - 2}";
 		}
 
 		#region Write
@@ -314,7 +318,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(bool value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -323,7 +327,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(byte value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -332,7 +336,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(sbyte value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -341,7 +345,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(byte[] value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -351,9 +355,9 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="len">The amount of bytes to write</param>
 		public void Write(byte[] value, int len)
 		{
-			for (int i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
-				writer.Write(value[i]);
+				_writer.Write(value[i]);
 			}
 		}
 
@@ -363,7 +367,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(short value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -372,7 +376,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(int value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -381,7 +385,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(long value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -390,7 +394,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(ushort value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -399,7 +403,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(uint value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -408,7 +412,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(ulong value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -417,7 +421,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(double value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -426,7 +430,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(decimal value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -435,7 +439,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="value">The value to write.</param>
 		public void Write(float value)
 		{
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		/// <summary>
@@ -473,9 +477,9 @@ namespace VisionLib.Common.Networking.Packet
 		{
 			// Reader and writer are not always initialized, so we need to check
 			// for null before attempting to close them.
-			reader?.Close();
-			writer?.Close();
-			stream.Close();
+			_reader?.Close();
+			_writer?.Close();
+			_stream.Close();
 		}
 	}
 }

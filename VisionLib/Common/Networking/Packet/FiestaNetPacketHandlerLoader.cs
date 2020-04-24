@@ -8,28 +8,56 @@ namespace VisionLib.Common.Networking.Packet
 {
     public static class FiestaNetPacketHandlerLoader
     {
-        public static readonly FastDictionary<FiestaNetCommand, FiestaNetPacketHandlerDelegate> Handlers = new FastDictionary<FiestaNetCommand, FiestaNetPacketHandlerDelegate>();
+        public static readonly FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate>> Handlers  = new FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate>>();
 
         public static void LoadHandlers()
         {
-            var allMethods = VisionAssembly.GetMethodsWithAttribute<FiestaNetPacketHandlerAttritube>().ToList();
-            foreach (Pair<FiestaNetPacketHandlerAttritube, MethodInfo> pair in allMethods)
+            var allMethods = VisionAssembly.GetMethodsWithAttribute<FiestaNetPacketHandlerAttribute>().ToList();
+            foreach (Pair<FiestaNetPacketHandlerAttribute, MethodInfo> pair in allMethods)
             {
-                FiestaNetPacketHandlerAttritube first = pair.First;
+                FiestaNetPacketHandlerAttribute first = pair.First;
                 MethodInfo second = pair.Second;
                 if (Handlers.ContainsKey(first.Command))
                 {
                     Log.Write(LogType.EngineLog, LogLevel.Warning, $"Duplicate message handler found: [{first.Command}]");
                     Handlers.Remove(first.Command);
                 }
-                Handlers.Add(first.Command, (FiestaNetPacketHandlerDelegate)Delegate.CreateDelegate(typeof(FiestaNetPacketHandlerDelegate), second));
-                Log.Write(LogType.EngineLog, LogLevel.Debug, $"Added message handler: (Command: {first.Command}, Method: {second.Name})");
+
+                var destinations = first.Destinations;
+                var theDelegate =
+                    Delegate.CreateDelegate(typeof(FiestaNetPacketHandlerDelegate),
+                        second) as FiestaNetPacketHandlerDelegate;
+                var both = new Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate>(destinations, theDelegate);
+
+                Handlers.Add(first.Command, both);
+
+                var destinationsStr = "";
+                for (var index = 0; index < destinations.Length; index++)
+                {
+                    var dest = destinations[index];
+                    destinationsStr += dest.ToMessage();
+                    if (index != destinations.Length - 1) destinationsStr += ", ";
+                }
+
+                Log.Write(LogType.EngineLog, LogLevel.Debug, $"Added message handler: (Command: {first.Command}, Destinations: {destinationsStr})");
             }
         }
 
-        public static bool TryGetHandler(FiestaNetCommand command, out FiestaNetPacketHandlerDelegate handler)
+        public static bool TryGetHandler(FiestaNetCommand command, out FiestaNetPacketHandlerDelegate handler, out FiestaNetConnDest[] destinations)
         {
-            return Handlers.TryGetValue(command, out handler);
+            var result = Handlers.TryGetValue(command, out var both);
+            if (result)
+            {
+                handler = both.Item2;
+                destinations = both.Item1;
+                return true;
+            }
+            else
+            {
+                handler = null;
+                destinations = null;
+                return false;
+            }
         }
     }
 }

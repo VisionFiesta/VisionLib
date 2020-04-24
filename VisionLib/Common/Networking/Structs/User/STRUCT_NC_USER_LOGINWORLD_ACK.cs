@@ -7,10 +7,10 @@ namespace VisionLib.Common.Networking.Structs.User
     {
         public readonly ushort WorldManagerHandle;
         public byte AvatarCount;
-        public STRUCT_PROTO_AVATARINFORMATION[] Avatars;
+        public ProtoAvatarInformation[] Avatars;
 
         public STRUCT_NC_USER_LOGINWORLD_ACK(ushort worldManagerHandle, byte avatarCount,
-            STRUCT_PROTO_AVATARINFORMATION[] avatars)
+            ProtoAvatarInformation[] avatars)
         {
             WorldManagerHandle = worldManagerHandle;
             AvatarCount = avatarCount;
@@ -23,10 +23,10 @@ namespace VisionLib.Common.Networking.Structs.User
             AvatarCount = packet.ReadByte();
 
             if (AvatarCount <= 0) return;
-            Avatars = new STRUCT_PROTO_AVATARINFORMATION[AvatarCount];
+            Avatars = new ProtoAvatarInformation[AvatarCount];
             for (var i = 0; i < AvatarCount; i++)
             {
-                Avatars[i] = new STRUCT_PROTO_AVATARINFORMATION(packet);
+                Avatars[i] = new ProtoAvatarInformation(packet);
             }
         }
 

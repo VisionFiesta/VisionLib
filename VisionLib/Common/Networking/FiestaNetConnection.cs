@@ -51,10 +51,10 @@ namespace VisionLib.Common.Networking
         /// </summary>
         public bool SendChunk
         {
-            get => sendChunk;
+            get => _sendChunk;
             set
             {
-                sendChunk = value;
+                _sendChunk = value;
 
                 if (!value)
                 {
@@ -66,12 +66,12 @@ namespace VisionLib.Common.Networking
         /// <summary>
         /// The destination type of the connection.
         /// </summary>
-        public FiestaNetConnDest DestinationType { get; }
+        public FiestaNetConnDest TransmitDestinationType { get; }
 
         /// <summary>
-        /// The direction type of the connection.
+        /// The sender type of the connection.
         /// </summary>
-        public FiestaNetConnDir DirectionType { get; }
+        public FiestaNetConnDest ReceiveDestinationType { get; }
 
         /// <summary>
         /// Time since the connection's last heartbeat.
@@ -81,35 +81,35 @@ namespace VisionLib.Common.Networking
         /// <summary>
         /// List of buffers waiting to be sent.
         /// </summary>
-        private volatile List<byte[]> awaitingBuffers;
+        private volatile List<byte[]> _awaitingBuffers;
 
         /// <summary>
         /// The buffer used for incoming data.
         /// </summary>
-        private byte[] receiveBuffer;
+        private byte[] _receiveBuffer;
 
         /// <summary>
         /// The stream used to read from the incoming data buffer.
         /// </summary>
-        private MemoryStream receiveStream;
+        private MemoryStream _receiveStream;
 
         /// <summary>
         /// Returns true if the connection is currently being sent data in chunks.
         /// </summary>
-        private bool sendChunk;
+        private bool _sendChunk;
 
         /// <summary>
         /// The socket to use for data transferring.
         /// </summary>
-        private Socket socket;
+        private Socket _socket;
 
         /// <summary>
         /// Gets the sockets remote endpoint IP address
         /// </summary>
         /// <returns>Remote endpoint IP address</returns>
-        public string GetRemoteIP => (socket.RemoteEndPoint as IPEndPoint)?.Address.ToString();
+        public string GetRemoteIp => (_socket.RemoteEndPoint as IPEndPoint)?.Address.ToString();
 
-        public IPEndPoint RemoteEndPoint => socket.RemoteEndPoint as IPEndPoint;
+        public IPEndPoint RemoteEndPoint => _socket.RemoteEndPoint as IPEndPoint;
 
         /// <summary>
         /// Gets the socket's connection state.
@@ -119,19 +119,19 @@ namespace VisionLib.Common.Networking
         {
             // If the socket is already null, we've already called
             // Disconnect().
-            if (socket == null || !socket.Connected)
+            if (_socket == null || !_socket.Connected)
             {
                 return false;
             }
 
-            var blocking = socket.Blocking;
+            var blocking = _socket.Blocking;
 
             try
             {
                 var tempBuffer = new byte[1];
 
-                socket.Blocking = false;
-                socket.Send(tempBuffer, 0, 0);
+                _socket.Blocking = false;
+                _socket.Send(tempBuffer, 0, 0);
 
                 // If the send fails, this line won't be reached because an exception
                 // will be thrown.
@@ -151,23 +151,23 @@ namespace VisionLib.Common.Networking
             }
             finally
             {
-                if (socket != null)
+                if (_socket != null)
                 {
-                    socket.Blocking = blocking;
+                    _socket.Blocking = blocking;
                 }
             }
         }
 
-        public FiestaNetConnection(FiestaNetConnDest dest, FiestaNetConnDir dir, IFiestaNetCrypto crypto = null)
+        public FiestaNetConnection(FiestaNetConnDest txDest, FiestaNetConnDest rxDest, IFiestaNetCrypto crypto = null)
         {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            DestinationType = dest;
-            DirectionType = dir;
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            TransmitDestinationType = txDest;
+            ReceiveDestinationType = rxDest;
             IsEstablished = true;
             Guid = System.Guid.NewGuid().ToString().Replace("-", "");
             Handle = (ushort)MathUtils.Random(ushort.MaxValue);
-            receiveStream = new MemoryStream();
-            awaitingBuffers = new List<byte[]>();
+            _receiveStream = new MemoryStream();
+            _awaitingBuffers = new List<byte[]>();
 
             // default to 2020 NA crypto
             Crypto = Crypto == null ? new FiestaNetCrypto_NA2020() : crypto;
@@ -199,11 +199,11 @@ namespace VisionLib.Common.Networking
             // individually per server by checking the list for disconnected
             // clients.
             //Client?.Connections.Remove(this);
-            // TODO: child class for ServerConnection and ClientConnection
+            // TODO: child class for ServerConnection and ClientConnection?
 
-            Log.Write(LogType.SocketLog, LogLevel.Info, $"Disconnected from target: {DestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
-            socket?.Close(); // Close() will call Dispose() automatically for us.
-            socket = null;
+            Log.Write(LogType.SocketLog, LogLevel.Info, $"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+            _socket?.Close(); // Close() will call Dispose() automatically for us.
+            _socket = null;
         }
 
         /// <summary>
@@ -217,9 +217,9 @@ namespace VisionLib.Common.Networking
                 return;
             }
 
-            if (sendChunk)
+            if (_sendChunk)
             {
-                awaitingBuffers.Add(buffer);
+                _awaitingBuffers.Add(buffer);
                 return;
             }
 
@@ -233,7 +233,7 @@ namespace VisionLib.Common.Networking
 
             while (bytesSent < bytesToSend)
             {
-                bytesSent += socket.Send(buffer, bytesSent, bytesToSend - bytesSent, SocketFlags.None);
+                bytesSent += _socket.Send(buffer, bytesSent, bytesToSend - bytesSent, SocketFlags.None);
 
                 if (bytesSent <= bytesToSend) continue;
                 Log.Write(LogType.SocketLog, LogLevel.Warning, $"BUFFER OVERFLOW OCCURRED - Sent {bytesSent - bytesToSend} bytes more than expected.");
@@ -251,8 +251,17 @@ namespace VisionLib.Common.Networking
                 return;
             }
 
-            receiveBuffer = new byte[ReceiveBufferSize];
-            socket.BeginReceive(receiveBuffer, 0, receiveBuffer.Length, SocketFlags.None, ReceivedData, null);
+            _receiveBuffer = new byte[ReceiveBufferSize];
+            _socket.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, ReceivedData, null);
+        }
+
+        /// <summary>
+        /// Attempts to connect to the specified target endpoint.
+        /// </summary>
+        /// <param name="endPoint">The target endpoint.</param>
+        public void Connect(IPEndPoint endPoint)
+        {
+            _socket.BeginConnect(endPoint, ConnectedToTarget, endPoint);
         }
 
         /// <summary>
@@ -262,7 +271,7 @@ namespace VisionLib.Common.Networking
         /// <param name="targetPort">The target port.</param>
         public void Connect(string targetIP, ushort targetPort)
         {
-            socket.BeginConnect(new IPEndPoint(IPAddress.Parse(targetIP), targetPort), ConnectedToTarget, new object[] { targetIP, targetPort });
+           Connect(new IPEndPoint(IPAddress.Parse(targetIP), targetPort));
         }
 
         /// <summary>
@@ -274,24 +283,24 @@ namespace VisionLib.Common.Networking
         {
             try
             {
-                socket.EndConnect(e);
-                Log.Write(LogType.SocketLog, LogLevel.Info, $"Connected to target: {DestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+                _socket.EndConnect(e);
+                Log.Write(LogType.SocketLog, LogLevel.Info, $"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
                 BeginReceivingData();
             }
             catch
             {
                 Log.Write(LogType.SocketLog, LogLevel.Warning, "Remote socket connection attempt failed. Trying again...");
                 Thread.Sleep(3000); // 3 seconds.
-                Connect((string)((object[])e.AsyncState)[0], (ushort)((object[])e.AsyncState)[1]);
+                Connect((IPEndPoint)e.AsyncState);
             }
         }
 
         /// <summary>
-        /// Destroys the <see cref="NetworkConnection"/> instance.
+        /// Destroys the <see cref="FiestaNetConnection"/> instance.
         /// </summary>
         protected override void Destroy()
         {
-            socket?.Close();
+            _socket?.Close();
         }
 
         /// <summary>
@@ -305,7 +314,7 @@ namespace VisionLib.Common.Networking
                 return;
             }
 
-            receiveStream.Write(buffer, 0, buffer.Length);
+            _receiveStream.Write(buffer, 0, buffer.Length);
 
             while (TryParseMessage())
             {
@@ -324,7 +333,7 @@ namespace VisionLib.Common.Networking
                 return;
             }
 
-            var count = socket.EndReceive(e);
+            var count = _socket.EndReceive(e);
             var buffer = new byte[count];
 
             if (count <= 0)
@@ -333,7 +342,7 @@ namespace VisionLib.Common.Networking
                 return;
             }
 
-            Array.Copy(receiveBuffer, 0, buffer, 0, count);
+            Array.Copy(_receiveBuffer, 0, buffer, 0, count);
             GetMessagesFromBuffer(buffer);
 
             BeginReceivingData();
@@ -349,8 +358,8 @@ namespace VisionLib.Common.Networking
                 return;
             }
 
-            awaitingBuffers.Copy(out var bufferList);
-            awaitingBuffers.Clear();
+            _awaitingBuffers.Copy(out var bufferList);
+            _awaitingBuffers.Clear();
 
             var size = bufferList.Sum(b => b.Length);
             var chunk = new byte[size];
@@ -377,9 +386,9 @@ namespace VisionLib.Common.Networking
                 return false;
             }
 
-            receiveStream.Position = 0;
+            _receiveStream.Position = 0;
 
-            if (receiveStream.Length < 1)
+            if (_receiveStream.Length < 1)
             {
                 return false;
             }
@@ -387,7 +396,7 @@ namespace VisionLib.Common.Networking
             ushort messageSize;
             var sizeBuffer = new byte[1];
 
-            receiveStream.Read(sizeBuffer, 0, 1);
+            _receiveStream.Read(sizeBuffer, 0, 1);
 
             if (sizeBuffer[0] != 0)
             {
@@ -395,53 +404,61 @@ namespace VisionLib.Common.Networking
             }
             else
             {
-                if (receiveStream.Length - receiveStream.Position < 2)
+                if (_receiveStream.Length - _receiveStream.Position < 2)
                 {
                     return false;
                 }
 
                 sizeBuffer = new byte[2];
-                receiveStream.Read(sizeBuffer, 0, 2);
+                _receiveStream.Read(sizeBuffer, 0, 2);
 
                 messageSize = BitConverter.ToUInt16(sizeBuffer, 0);
             }
 
-            if (receiveStream.Length - receiveStream.Position < messageSize)
+            if (_receiveStream.Length - _receiveStream.Position < messageSize)
             {
                 return false;
             }
 
             var messageBuffer = new byte[messageSize];
-            receiveStream.Read(messageBuffer, 0, messageSize);
+            _receiveStream.Read(messageBuffer, 0, messageSize);
 
-            // TODO: is this correct?
-            bool isFromClient = DirectionType.IsFromClient();
-            bool isToServer = DestinationType.IsToServer();
+            var isFromClient = ReceiveDestinationType.IsClient();
+            var isToServer = TransmitDestinationType.IsServer();
             if (!isFromClient && !isToServer && Crypto.WasSeedSet())
             {
                 Crypto.XorBuffer(messageBuffer, 0, messageBuffer.Length);
             }
 
             var packet = new FiestaNetPacket(messageBuffer);
-            if (FiestaNetPacketHandlerLoader.TryGetHandler(packet.Command, out var handler))
+
+            bool hasHandler =
+                FiestaNetPacketHandlerLoader.TryGetHandler(packet.Command, out var handler, out var destinations);
+            bool isForThisDest = destinations.Contains(ReceiveDestinationType);
+
+            if (hasHandler && isForThisDest)
             {
                 var watch = new Stopwatch();
                 watch.Start();
                 handler(packet, this);
                 watch.Stop();
-                string millisString = string.Format("{0:N2}", watch.Elapsed.TotalMilliseconds);
+                var millisString = $"{watch.Elapsed.TotalMilliseconds:N2}";
                 Log.Write(LogType.SocketLog, LogLevel.Debug, $"Handler for {packet.Command} took {millisString}ms to complete.");
+            }
+            else if (hasHandler) // not this dest
+            {
+                Log.Write(LogType.SocketLog, LogLevel.Warning, $"Got handled command from {TransmitDestinationType} NOT FOR {ReceiveDestinationType} : {packet.Command}");
             }
             else
             {
-                Log.Write(LogType.SocketLog, LogLevel.Warning, $"Got unhandled command: {packet.Command}");
+                Log.Write(LogType.SocketLog, LogLevel.Warning, $"Got unhandled command from {TransmitDestinationType}: {packet.Command}");
             }
 
             // Trims the receive stream.
-            var remainingByteCount = new byte[receiveStream.Length - receiveStream.Position];
-            receiveStream.Read(remainingByteCount, 0, remainingByteCount.Length);
-            receiveStream = new MemoryStream();
-            receiveStream.Write(remainingByteCount, 0, remainingByteCount.Length);
+            var remainingByteCount = new byte[_receiveStream.Length - _receiveStream.Position];
+            _receiveStream.Read(remainingByteCount, 0, remainingByteCount.Length);
+            _receiveStream = new MemoryStream();
+            _receiveStream.Write(remainingByteCount, 0, remainingByteCount.Length);
 
             return true;
         }

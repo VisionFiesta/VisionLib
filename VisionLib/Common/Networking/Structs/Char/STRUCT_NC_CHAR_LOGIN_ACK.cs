@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net;
+
 using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Structs.Char
@@ -12,10 +12,21 @@ namespace VisionLib.Common.Networking.Structs.Char
         public readonly string ZoneIP;
         public readonly ushort ZonePort;
 
+        public readonly IPEndPoint ZoneEndPoint;
+
         public STRUCT_NC_CHAR_LOGIN_ACK(string zoneIp, ushort zonePort)
         {
             ZoneIP = zoneIp;
             ZonePort = zonePort;
+
+            if (IPAddress.TryParse(ZoneIP, out var trueZoneIP))
+            {
+                ZoneEndPoint = new IPEndPoint(trueZoneIP, ZonePort);
+            }
+            else
+            {
+                throw new Exception("ZoneIP failed to parse as a valid IP Address");
+            }
         }
 
         public STRUCT_NC_CHAR_LOGIN_ACK(FiestaNetPacket packet)

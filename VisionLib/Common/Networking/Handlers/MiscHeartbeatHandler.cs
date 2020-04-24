@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VisionLib.Common.Networking.Packet;
+﻿using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Handlers
 {
@@ -9,8 +6,8 @@ namespace VisionLib.Common.Networking.Handlers
     {
         private static readonly FiestaNetPacket HeartbeatAck = new FiestaNetPacket(FiestaNetCommand.NC_MISC_HEARTBEAT_ACK);
 
-        [FiestaNetPacketHandlerAttritube(FiestaNetCommand.NC_MISC_HEARTBEAT_REQ)]
-        public static void NC_MISC_HEARTBEAT_REQUEST(FiestaNetPacket packet, FiestaNetConnection connection)
+        [FiestaNetPacketHandler(FiestaNetCommand.NC_MISC_HEARTBEAT_REQ, FiestaNetConnDest.FNCDEST_CLIENT, FiestaNetConnDest.FNCDEST_LOGIN, FiestaNetConnDest.FNCDEST_WORLDMANAGER, FiestaNetConnDest.FNCDEST_ZONE)]
+        public static void NC_MISC_HEARTBEAT_REQ(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             HeartbeatAck.Send(connection);
         }

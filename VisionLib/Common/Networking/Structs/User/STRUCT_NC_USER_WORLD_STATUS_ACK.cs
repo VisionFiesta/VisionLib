@@ -4,7 +4,7 @@ using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Common.Networking.Structs.User
 {
-    class STRUCT_NC_USER_WORLD_STATUS_ACK : FiestaNetPacketStruct
+    public class STRUCT_NC_USER_WORLD_STATUS_ACK : FiestaNetPacketStruct
     {
         public readonly byte WorldCount;
         public readonly WORLD_STATUS[] WorldStatuses;

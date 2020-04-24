@@ -10,12 +10,12 @@
 
     public static class FiestaNetworkConnectionDestinationExtensions
     {
-        public static bool IsToServer(this FiestaNetConnDest dest)
+        public static bool IsServer(this FiestaNetConnDest dest)
         {
             return dest != FiestaNetConnDest.FNCDEST_CLIENT;
         }
 
-        public static bool IsToClient(this FiestaNetConnDest dest)
+        public static bool IsClient(this FiestaNetConnDest dest)
         {
             return dest == FiestaNetConnDest.FNCDEST_CLIENT;
         }

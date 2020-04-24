@@ -32,7 +32,7 @@ namespace VisionLib.Common.Networking.Structs.User
             //var trueVersionDate = parseVersionDate(versionDate);
         }
 
-        private DateTime parseVersionDate(string versionDate)
+        private DateTime ParseVersionDate(string versionDate)
         {
             if (DateTime.TryParseExact(versionDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var trueVersionDate))
             {
