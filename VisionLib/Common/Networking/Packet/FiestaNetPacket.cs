@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 using VisionLib.Core.Stream;
@@ -18,10 +17,10 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
         public FiestaNetCommand Command { get; set; }
 
-		/// <summary>
-		/// Object to read data from the message.
-		/// </summary>
-		private readonly BinaryReader _reader;
+        /// <summary>
+        /// Object to read data from the message.
+        /// </summary>
+        public ReaderStream Reader { get; }
 
 		/// <summary>
 		/// The stream that contains the message data.
@@ -31,7 +30,7 @@ namespace VisionLib.Common.Networking.Packet
 		/// <summary>
 		/// Object to write data to the message.
 		/// </summary>
-		private readonly BinaryWriter _writer;
+		public WriterStream Writer { get; }
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="FiestaNetPacket"/> class.
@@ -39,11 +38,11 @@ namespace VisionLib.Common.Networking.Packet
 		/// <param name="buffer">The message data.</param>
 		public FiestaNetPacket(byte[] buffer)
 		{
-			var rs = new ReaderStream(buffer).Dump();
-            // var rsDump = rs.Dump();
-			_stream = new MemoryStream(buffer);
-			_reader = new BinaryReader(_stream);
-			Command = (FiestaNetCommand)ReadUInt16();
+            _stream = new MemoryStream(buffer);
+            Reader = new ReaderStream(ref _stream);
+			Writer = new WriterStream(ref _stream);
+			
+			Command = (FiestaNetCommand)Reader.ReadUInt16();
 		}
 
 		/// <summary>
@@ -53,10 +52,10 @@ namespace VisionLib.Common.Networking.Packet
 		public FiestaNetPacket(FiestaNetCommand command)
 		{
 			_stream = new MemoryStream();
-			_writer = new BinaryWriter(_stream);
+			Writer = new WriterStream(ref _stream);
 			Command = command;
 
-			Write((ushort)command);
+			Writer.Write((ushort)command);
 		}
 
 		/// <summary>
@@ -66,10 +65,10 @@ namespace VisionLib.Common.Networking.Packet
 		{
 			connection.SendChunk = true;
 
-			for (var i = 0; i < packets.Length; i++)
-			{
-				packets[i].Send(connection);
-			}
+			foreach (var pkt in packets)
+            {
+                pkt.Send(connection);
+            }
 
 			connection.SendChunk = false;
 		}
@@ -83,175 +82,11 @@ namespace VisionLib.Common.Networking.Packet
 		{
 			for (var i = 0; i < count; i++)
 			{
-				Write(value);
+				Writer.Write(value);
 			}
 		}
 
-		/// <summary>
-		/// The number of unread bytes in the message.
-		/// </summary>
-		public int RemainingBytes
-		{
-			get
-			{
-				var length = _stream?.Length;
-				var position = _stream?.Position;
-				return (int)((length.HasValue & position.HasValue ? length.GetValueOrDefault() - position.GetValueOrDefault() : new long?()) ?? 0L);
-			}
-		}
-
-		#region Read
-
-		/// <summary>
-		/// Reads a boolean value from the current stream.
-		/// </summary>
-		public bool ReadBoolean()
-		{
-			return _reader.ReadBoolean();
-		}
-
-		/// <summary>
-		/// Reads a byte value from the current stream.
-		/// </summary>
-		public byte ReadByte()
-		{
-			return _reader.ReadByte();
-		}
-
-		/// <summary>
-		/// Reads an array of bytes from the current stream.
-		/// </summary>
-		/// <param name="count">The number of bytes to read.</param>
-		public byte[] ReadBytes(int count)
-		{
-			return _reader.ReadBytes(count);
-		}
-
-		/// <summary>
-		/// Reads a character value from the current stream.
-		/// </summary>
-		public char ReadChar()
-		{
-			return _reader.ReadChar();
-		}
-
-		/// <summary>
-		/// Reads a decimal value from the current stream.
-		/// </summary>
-		public decimal ReadDecimal()
-		{
-			return _reader.ReadDecimal();
-		}
-
-		/// <summary>
-		/// Reads a double value from the current stream.
-		/// </summary>
-		public double ReadDouble()
-		{
-			return _reader.ReadDouble();
-		}
-
-		/// <summary>
-		/// Reads a 16-bit integer value from the current stream.
-		/// </summary>
-		public short ReadInt16()
-		{
-			return _reader.ReadInt16();
-		}
-
-		/// <summary>
-		/// Reads a 32-bit integer value from the current stream.
-		/// </summary>
-		public int ReadInt32()
-		{
-			return _reader.ReadInt32();
-		}
-
-		/// <summary>
-		/// Reads a 64-bit integer value from the current stream.
-		/// </summary>
-		/// <returns></returns>
-		public long ReadInt64()
-		{
-			return _reader.ReadInt64();
-		}
-
-		/// <summary>
-		/// Reads a float value from the current stream.
-		/// </summary>
-		/// <returns></returns>
-		public float ReadSingle()
-		{
-			return _reader.ReadSingle();
-		}
-
-		/// <summary>
-		/// Reads a string value from the current stream.
-		/// </summary>
-		public string ReadString()
-		{
-			return ReadString(ReadByte());
-		}
-
-		/// <summary>
-		/// Reads a string value from the current stream.
-		/// </summary>
-		/// <param name="length">The length of the stream.</param>
-		public string ReadString(int length)
-		{
-			var ret = string.Empty;
-			var buffer = new byte[length];
-			var count = 0;
-
-			_stream.Read(buffer, 0, buffer.Length);
-
-			if (buffer[length - 1] != 0)
-			{
-				count = length;
-			}
-			else
-			{
-				while (buffer[count] != 0 && count < length)
-				{
-					count++;
-				}
-			}
-
-			if (count > 0)
-			{
-				ret = Encoding.ASCII.GetString(buffer, 0, count);
-			}
-
-			return ret;
-		}
-
-		/// <summary>
-		/// Reads an unsigned 16-bit integer value from the current stream.
-		/// </summary>
-		public ushort ReadUInt16()
-		{
-			return _reader.ReadUInt16();
-		}
-
-		/// <summary>
-		/// Reads an unsigned 32-bit integer value from the current stream.
-		/// </summary>
-		public uint ReadUInt32()
-		{
-			return _reader.ReadUInt32();
-		}
-
-		/// <summary>
-		/// Reads an unsigned 64-bit integer value from the current stream.
-		/// </summary>
-		public ulong ReadUInt64()
-		{
-			return _reader.ReadUInt64();
-		}
-
-		#endregion
-
-		/// <summary>
+        /// <summary>
 		/// Sends the message to the connection.
 		/// </summary>
 		/// <param name="connection">The connection to send the message to.</param>
@@ -310,176 +145,14 @@ namespace VisionLib.Common.Networking.Packet
 			return $"Command=0x{Command:X} ({Command}), Length={_stream.Length - 2}";
 		}
 
-		#region Write
-
-		/// <summary>
-		/// Writes a boolean value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(bool value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a byte value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(byte value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a signed byte value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(sbyte value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a byte array to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(byte[] value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a byte array to the current stream, up to the supplied length.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		/// <param name="len">The amount of bytes to write</param>
-		public void Write(byte[] value, int len)
-		{
-			for (var i = 0; i < len; i++)
-			{
-				_writer.Write(value[i]);
-			}
-		}
-
-		/// <summary>
-		/// Writes a 16-bit integer value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(short value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a 32-bit integer value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(int value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a 64-bit integer value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(long value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes an unsigned 16-bit integer value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(ushort value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes an unsigned 32-bit integer value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(uint value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes an unsigned 64-bit integer value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(ulong value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a double value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(double value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a decimal value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(decimal value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a float value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(float value)
-		{
-			_writer.Write(value);
-		}
-
-		/// <summary>
-		/// Writes a string value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		public void Write(string value)
-		{
-			Write(value, value.Length);
-		}
-
-		/// <summary>
-		/// Writes a string value to the current stream.
-		/// </summary>
-		/// <param name="value">The value to write.</param>
-		/// <param name="length">The length of the string.</param>
-		public void Write(string value, int length)
-		{
-			var buffer = Encoding.ASCII.GetBytes(value);
-
-			Write(buffer);
-
-			for (var i = 0; i < length - buffer.Length; i++)
-			{
-				Write((byte)0);
-			}
-		}
-
-		#endregion
-
 		/// <summary>
 		/// Destroys the <see cref="FiestaNetPacket"/> instance.
 		/// </summary>
 		protected override void Destroy()
 		{
-			// Reader and writer are not always initialized, so we need to check
-			// for null before attempting to close them.
-			_reader?.Close();
-			_writer?.Close();
-			_stream.Close();
+			Destroy(Reader);
+			Destroy(Writer);
+			_stream?.Close();
 		}
 	}
 }

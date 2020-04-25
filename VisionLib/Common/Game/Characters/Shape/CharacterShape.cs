@@ -1,4 +1,4 @@
-﻿using VisionLib.Common.Networking.Structs.Common;
+﻿using VisionLib.Core.Struct.Common;
 
 namespace VisionLib.Common.Game.Characters.Shape
 {

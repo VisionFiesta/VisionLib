@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using VisionLib.Client.Enums;
 using VisionLib.Common.Enums;
@@ -9,9 +8,8 @@ using VisionLib.Common.Game.Characters.Shape;
 using VisionLib.Common.Logging;
 using VisionLib.Common.Networking;
 using VisionLib.Common.Networking.Packet;
-using VisionLib.Common.Networking.Protocols.Misc;
-using VisionLib.Common.Networking.Structs.Common;
-using VisionLib.Common.Networking.Structs.User;
+using VisionLib.Core.Struct.Common;
+using VisionLib.Core.Struct.User;
 
 namespace VisionLib.Client.Networking.Handlers
 {
@@ -44,7 +42,7 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGINFAIL_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_LOGINFAIL_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var err = (LoginResponse)packet.ReadUInt16();
+            var err = (LoginResponse)packet.Reader.ReadUInt16();
             Log.Write(LogType.GameLog, LogLevel.Warning, "User login failed: " + err.ToMessage());
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_NOTCONNECTED);
         }
@@ -52,7 +50,7 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_XTRAP_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_XTRAP_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var ack = packet.ReadByte();
+            var ack = packet.Reader.ReadByte();
             // TODO: Add stage in ClientLoginService
             Log.Write(LogType.GameLog, LogLevel.Debug, $"XTrap ACK {(ack == 1 ? "OK" : "FAIL")}");
         }
@@ -60,18 +58,20 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_WORLD_STATUS_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_WORLD_STATUS_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var result = new STRUCT_NC_USER_WORLD_STATUS_ACK(packet);
-            Log.Write(LogType.GameLog, LogLevel.Debug, "Got world list: " + result);
+            var ack = new NcUserWorldStatusAck();
+            ack.Read(packet.Reader);
+
+            Log.Write(LogType.GameLog, LogLevel.Debug, "Got world list: " + ack);
 
             var client = connection.GetClient();
-            client?.GameData.Worlds.AddRange(result.WorldStatuses);
+            client?.GameData.Worlds.AddRange(ack.WorldStatuses);
             client?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_GOTWORLDS);
         }
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_WORLDSELECT_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_WORLDSELECT_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var result = new STRUCT_NC_USER_WORLDSELECT_ACK(packet);
+            var result = new NcUserWorldSelectAck();
             Log.Write(LogType.GameLog, LogLevel.Debug, "Got world select ack: " + result);
             if (result.WorldStatus.IsJoinable())
             {
@@ -94,7 +94,8 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGINWORLD_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_LOGINWORLD_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var result = new STRUCT_NC_USER_LOGINWORLD_ACK(packet);
+            var result = new NcUserLoginWorldAck();
+            result.Read(packet.Reader);
 
             connection.GetClient()?.WorldService.SetWMHandle(result.WorldManagerHandle);
             
@@ -104,28 +105,27 @@ namespace VisionLib.Client.Networking.Handlers
                 avatarStr = result.Avatars.Aggregate(avatarStr, (current, avatar) => current + $"\n    {avatar}");
             }
 
-            foreach (ProtoAvatarInformation ava in result.Avatars)
+            foreach (var ava in result.Avatars)
             {
-                var trueAva = new Avatar(ava.chrregnum)
+                var trueAva = new Avatar(ava.CharNo)
                 {
-                    DeleteTime = ava.delinfo.Time,
+                    DeleteTime = ava.DeleteInfo.Time,
                     // TODO: Equipment
-                    IsDeleted = ava.delinfo.IsDeleted,
-                    KQDate = new DateTime(ava.dKQDate._bf0), // TODO: correct?
-                    KQHandle = ava.nKQHandle,
-                    KQMapIndx = ava.sKQMapName,
+                    IsDeleted = ava.DeleteInfo.IsDeleted,
+                    KQDate = ava.KQDate.ToDateTime(),
+                    KQHandle = ava.KQHandle,
+                    KQMapIndx = ava.KQMapName,
                     KQPosition = ava.nKQCoord,
-                    Level = (byte)ava.level,
-                    MapIndx = ava.loginmap,
-                    Name = ava.name,
-                    Shape = new CharacterShape(ava.shape),
-                    Slot = ava.slot,
+                    Level = (byte)ava.Level,
+                    MapIndx = ava.LoginMap,
+                    Name = ava.CharName,
+                    Shape = new CharacterShape(ava.CharShape),
+                    Slot = ava.CharSlot,
                     TutorialState = ava.TutorialInfo
                 };
                 connection.GetClient()?.GameData.ClientAccount.Avatars.Add(trueAva);
             }
             
-            // connection.GetClient()?.GameData.ClientAccount.Characters.Add(result.Avatars);
 
             Log.Write(LogType.GameLog, LogLevel.Debug, $"Got {result.AvatarCount} avatars." + avatarStr);
 
@@ -135,8 +135,10 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGINWORLDFAIL_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_LOGINWORLDFAIL_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var message = new ProtoErrorcode(packet);
-            Log.Write(LogType.GameLog, LogLevel.Warning, "World login failed: " + message.ErrorCode);
+            var errorCode = new ProtoErrorcode();
+            errorCode.Read(packet.Reader);
+
+            Log.Write(LogType.GameLog, LogLevel.Warning, "World login failed: " + errorCode.ErrorCode);
 
             connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_NOTCONNECTED);
         }

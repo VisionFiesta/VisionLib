@@ -59,7 +59,7 @@ namespace VisionLib.Common
 		/// <param name="obj">The object to destroy.</param>
 		public static void Destroy(VisionObject obj)
 		{
-			obj.Dispose();
+			obj?.Dispose();
 		}
 
 		/// <summary>

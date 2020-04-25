@@ -3,7 +3,7 @@ using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 using VisionLib.Common.Networking;
 using VisionLib.Common.Networking.Packet;
-using VisionLib.Common.Networking.Structs.Misc;
+using VisionLib.Core.Struct.Misc;
 
 namespace VisionLib.Client.Networking.Handlers
 {
@@ -12,7 +12,7 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_MISC_SEED_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_MISC_SEED_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var seed = packet.ReadUInt16();
+            var seed = packet.Reader.ReadUInt16();
             connection.Crypto.SetSeed(seed);
             Log.Write(LogType.GameLog, LogLevel.Debug, $"Got seed packet from {connection.TransmitDestinationType.ToMessage()}. Seed: {seed}");
 
@@ -38,7 +38,8 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_MISC_GAMETIME_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_MISC_GAMETIME_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
-            var ack = new STRUCT_GAMETIME_ACK(packet);
+            var ack = new NcGameTimeAck();
+            ack.Read(packet.Reader);
             Log.Write(LogType.GameLog, LogLevel.Info, $"Got GameTime: {ack.GameTime}");
 
             switch (connection.TransmitDestinationType)

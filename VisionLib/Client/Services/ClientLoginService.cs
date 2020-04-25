@@ -6,7 +6,7 @@ using VisionLib.Client.Enums;
 using VisionLib.Common.Logging;
 using VisionLib.Common.Networking;
 using VisionLib.Common.Networking.Protocols.User;
-using VisionLib.Common.Networking.Structs.User;
+using VisionLib.Core.Struct.User;
 
 namespace VisionLib.Client.Services
 {
@@ -44,13 +44,13 @@ namespace VisionLib.Client.Services
                 case ClientLoginServiceStatus.CLSS_CONNECTED:
                 {
                     Log.Write(LogType.GameLog, LogLevel.Info, "ClientLoginService: Connected");
-                    new STRUCT_NC_USER_CLIENT_VERSION_CHECK_REQ(Config.BinMD5, Config.ClientVersionData).ToPacket().Send(LoginConnection);
+                    new NcUserClientVersionCheckReq(Config.BinMD5, Config.ClientVersionData).ToPacket().Send(LoginConnection);
                     break;
                 }
                 case ClientLoginServiceStatus.CLSS_VERIFIED:
                 {
                     Log.Write(LogType.GameLog, LogLevel.Info, "ClientLoginService: Version verified");
-                    new STRUCT_NC_USER_US_LOGIN_REQ(Config.Username, Config.Password)
+                    new NcUserUSLoginReq(Config.Username, Config.Password)
                         .ToPacket().Send(LoginConnection);
                     // new STRUCT_NC_USER_XTRAP_REQ((byte) _config.XTrapVersionHash.Length,
                         // _config.XTrapVersionHash).ToPacket().Send(_loginConnection);
@@ -68,7 +68,7 @@ namespace VisionLib.Client.Services
 
                     var isya = _client.GameData.Worlds.First(w => w.WorldName.Equals("ISYA"));
 
-                    new STRUCT_NC_USER_WORLDSELECT_REQ(isya.WorldID).ToPacket().Send(LoginConnection);
+                    new NcUserWorldSelectReq(isya.WorldID).ToPacket().Send(LoginConnection);
                     break;
                 }
                 case ClientLoginServiceStatus.CLSS_JOININGWORLD:

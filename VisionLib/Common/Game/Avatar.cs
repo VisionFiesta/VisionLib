@@ -2,7 +2,7 @@
 using VisionLib.Common.Game.Characters;
 using VisionLib.Common.Game.Characters.Shape;
 using VisionLib.Common.Game.Content.Items;
-using VisionLib.Common.Networking.Structs.Common;
+using VisionLib.Core.Struct.Common;
 
 namespace VisionLib.Common.Game
 {
@@ -27,7 +27,7 @@ namespace VisionLib.Common.Game
 
         public string KQMapIndx { get; set; }
 
-        public STRUCT_SHINE_XY_TYPE KQPosition { get; set; }
+        public ShineXY KQPosition { get; set; }
 
         public byte Level { get; set; }
 
@@ -39,7 +39,7 @@ namespace VisionLib.Common.Game
 
         public byte Slot { get; set; }
 
-        public PROTO_TUTORIAL_INFO TutorialState { get; set; }
+        public ProtoTutorialInfo TutorialState { get; set; }
 
         public byte[] WindowPosData { get; set; }
         public byte[] ShortcutData { get; set; }
@@ -56,7 +56,7 @@ namespace VisionLib.Common.Game
             Equipment = new Equipment();
         }
 
-        public void SetShape(PROTO_AVATAR_SHAPE_INFO info)
+        public void SetShape(ProtoAvatarShapeInfo info)
         {
             Shape = new CharacterShape(info);
         }

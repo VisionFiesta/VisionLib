@@ -4,7 +4,7 @@ using VisionLib.Client.Services;
 using VisionLib.Common.Game;
 using VisionLib.Common.Networking;
 using VisionLib.Common.Networking.Packet;
-using VisionLib.Common.Networking.Structs.User;
+using VisionLib.Core.Struct.User;
 
 namespace VisionLib.Client
 {
@@ -41,7 +41,7 @@ namespace VisionLib.Client
     { 
         public ClientGameTime GameTime;
 
-        public readonly List<STRUCT_NC_USER_WORLD_STATUS_ACK.WORLD_STATUS> Worlds = new List<STRUCT_NC_USER_WORLD_STATUS_ACK.WORLD_STATUS>();
+        public readonly List<NcUserWorldStatusAck.WorldStatusStruct> Worlds = new List<NcUserWorldStatusAck.WorldStatusStruct>();
 
         public Account ClientAccount = new Account();
 
