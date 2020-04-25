@@ -432,9 +432,9 @@ namespace VisionLib.Common.Networking
 
             var packet = new FiestaNetPacket(messageBuffer);
 
-            bool hasHandler =
+            var hasHandler =
                 FiestaNetPacketHandlerLoader.TryGetHandler(packet.Command, out var handler, out var destinations);
-            bool isForThisDest = destinations.Contains(ReceiveDestinationType);
+            var isForThisDest = destinations?.Contains(ReceiveDestinationType) ?? false;
 
             if (hasHandler && isForThisDest)
             {

@@ -23,8 +23,6 @@ namespace VisionLib.Client.Networking.Handlers
                     break;
                 case FiestaNetConnDest.FNCDEST_WORLDMANAGER:
                     connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_CONNECTED);
-                    // TODO: Move to ClientWorldService
-                    // 
                     break;
                 case FiestaNetConnDest.FNCDEST_ZONE:
                     // TODO: Move to ClientZoneService

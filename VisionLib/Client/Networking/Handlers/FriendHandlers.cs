@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VisionLib.Common.Networking;
+﻿using VisionLib.Common.Networking;
 using VisionLib.Common.Networking.Packet;
 
 namespace VisionLib.Client.Networking.Handlers

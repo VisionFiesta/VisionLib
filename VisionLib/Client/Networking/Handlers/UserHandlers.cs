@@ -19,21 +19,21 @@ namespace VisionLib.Client.Networking.Handlers
         #region LoginPackets
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
+        public static void NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK(FiestaNetPacket _, FiestaNetConnection connection)
         {
             Log.Write(LogType.GameLog, LogLevel.Debug, "Client version check passed!");
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_VERIFIED);
         }
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_CLIENT_WRONGVERSION_CHECK_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_CLIENT_WRONGVERSION_CHECK_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
+        public static void NC_USER_CLIENT_WRONGVERSION_CHECK_ACK(FiestaNetPacket _, FiestaNetConnection connection)
         {
             Log.Write(LogType.GameLog, LogLevel.Debug, "Client version check failed!");
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_NOTCONNECTED);
         }
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGIN_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_LOGIN_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
+        public static void NC_USER_LOGIN_ACK(FiestaNetPacket _, FiestaNetConnection connection)
         {
             Log.Write(LogType.GameLog, LogLevel.Debug, "User login succeeded!");
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_LOGGEDIN);
@@ -48,10 +48,9 @@ namespace VisionLib.Client.Networking.Handlers
         }
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_XTRAP_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_XTRAP_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
+        public static void NC_USER_XTRAP_ACK(FiestaNetPacket packet, FiestaNetConnection _)
         {
             var ack = packet.Reader.ReadByte();
-            // TODO: Add stage in ClientLoginService
             Log.Write(LogType.GameLog, LogLevel.Debug, $"XTrap ACK {(ack == 1 ? "OK" : "FAIL")}");
         }
 
