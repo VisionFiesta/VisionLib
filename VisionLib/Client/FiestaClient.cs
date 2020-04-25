@@ -10,7 +10,8 @@ namespace VisionLib.Client
 {
     public class FiestaClient
     {
-        public readonly ClientData Config;
+        public readonly ClientUserData UserData;
+        public readonly ClientData ClientData;
 
         public readonly FiestaNetConnection LoginClient;
         public readonly FiestaNetConnection WorldClient;
@@ -21,12 +22,12 @@ namespace VisionLib.Client
 
         public GameData GameData = new GameData();
 
-        public FiestaClient(ClientData config)
+        public FiestaClient(ClientUserData userData, ClientData clientData)
         {
-            Config = config;
+            UserData = userData;
+            ClientData = clientData;
             
             FiestaNetPacketHandlerLoader.LoadHandlers();
-
 
             LoginClient = new FiestaNetClientConnection(this, FiestaNetConnDest.FNCDEST_LOGIN);
             WorldClient = new FiestaNetClientConnection(this, FiestaNetConnDest.FNCDEST_WORLDMANAGER);

@@ -17,7 +17,7 @@ namespace VisionLib.Client.Services
 
         private readonly FiestaClient _client;
         private FiestaNetConnection WorldConnection => _client.WorldClient;
-        private ClientData Config => _client.Config;
+        private ClientUserData Config => _client.UserData;
         private ClientLoginService LoginService => _client.LoginService;
 
         private readonly ClientWorldServiceData _data = new ClientWorldServiceData();

@@ -5,6 +5,6 @@ namespace VisionLib.Client.Configuration
 {
     public class ClientConfiguration : Configuration<ClientConfiguration>
     {
-        public ClientData Data { get; protected set; } = new ClientData();
+        public ClientData Data = new ClientData();
     }
 }

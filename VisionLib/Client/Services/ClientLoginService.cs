@@ -16,7 +16,8 @@ namespace VisionLib.Client.Services
 
         private readonly FiestaClient _client;
         private FiestaNetConnection LoginConnection => _client.LoginClient;
-        private ClientData Config => _client.Config;
+        private ClientUserData UserData => _client.UserData;
+        private ClientData ClientData => _client.ClientData;
         private ClientWorldService WorldService => _client.WorldService;
 
         private readonly ClientLoginServiceData _data = new ClientLoginServiceData();
@@ -38,19 +39,19 @@ namespace VisionLib.Client.Services
                 case ClientLoginServiceStatus.CLSS_TRYCONNECT:
                 {
                     Log.Write(LogType.GameLog, LogLevel.Info, "ClientLoginService: Connecting...");
-                    LoginConnection.Connect(Config.LoginServerIP, Config.LoginServerPort);
+                    LoginConnection.Connect(UserData.LoginServerIP, UserData.LoginServerPort);
                     break;
                 }
                 case ClientLoginServiceStatus.CLSS_CONNECTED:
                 {
                     Log.Write(LogType.GameLog, LogLevel.Info, "ClientLoginService: Connected");
-                    new NcUserClientVersionCheckReq(Config.BinMD5, Config.ClientVersionData).ToPacket().Send(LoginConnection);
+                    new NcUserClientVersionCheckReq(ClientData.VersionKey).ToPacket().Send(LoginConnection);
                     break;
                 }
                 case ClientLoginServiceStatus.CLSS_VERIFIED:
                 {
                     Log.Write(LogType.GameLog, LogLevel.Info, "ClientLoginService: Version verified");
-                    new NcUserUSLoginReq(Config.Username, Config.Password)
+                    new NcUserUSLoginReq(UserData.Username, UserData.Password)
                         .ToPacket().Send(LoginConnection);
                     // new STRUCT_NC_USER_XTRAP_REQ((byte) _config.XTrapVersionHash.Length,
                         // _config.XTrapVersionHash).ToPacket().Send(_loginConnection);
@@ -66,9 +67,10 @@ namespace VisionLib.Client.Services
                 {
                     Log.Write(LogType.GameLog, LogLevel.Info, "ClientLoginService: Got World list");
 
-                    var isya = _client.GameData.Worlds.First(w => w.WorldName.Equals("ISYA"));
+                    var desiredWorld = _client.GameData.Worlds.First(w => w.WorldName.Equals(UserData.DesiredWorld));
+                    var desiredWorldID = desiredWorld?.WorldID ?? 0;
 
-                    new NcUserWorldSelectReq(isya.WorldID).ToPacket().Send(LoginConnection);
+                    new NcUserWorldSelectReq(desiredWorldID).ToPacket().Send(LoginConnection);
                     break;
                 }
                 case ClientLoginServiceStatus.CLSS_JOININGWORLD:

@@ -2,38 +2,19 @@
 {
     public class ClientData
     {
-        public string Username { get; protected set; } = "";
-        public string Password { get; protected set; } = "";
-
-        public string LoginServerIP { get; protected set; } = "35.231.44.7"; // NA Server
-        public ushort LoginServerPort { get; protected set; } = 9010;
-
-        public string DesiredWorld { get; protected set; } = "ISYA";
-        public string CharacterName { get; protected set; } = "";
-
-        public ClientData() { }
-
-        public ClientData(string username, string password, string loginIp, ushort loginPort)
+        // Latest as of NA 1.02.276
+        public byte[] VersionKey { get; protected set; } =
         {
-            Username = username;
-            Password = password;
-            LoginServerIP = loginIp;
-            LoginServerPort = loginPort;
-        }
-
-        // "constants" (not necessary to configure often)
-
-        public string BinMD5 { get; protected set; } = "5a1a7b504cd5c73aa69bd8172ad12c69";
-        public byte[] ClientVersionData { get; protected set; } = new byte[]
-        {
-            0x00, 0xAD, 0x95, 0x74, 0x18, 0xAC, 0x9F, 0x03,
-            0x30, 0xAD, 0x95, 0x74, 0x68, 0xFB, 0x5C, 0x01,
-            0x45, 0x1E, 0x11, 0x01, 0x34, 0x90, 0xAB, 0x03,
-            0x39, 0x90, 0xAB, 0x03, 0x00, 0x00, 0x00, 0x00
+            0x35, 0x61, 0x31, 0x61, 0x37, 0x62, 0x35, 0x30, 0x34, 0x63, 0x64, 0x35, 0x63, 0x37, 0x33, 0x61,
+            0x61, 0x36, 0x39, 0x62, 0x64, 0x38, 0x31, 0x37, 0x32, 0x61, 0x64, 0x31, 0x32, 0x63, 0x36, 0x39,
+            0x00, 0x50, 0x27, 0x01, 0xB0, 0xAC, 0x15, 0x09, 0x30, 0xAD, 0x45, 0x75, 0x8C, 0xF9, 0xF5, 0x00,
+            0x45, 0x1E, 0x8A, 0x00, 0x2C, 0x7F, 0x21, 0x09, 0x31, 0x7F, 0x21, 0x09, 0x00, 0x00, 0x00, 0x00
         };
 
+        // Latest as of NA 1.02.276
         public string XTrapVersionHash { get; protected set; } = "33B543B0CA6E7C41E5D1D0651307";
 
+        // Latest as of NA 1.02.276
         public string SHNHash { get; protected set; } =
             "68dfd55338c9c5762ccf885c2ef0af3eabd3367bf5ebf7fca1f497534c58e347" +
             "1dbd668c1378fa5bce90f332f160aaef1b8335f60910b530a7ca8f4c249f396e" +
