@@ -71,6 +71,8 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_WORLDSELECT_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var result = new NcUserWorldSelectAck();
+            result.Read(packet.Reader);
+
             Log.Write(LogType.GameLog, LogLevel.Debug, "Got world select ack: " + result);
             if (result.WorldStatus.IsJoinable())
             {

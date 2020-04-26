@@ -8,6 +8,7 @@
         CLSS_VERIFIED,
         CLSS_LOGGEDIN,
         CLSS_GOTWORLDS,
+        CLSS_IDLE,
         CLSS_JOININGWORLD
     }
 }

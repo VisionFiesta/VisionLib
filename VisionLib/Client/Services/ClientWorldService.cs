@@ -77,8 +77,7 @@ namespace VisionLib.Client.Services
                 case ClientWorldServiceStatus.CWSS_CHARLOGGEDIN:
                     {
                         Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Logged in");
-
-
+                        // TODO: Join zone
 
                         break;
                     }

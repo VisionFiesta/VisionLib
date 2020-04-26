@@ -5,16 +5,26 @@ namespace VisionLib.Client
 {
     public class ClientGameTime
     {
-        public readonly DateTime StartTime;
-        private readonly Stopwatch Watch = new Stopwatch();
+        public DateTime StartTime { get; private set; }
+        private readonly Stopwatch _watch = new Stopwatch();
+
+        public ClientGameTime()
+        {
+            Set(DateTime.Now);
+        }
 
         public ClientGameTime(DateTime startTime)
         {
-            StartTime = startTime;
-            Watch.Reset();
-            Watch.Start();
+           Set(startTime);
         }
 
-        public DateTime Now => StartTime.Add(Watch.Elapsed);
+        public void Set(DateTime startTime)
+        {
+            StartTime = startTime;
+            _watch.Reset();
+            _watch.Start();
+        }
+
+        public DateTime Now => StartTime.Add(_watch.Elapsed);
     }
 }

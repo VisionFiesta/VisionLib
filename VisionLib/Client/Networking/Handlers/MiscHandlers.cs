@@ -25,10 +25,7 @@ namespace VisionLib.Client.Networking.Handlers
                     connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_CONNECTED);
                     break;
                 case FiestaNetConnDest.FNCDEST_ZONE:
-                    // TODO: Move to ClientZoneService
-                    // new STRUCT_MAP_LOGIN_REQ(FiestaConsoleClient.LoginData.WmHandle, "SVT_0001", FiestaConsoleClient.Config.SHNHash).ToPacket().Send(connection);
-                    break;
-                case FiestaNetConnDest.FNCDEST_CLIENT:
+                    connection.GetClient()?.ZoneService.SetStatus(ClientZoneServiceStatus.CZSS_CONNECTED);
                     break;
             }
         }
@@ -43,8 +40,8 @@ namespace VisionLib.Client.Networking.Handlers
             switch (connection.TransmitDestinationType)
             {
                 case FiestaNetConnDest.FNCDEST_WORLDMANAGER:
-                    // TODO: Move to ClientWorldService
-                    // new STRUCT_NC_CHAR_LOGIN_REQ(0).ToPacket().Send(connection);
+                    connection.GetClient()?.GameData.GameTime.Set(ack.GameTime);
+                    connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_GOTGAMETIME);
                     break;
             }
         }

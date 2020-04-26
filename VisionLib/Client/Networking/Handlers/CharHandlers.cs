@@ -1,4 +1,5 @@
-﻿using VisionLib.Common.Extensions;
+﻿using VisionLib.Client.Enums;
+using VisionLib.Common.Extensions;
 using VisionLib.Common.Networking;
 using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Struct.Char;
@@ -12,8 +13,9 @@ namespace VisionLib.Client.Networking.Handlers
         {
             var ack = new NcCharLoginAck();
             ack.Read(packet.Reader);
-            // TODO: Move to ClientZoneService
-            connection.GetClient()?.ZoneClient.Connect(ack.ZoneEndPoint);
+
+            connection.GetClient()?.WorldService.SetInitialZoneEndpoint(ack.ZoneEndPoint);
+            connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_CHARLOGGEDIN);
         }
     }
 }

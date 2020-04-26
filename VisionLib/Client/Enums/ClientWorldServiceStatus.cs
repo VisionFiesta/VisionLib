@@ -8,6 +8,7 @@
         CWSS_GOTAVATARS,
         CWSS_GOTGAMETIME,
         CWSS_CHARLOGGEDIN,
-        CWSS_JOINEDZONE
+        CWSS_JOINEDZONE,
+        CWSS_IDLE
     }
 }

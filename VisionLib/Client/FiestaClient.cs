@@ -19,6 +19,7 @@ namespace VisionLib.Client
 
         public readonly ClientLoginService LoginService;
         public readonly ClientWorldService WorldService;
+        public readonly ClientZoneService ZoneService;
 
         public GameData GameData = new GameData();
 
@@ -35,18 +36,16 @@ namespace VisionLib.Client
 
             LoginService = new ClientLoginService(this);
             WorldService = new ClientWorldService(this);
+            ZoneService = new ClientZoneService(this);
         }
     }
 
     public class GameData
     { 
-        public ClientGameTime GameTime;
+        public ClientGameTime GameTime = new ClientGameTime();
 
         public readonly List<NcUserWorldStatusAck.WorldStatusStruct> Worlds = new List<NcUserWorldStatusAck.WorldStatusStruct>();
 
         public Account ClientAccount = new Account();
-
-        // Login<->World
-        public ClientLoginServiceData LoginServiceData = new ClientLoginServiceData();
     }
 }
