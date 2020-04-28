@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Common.Utils;
 using VisionLib.Core.Stream;
 
@@ -18,15 +17,8 @@ namespace VisionLib.Core.Struct.User
         public NcUserUSLoginReq(string username, string password, string spawnApp = "Original", bool isPassPlaintext = true)
         {
             Username = username;
-            PasswordMD5 = isPassPlaintext ? MD5Utils.CreateMD5(password) : password;
+            PasswordMD5 = isPassPlaintext ? MD5Utils.CreateMD5(password).ToLower() : password;
             SpawnApp = spawnApp;
-        }
-
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_US_LOGIN_REQ);
-            Write(pkt.Writer);
-            return pkt;
         }
 
         public override int GetSize()
@@ -46,6 +38,11 @@ namespace VisionLib.Core.Struct.User
             writer.Write(Username, UsernameLen);
             writer.Write(PasswordMD5, PasswordMD5Len);
             writer.Write(SpawnApp, StartupAppLen);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_USER_US_LOGIN_REQ;
         }
     }
 }

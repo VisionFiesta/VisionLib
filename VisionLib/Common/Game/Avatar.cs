@@ -12,8 +12,7 @@ namespace VisionLib.Common.Game
     /// </summary>
     public class Avatar
     {
-
-        public int CharNo { get; set; }
+        public uint CharNo { get; set; }
 
         public DateTime DeleteTime { get; set; }
 
@@ -41,15 +40,9 @@ namespace VisionLib.Common.Game
 
         public ProtoTutorialInfo TutorialState { get; set; }
 
-        public byte[] WindowPosData { get; set; }
-        public byte[] ShortcutData { get; set; }
-        public byte[] ShortcutSizeData { get; set; }
-        public byte[] GameOptionData { get; set; }
-        public byte[] KeyMapData { get; set; }
-
         public bool HasLoggedIn { get; set; }
 
-        public Avatar(int charNo)
+        public Avatar(uint charNo)
         {
             CharNo = charNo;
             Shape = new CharacterShape();

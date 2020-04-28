@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 using VisionLib.Core.Struct.Common;
 
@@ -9,7 +8,7 @@ namespace VisionLib.Core.Struct.User
     {
         private static readonly int Size = sizeof(ushort) + sizeof(byte) + new ProtoAvatarInformation().GetSize();
 
-        public ushort WorldManagerHandle { get; private set; }
+        public ushort AccountID { get; private set; }
         public byte AvatarCount { get; private set; }
         public ProtoAvatarInformation[] Avatars { get; private set; }
 
@@ -18,7 +17,7 @@ namespace VisionLib.Core.Struct.User
         public NcUserLoginWorldAck(ushort worldManagerHandle, byte avatarCount,
             ProtoAvatarInformation[] avatars)
         {
-            WorldManagerHandle = worldManagerHandle;
+            AccountID = worldManagerHandle;
             AvatarCount = avatarCount;
             Avatars = avatars;
         }
@@ -30,7 +29,8 @@ namespace VisionLib.Core.Struct.User
 
         public override void Read(ReaderStream reader)
         {
-            WorldManagerHandle = reader.ReadUInt16();
+
+            AccountID = reader.ReadUInt16();
             AvatarCount = reader.ReadByte();
 
             if (AvatarCount <= 0) return;
@@ -42,18 +42,15 @@ namespace VisionLib.Core.Struct.User
             }
         }
 
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_LOGINWORLD_ACK);
-            Write(pkt.Writer);
-            // TODO: ToPacket for remaining struct parts
-            return pkt;
-        }
-
         public override void Write(WriterStream writer)
         {
-            writer.Write(WorldManagerHandle);
+            writer.Write(AccountID);
             writer.Write(AvatarCount);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_USER_LOGINWORLD_ACK;
         }
     }
 }

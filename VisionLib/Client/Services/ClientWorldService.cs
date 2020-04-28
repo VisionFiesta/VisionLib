@@ -1,12 +1,11 @@
-﻿using System;
-
+﻿using System.Net;
 using VisionLib.Client.Data;
 using VisionLib.Client.Enums;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Protocols.Misc;
 using VisionLib.Core.Struct.Char;
+using VisionLib.Core.Struct.Misc;
 using VisionLib.Core.Struct.User;
 
 namespace VisionLib.Client.Services
@@ -19,6 +18,7 @@ namespace VisionLib.Client.Services
         private FiestaNetConnection WorldConnection => _client.WorldClient;
         private ClientUserData Config => _client.UserData;
         private ClientLoginService LoginService => _client.LoginService;
+        private ClientZoneService ZoneService => _client.ZoneService;
 
         private readonly ClientWorldServiceData _data = new ClientWorldServiceData();
 
@@ -30,74 +30,89 @@ namespace VisionLib.Client.Services
         public void SetStatus(ClientWorldServiceStatus status)
         {
             WorldStatus = status;
-            Update();
+            UpdateStatus();
         }
 
-        private void Update()
+        public void Update(long timer)
+        {
+            if (WorldStatus == ClientWorldServiceStatus.CWSS_IDLE)
+            {
+
+            }
+            else
+            {
+                // BUSY
+            }
+        }
+
+        private void UpdateStatus()
         {
             switch (WorldStatus)
             {
                 case ClientWorldServiceStatus.CWSS_NOTCONNECTED:
                     {
-                        Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Disconnected");
+                        ClientLog.Info("ClientWorldService: Disconnected");
                         break;
                     }
                 case ClientWorldServiceStatus.CWSS_TRYCONNECT:
                     {
-                        Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Connecting...");
+                        ClientLog.Info("ClientWorldService: Connecting...");
                         WorldConnection.Connect(LoginService.GetWMEndPoint());
                         break;
                     }
                 case ClientWorldServiceStatus.CWSS_CONNECTED:
                     {
-                        Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Connected");
+                        ClientLog.Info("ClientWorldService: Connected");
                         new NcUserLoginWorldReq(
                                 Config.Username,
                                 LoginService.GetWMTransferKey())
-                            .ToPacket().Send(WorldConnection);
+                            .Send(WorldConnection);
                         break;
                     }
                 case ClientWorldServiceStatus.CWSS_GOTAVATARS:
                     {
-                        Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Got Avatars");
+                        ClientLog.Info("ClientWorldService: Got Avatars");
 
-                        new PROTO_NC_MISC_GAMETIME_REQ().Send(WorldConnection);
+                        new NcMiscGameTimeReq().Send(WorldConnection);
                         break;
                     }
                 case ClientWorldServiceStatus.CWSS_GOTGAMETIME:
                     {
-                        Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Got GameTime");
+                        ClientLog.Info("ClientWorldService: Got GameTime");
 
                         var avatar = _client.GameData.ClientAccount.Avatars.First(a => a.Name == Config.CharacterName);
-                        _client.GameData.ClientAccount.SelectAvatar(avatar.Slot);
+                        _client.GameData.ClientAccount.ChooseCharacter(avatar.CharNo);
 
-                        new NcCharLoginReq(avatar.Slot).ToPacket().Send(WorldConnection);
+                        new NcCharLoginReq(avatar.Slot).Send(WorldConnection);
                         break;
                     }
                 case ClientWorldServiceStatus.CWSS_CHARLOGGEDIN:
                     {
-                        Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Logged in");
-                        // TODO: Join zone
-
+                        ClientLog.Info("ClientWorldService: Character Logged in, joining zone...");
+                        ZoneService.SetStatus(ClientZoneServiceStatus.CZSS_TRYCONNECT);
                         break;
                     }
                 case ClientWorldServiceStatus.CWSS_JOINEDZONE:
                     {
-                        Log.Write(LogType.GameLog, LogLevel.Info, "ClientWorldService: Joined Zone");
+                        ClientLog.Info("ClientWorldService: Joined Zone");
+                        SetStatus(ClientWorldServiceStatus.CWSS_IDLE);
                         break;
                     }
-                default:
-                    throw new ArgumentOutOfRangeException();
+                case ClientWorldServiceStatus.CWSS_IDLE:
+                    {
+                        ClientLog.Info("ClientWorldService: Idling");
+                        break;
+                    }
             }
         }
 
-        public void SetWMHandle(ushort handle) => _data.WMHandle = handle;
+        public void SetInitialZoneEndpoint(IPEndPoint zoneEndPoint) => _data.InitialZoneEndpoint = zoneEndPoint;
 
-        public ushort GetWMHandle() => _data.WMHandle;
+        public IPEndPoint GetInitialZoneEndpoint() => _data.InitialZoneEndpoint;
     }
 
     public class ClientWorldServiceData
     {
-        public ushort WMHandle;
+        public IPEndPoint InitialZoneEndpoint;
     }
 }

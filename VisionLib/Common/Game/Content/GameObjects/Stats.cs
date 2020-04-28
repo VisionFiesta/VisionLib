@@ -12,14 +12,14 @@ namespace VisionLib.Common.Game.Content.GameObjects
 		public byte FreeINT { get; set; }
 		public byte FreeSPR { get; set; }
 
-		public int CurrentHP { get; set; }
-		public int CurrentSP { get; set; }
-		public int CurrentLP { get; set; }
+		public uint CurrentHP { get; set; }
+		public uint CurrentSP { get; set; }
+		public uint CurrentLP { get; set; }
 
-		public int CurrentHPStones { get; set; }
-		public int CurrentSPStones { get; set; }
-		public int CurrentPwrStones { get; set; }
-		public int CurrentGrdStones { get; set; }
+		public uint CurrentHPStones { get; set; }
+		public uint CurrentSPStones { get; set; }
+		// public uint CurrentPwrStones { get; set; }
+		// public uint CurrentGrdStones { get; set; }
 
 		public int CurrentMaxHP => BaseMaxHP + BonusMaxHP;
 		public int CurrentMaxSP => BaseMaxSP + BonusMaxSP;

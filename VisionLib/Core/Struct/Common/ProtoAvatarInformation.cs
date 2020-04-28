@@ -16,28 +16,26 @@ namespace VisionLib.Core.Struct.Common
         // Name5 (string, 20 len)
         // Name3 (string, 12 len)
 
-        public int CharNo;
-        public string CharName; //Name5 (5 * 4byte)
-        public ushort Level;
-        public byte CharSlot;
-        public string LoginMap; // Name3 (3 * 4byte)
-        public ProtoAvatarDeleteInfo DeleteInfo;
-        public ProtoAvatarShapeInfo CharShape;
-        public ProtoEquipment Equipment;
-        public ProtoRefinement Refinement;
-        public int KQHandle;
-        public string KQMapName; // Name3
-        public ShineXY nKQCoord;
-        public ShineDatetime KQDate;
-        public CharIdChangeData CharIDChangeData;
-        public ProtoTutorialInfo TutorialInfo;
+        public uint CharNo; // +4
+        public string CharName; //Name5 (5 * 4byte), +20
+        public ushort Level; // +2
+        public byte CharSlot; // +1
+        public string LoginMap; // Name3 (3 * 4byte), +12
+        public ProtoAvatarDeleteInfo DeleteInfo; // +5
+        public ProtoAvatarShapeInfo CharShape; // +4
+        public ProtoEquipment Equipment; // +43
+        public int KQHandle; // +4
+        public string KQMapName; // Name3, +12
+        public ShineXY nKQCoord; // +8
+        public ShineDatetime KQDate; // +4
+        public CharIdChangeData CharIDChangeData; // +6
+        public ProtoTutorialInfo TutorialInfo; // +5
 
         public ProtoAvatarInformation()
         {
             DeleteInfo = new ProtoAvatarDeleteInfo();
             CharShape = new ProtoAvatarShapeInfo();
             Equipment = new ProtoEquipment();
-            Refinement = new ProtoRefinement();
             nKQCoord = new ShineXY();
             KQDate = new ShineDatetime();
             CharIDChangeData = new CharIdChangeData();
@@ -51,15 +49,23 @@ namespace VisionLib.Core.Struct.Common
 
         public override int GetSize()
         {
-            return (sizeof(int) * 2) + NameN.Name5Len + (NameN.Name3Len * 2) + sizeof(ushort)
-                   + sizeof(byte) + DeleteInfo.GetSize() + CharShape.GetSize() + Equipment.GetSize()
-                   + Refinement.GetSize() + nKQCoord.GetSize() + KQDate.GetSize()
-                   + CharIDChangeData.GetSize() + TutorialInfo.GetSize();
+            return sizeof(int) * 2
+                   + NameN.Name5Len
+                   + NameN.Name3Len * 2
+                   + sizeof(ushort)
+                   + sizeof(byte)
+                   + DeleteInfo.GetSize()
+                   + CharShape.GetSize()
+                   + Equipment.GetSize()
+                   + nKQCoord.GetSize()
+                   + KQDate.GetSize()
+                   + CharIDChangeData.GetSize()
+                   + TutorialInfo.GetSize();
         }
 
         public override void Read(ReaderStream reader)
         {
-            CharNo = reader.ReadInt32();
+            CharNo = reader.ReadUInt32();
             CharName = reader.ReadString(20);
             Level = reader.ReadUInt16();
             CharSlot = reader.ReadByte();
@@ -67,7 +73,6 @@ namespace VisionLib.Core.Struct.Common
             DeleteInfo.Read(reader);
             CharShape.Read(reader);
             Equipment.Read(reader);
-            Refinement.Read(reader);
             KQHandle = reader.ReadInt32();
             KQMapName = reader.ReadString(12);
             nKQCoord.Read(reader);
@@ -86,7 +91,6 @@ namespace VisionLib.Core.Struct.Common
             DeleteInfo.Write(writer);
             CharShape.Write(writer);
             Equipment.Write(writer);
-            Refinement.Write(writer);
             writer.Write(KQHandle);
             writer.Write(KQMapName, NameN.Name3Len);
         }
@@ -193,7 +197,7 @@ namespace VisionLib.Core.Struct.Common
 
     public class ProtoEquipment : AbstractStruct
     {
-        // 19 ushort (38 bytes)
+        // 20 ushort (40 bytes)
         public ushort EquHead;
         public ushort EquMouth;
         public ushort EquRightHand;
@@ -216,11 +220,11 @@ namespace VisionLib.Core.Struct.Common
         public ushort EquAccShield;
 
         // 3 bytes
-        public ProtoEquipmentUpgrade Upgrade;
+        public ProtoEquipmentUpgrade Upgrade = new ProtoEquipmentUpgrade();
 
         public override int GetSize()
         {
-            return sizeof(ushort) * 19 + Upgrade.GetSize();
+            return sizeof(ushort) * 20 + Upgrade.GetSize();
         }
 
         public override void Read(ReaderStream reader)
@@ -246,7 +250,6 @@ namespace VisionLib.Core.Struct.Common
             EquMinimon = reader.ReadUInt16();
             EquAccShield = reader.ReadUInt16();
 
-            Upgrade = new ProtoEquipmentUpgrade();
             Upgrade.Read(reader);
         }
 
@@ -278,32 +281,6 @@ namespace VisionLib.Core.Struct.Common
     }
 
     public class ProtoEquipmentUpgrade : AbstractStruct
-    {
-        public byte Bitfield0;
-        public byte Bitfield1;
-        public byte Bitfield2;
-
-        public override int GetSize()
-        {
-            return sizeof(byte) * 3;
-        }
-
-        public override void Read(ReaderStream reader)
-        {
-            Bitfield0 = reader.ReadByte();
-            Bitfield1 = reader.ReadByte();
-            Bitfield2 = reader.ReadByte();
-        }
-
-        public override void Write(WriterStream writer)
-        {
-            writer.Write(Bitfield0);
-            writer.Write(Bitfield1);
-            writer.Write(Bitfield2);
-        }
-    }
-
-    public class ProtoRefinement : AbstractStruct
     {
         public byte Bitfield0;
         public byte Bitfield1;

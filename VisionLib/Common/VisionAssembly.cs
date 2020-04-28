@@ -8,20 +8,29 @@ namespace VisionLib.Common
 {
     public static class VisionAssembly
     {
-        public static string Name = Assembly.GetEntryAssembly().GetName().Name;
-        public static string Version = Assembly.GetEntryAssembly().GetName().Version.ToString(3);
+        public static string Name = Assembly.GetEntryAssembly()?.GetName().Name;
+        public static string Version = Assembly.GetEntryAssembly()?.GetName().Version.ToString(3);
 
         public static IEnumerable<Pair<TAttribute, MethodInfo>> GetMethodsWithAttribute<TAttribute>() where TAttribute : Attribute
         {
-            return ((IEnumerable<Assembly>)AppDomain.CurrentDomain.GetAssemblies())
+            return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(assembly => !assembly.GlobalAssemblyCache)
                 .SelectMany(assembly => assembly.GetTypes())
                 .SelectMany(type => type.GetMethods())
-                .Select(Method => new
+                .Select(method => new
                 {
-                    Method,
-                    Attribute = Attribute.GetCustomAttribute((MemberInfo)Method, typeof(TAttribute), false) as TAttribute
-                }).Where(_param1 => (object)_param1.Attribute != null).Select(_param1 => new Pair<TAttribute, MethodInfo>(_param1.Attribute, _param1.Method));
+                    Method = method,
+                    Attribute = Attribute.GetCustomAttribute(method, typeof(TAttribute), false) as TAttribute
+                }).Where(param1 => param1.Attribute != null).Select(param1 => new Pair<TAttribute, MethodInfo>(param1.Attribute, param1.Method));
+        }
+
+        public static IEnumerable<TypeInfo> GetTypesOfBase<T>()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .Where(assembly => !assembly.GlobalAssemblyCache)
+                .SelectMany(assembly => assembly.GetTypes())
+                .Where(a => a.BaseType == typeof(T))
+                .Select(t => t.GetTypeInfo());
         }
     }
 }

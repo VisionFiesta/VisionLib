@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.Bat
@@ -13,13 +12,6 @@ namespace VisionLib.Core.Struct.Bat
         {
             Caster = caster;
             CastInfo = castInfo;
-        }
-
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_BAT_SOMEONESKILLBASH_HIT_OBJ_START_CMD);
-            Write(pkt.Writer);
-            return pkt;
         }
 
         public override int GetSize()
@@ -38,6 +30,11 @@ namespace VisionLib.Core.Struct.Bat
         {
             writer.Write(Caster);
             CastInfo.Write(writer);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_BAT_SOMEONESKILLBASH_HIT_OBJ_START_CMD;
         }
     }
 }

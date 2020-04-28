@@ -1,22 +1,15 @@
-﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
+﻿using VisionLib.Common.Enums;
+using VisionLib.Common.Networking;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.Announce
 {
     public class NcAnnounceW2CCmd : NetPacketStruct
     {
-        public ANNOUNCE_TYPE AnnounceType;
+        public AnnounceType AnnounceType;
         public byte MessageLength;
         public string Message;
-
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_ANNOUNCE_W2C_CMD);
-            Write(pkt.Writer);
-            return pkt;
-        }
-
+        
         public override int GetSize()
         {
             return sizeof(byte) * 2 + MessageLength;
@@ -24,7 +17,7 @@ namespace VisionLib.Core.Struct.Announce
 
         public override void Read(ReaderStream reader)
         {
-            AnnounceType = (ANNOUNCE_TYPE)reader.ReadByte();
+            AnnounceType = (AnnounceType)reader.ReadByte();
             MessageLength = reader.ReadByte();
             Message = reader.ReadString(MessageLength);
         }
@@ -35,13 +28,10 @@ namespace VisionLib.Core.Struct.Announce
             writer.Write(MessageLength);
             writer.Write(Message, MessageLength);
         }
-    }
-    
-    public enum ANNOUNCE_TYPE : byte
-    {
-        AT_LV20 = 4,
-        AT_PROMOTE = 5,
-        AT_TITLEACQUIRE = 6,
-        AT_ROAR = 11,
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_ANNOUNCE_W2C_CMD;
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using VisionLib.Common;
 using VisionLib.Common.Enums;
 using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.User
@@ -19,13 +18,6 @@ namespace VisionLib.Core.Struct.User
             WorldStatuses = worldStatuses;
         }
         
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_WORLD_STATUS_ACK);
-            Write(pkt.Writer);
-            return pkt;
-        }
-
         public override int GetSize()
         {
             return sizeof(byte) * 3 + NameN.Name4Len;
@@ -50,6 +42,11 @@ namespace VisionLib.Core.Struct.User
             {
                 ws.Write(writer);
             }
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_USER_WORLD_STATUS_ACK;
         }
 
         public override string ToString()

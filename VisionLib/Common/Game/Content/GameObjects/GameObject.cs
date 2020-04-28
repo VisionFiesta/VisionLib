@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Game.Characters;
-using VisionLib.Common.Game.Content.Game;
+using VisionLib.Core.Struct.Common;
 
 namespace VisionLib.Common.Game.Content.GameObjects
 {
@@ -18,13 +18,14 @@ namespace VisionLib.Common.Game.Content.GameObjects
 		public GameObjectType Type { get; set; }
 		public GameObjectState State { get; set; } = GameObjectState.GOS_NONBATTLE;
 		public Stats Stats { get; set; }
-		public Position Position { get; set; }
+		public ShineXYR Position { get; set; }
 		// public MoverInstance Mount { get; set; } TODO
 		// public string MapIndx => Position?.Map?.Info.MapName; TODO: Maps
 
 		public List<GameObject> VisibleObjects { get; set; }
 		public List<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToList();
-		public List<GameObject> TouchingObjects => VisibleObjects.Filter(obj => Vector2.Distance(Position, obj.Position) <= 10.0);
+		// TODO: distance math in ShineXY
+		// public List<GameObject> TouchingObjects => VisibleObjects.Filter(obj => Vector2.Distance(Position, obj.Position) <= 10.0);
 
 		private GameObject _target;
 		public GameObject Target
@@ -77,7 +78,7 @@ namespace VisionLib.Common.Game.Content.GameObjects
 		protected GameObject()
 		{
 			Stats = new Stats(this);
-			Position = new Position();
+			Position = new ShineXYR();
 
 			VisibleObjects = new List<GameObject>();
 

@@ -5,6 +5,7 @@
         CZSS_NOTCONNECTED,
         CZSS_TRYCONNECT,
         CZSS_CONNECTED,
-        CZSS_JOINED
+        CZSS_GOTCHARDATA,
+        CZSS_MAPLOGINACK,
     }
 }

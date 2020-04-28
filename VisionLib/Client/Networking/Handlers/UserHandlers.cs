@@ -21,21 +21,21 @@ namespace VisionLib.Client.Networking.Handlers
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK(FiestaNetPacket _, FiestaNetConnection connection)
         {
-            Log.Write(LogType.GameLog, LogLevel.Debug, "Client version check passed!");
+            ClientLog.Debug( "Client version check passed!");
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_VERIFIED);
         }
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_CLIENT_WRONGVERSION_CHECK_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_CLIENT_WRONGVERSION_CHECK_ACK(FiestaNetPacket _, FiestaNetConnection connection)
         {
-            Log.Write(LogType.GameLog, LogLevel.Debug, "Client version check failed!");
+            ClientLog.Debug( "Client version check failed!");
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_NOTCONNECTED);
         }
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGIN_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_LOGIN_ACK(FiestaNetPacket _, FiestaNetConnection connection)
         {
-            Log.Write(LogType.GameLog, LogLevel.Debug, "User login succeeded!");
+            ClientLog.Debug( "User login succeeded!");
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_LOGGEDIN);
         }
 
@@ -43,7 +43,7 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_LOGINFAIL_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var err = (LoginResponse)packet.Reader.ReadUInt16();
-            Log.Write(LogType.GameLog, LogLevel.Warning, "User login failed: " + err.ToMessage());
+            ClientLog.Warning("User login failed: " + err.ToMessage());
             connection.GetClient()?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_NOTCONNECTED);
         }
 
@@ -51,16 +51,16 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_XTRAP_ACK(FiestaNetPacket packet, FiestaNetConnection _)
         {
             var ack = packet.Reader.ReadByte();
-            Log.Write(LogType.GameLog, LogLevel.Debug, $"XTrap ACK {(ack == 1 ? "OK" : "FAIL")}");
+            ClientLog.Debug( $"XTrap ACK {(ack == 1 ? "OK" : "FAIL")}");
         }
 
         [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_WORLD_STATUS_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
         public static void NC_USER_WORLD_STATUS_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var ack = new NcUserWorldStatusAck();
-            ack.Read(packet.Reader);
+            ack.Read(packet);
 
-            Log.Write(LogType.GameLog, LogLevel.Debug, "Got world list: " + ack);
+            ClientLog.Debug( "Got world list: " + ack);
 
             var client = connection.GetClient();
             client?.GameData.Worlds.AddRange(ack.WorldStatuses);
@@ -71,20 +71,20 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_WORLDSELECT_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var result = new NcUserWorldSelectAck();
-            result.Read(packet.Reader);
+            result.Read(packet);
 
-            Log.Write(LogType.GameLog, LogLevel.Debug, "Got world select ack: " + result);
+            ClientLog.Debug( "Got world select ack: " + result);
             if (result.WorldStatus.IsJoinable())
             {
                 var client = connection.GetClient();
-                Log.Write(LogType.GameLog, LogLevel.Debug, "Connecting to world server...");
+                ClientLog.Debug( "Connecting to world server...");
                 client?.LoginService.SetWMTransferKey(result.ConnectionHash);
                 client?.LoginService.SetWMEndpoint(result.WorldIPv4, result.WorldPort);
                 client?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_JOININGWORLD);
             }
             else
             {
-                Log.Write(LogType.GameLog, LogLevel.Warning, $"Unable to join world: {result.WorldStatus.ToMessage()}");
+                ClientLog.Warning( $"Unable to join world: {result.WorldStatus.ToMessage()}");
             }
         }
 
@@ -96,15 +96,15 @@ namespace VisionLib.Client.Networking.Handlers
         public static void NC_USER_LOGINWORLD_ACK(FiestaNetPacket packet, FiestaNetConnection connection)
         {
             var result = new NcUserLoginWorldAck();
-            result.Read(packet.Reader);
+            result.Read(packet);
 
-            connection.GetClient()?.WorldService.SetWMHandle(result.WorldManagerHandle);
-            
             var avatarStr = "";
             if (result.AvatarCount > 0)
             {
                 avatarStr = result.Avatars.Aggregate(avatarStr, (current, avatar) => current + $"\n    {avatar}");
             }
+
+            connection.GetAccount().AccountID = result.AccountID;
 
             foreach (var ava in result.Avatars)
             {
@@ -124,11 +124,11 @@ namespace VisionLib.Client.Networking.Handlers
                     Slot = ava.CharSlot,
                     TutorialState = ava.TutorialInfo
                 };
-                connection.GetClient()?.GameData.ClientAccount.Avatars.Add(trueAva);
+                connection.GetAccount().Avatars.Add(trueAva);
             }
             
 
-            Log.Write(LogType.GameLog, LogLevel.Debug, $"Got {result.AvatarCount} avatars." + avatarStr);
+            ClientLog.Debug( $"Got {result.AvatarCount} avatars." + avatarStr);
 
             connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_GOTAVATARS);
         }
@@ -139,7 +139,7 @@ namespace VisionLib.Client.Networking.Handlers
             var errorCode = new ProtoErrorcode();
             errorCode.Read(packet.Reader);
 
-            Log.Write(LogType.GameLog, LogLevel.Warning, "World login failed: " + errorCode.ErrorCode);
+            ClientLog.Warning( "World login failed: " + errorCode.ErrorCode);
 
             connection.GetClient()?.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_NOTCONNECTED);
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.Misc
@@ -22,13 +21,6 @@ namespace VisionLib.Core.Struct.Misc
             Second = (byte)gameTime.Second;
 
             GameTime = gameTime;
-        }
-
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_MISC_GAMETIME_ACK);
-            Write(pkt.Writer);
-            return pkt;
         }
 
         public override int GetSize()
@@ -57,6 +49,11 @@ namespace VisionLib.Core.Struct.Misc
         {
             var now = DateTime.Now;
             return new DateTime(now.Year, now.Month, now.Day, gameTime.Hour, gameTime.Minute, gameTime.Second);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_MISC_GAMETIME_ACK;
         }
     }
 }

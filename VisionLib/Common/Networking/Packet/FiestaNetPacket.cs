@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 using VisionLib.Core.Stream;
@@ -12,6 +13,18 @@ namespace VisionLib.Common.Networking.Packet
 	/// </summary>
     public class FiestaNetPacket : VisionObject
     {
+        public static readonly FiestaNetCommand[] DebugSkipCommands =
+        {
+            FiestaNetCommand.NC_MISC_HEARTBEAT_REQ,
+            FiestaNetCommand.NC_MISC_HEARTBEAT_ACK,
+			FiestaNetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD,
+			FiestaNetCommand.NC_ACT_SOMEONEMOVERUN_CMD,
+			FiestaNetCommand.NC_ACT_SOMEONEMOVEWALK_CMD,
+			FiestaNetCommand.NC_ACT_SOMEONESTOP_CMD,
+			FiestaNetCommand.NC_BAT_ABSTATESET_CMD,
+			FiestaNetCommand.NC_BAT_CEASE_FIRE_CMD,
+		};
+
         /// <summary>
 		/// The type of the message.
 		/// </summary>
@@ -32,6 +45,8 @@ namespace VisionLib.Common.Networking.Packet
 		/// </summary>
 		public WriterStream Writer { get; }
 
+        public int Size { get; protected set; }
+
 		/// <summary>
 		/// Creates a new instance of the <see cref="FiestaNetPacket"/> class.
 		/// </summary>
@@ -43,7 +58,8 @@ namespace VisionLib.Common.Networking.Packet
 			Writer = new WriterStream(ref _stream);
 			
 			Command = (FiestaNetCommand)Reader.ReadUInt16();
-		}
+            Size = Reader.RemainingBytes;
+        }
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="FiestaNetPacket"/> class.
@@ -73,28 +89,20 @@ namespace VisionLib.Common.Networking.Packet
 			connection.SendChunk = false;
 		}
 
-		/// <summary>
-		/// Fills the number of bytes with the value.
-		/// </summary>
-		/// <param name="count">The number of bytes to fill.</param>
-		/// <param name="value">The value to fill with.</param>
-		public void Fill(int count, byte value)
-		{
-			for (var i = 0; i < count; i++)
-			{
-				Writer.Write(value);
-			}
-		}
-
         /// <summary>
 		/// Sends the message to the connection.
 		/// </summary>
 		/// <param name="connection">The connection to send the message to.</param>
 		public void Send(FiestaNetConnection connection)
-		{
+        {
 			connection?.SendData(ToArray(connection));
-            var endpointStr = connection == null ? "Connection Null" : connection.RemoteEndPoint.ToSimpleString();
-            Log.Write(LogType.SocketLog, LogLevel.Debug, $"Sent {Command} packet to endpoint {endpointStr}");
+
+            if (!DebugSkipCommands.Contains(Command))
+            {
+                var endpointStr = connection == null ? "Connection Null" : connection.RemoteEndPoint.ToSimpleString();
+                SocketLog.Debug($"Sent {Command} packet to endpoint {endpointStr}, Size: {Size}");
+			}
+
             Destroy(this);
 		}
 

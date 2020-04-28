@@ -31,6 +31,19 @@ namespace VisionLib.Core.Stream
 
         public byte[] GetBuffer() => _stream.GetBuffer();
 
+        /// <summary>
+        /// Fills the number of bytes with the value.
+        /// </summary>
+        /// <param name="count">The number of bytes to fill.</param>
+        /// <param name="value">The value to fill with.</param>
+        public void Fill(int count, byte value)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                _writer.Write(value);
+            }
+        }
+
 		#region Write
 
 		/// <summary>

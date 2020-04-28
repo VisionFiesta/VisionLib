@@ -34,8 +34,13 @@ namespace VisionLib.Core.Struct.Common
                 bs.Read(out int date, 0, 6);
                 bs.Read(out int hour, 0, 6);
                 bs.Read(out int minute, 0, 7);
-                
-                return new DateTime(year, month, date, hour, minute, 0);
+
+                DateTime dt;
+
+                try { dt = new DateTime(year, month, date, hour, minute, 0); }
+                catch { dt = new DateTime();}
+
+                return dt;
             }
         }
 

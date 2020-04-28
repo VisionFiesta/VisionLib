@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Common.Utils;
 using VisionLib.Core.Stream;
 
@@ -25,13 +24,6 @@ namespace VisionLib.Core.Struct.Bat
             SkillDamageTargets = skillDamageTargets;
         }
 
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_BAT_SKILLBASH_HIT_DAMAGE_CMD);
-            Write(pkt.Writer);
-            return pkt;
-        }
-
         public override int GetSize()
         {
             var sdtSize = SkillDamageTargets.Length * SkillDamage.Size;
@@ -53,6 +45,11 @@ namespace VisionLib.Core.Struct.Bat
             {
                 sdt.Write(writer);
             }
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_BAT_SKILLBASH_HIT_DAMAGE_CMD;
         }
     }
 

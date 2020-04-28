@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.Char
@@ -11,13 +10,6 @@ namespace VisionLib.Core.Struct.Char
         public NcCharLoginFailAck(ushort error)
         {
             Error = error;
-        }
-
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_CHAR_LOGINFAIL_ACK);
-            Write(pkt.Writer);
-            return pkt;
         }
 
         public override int GetSize()
@@ -33,6 +25,11 @@ namespace VisionLib.Core.Struct.Char
         public override void Write(WriterStream writer)
         {
             writer.Write(Error);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_CHAR_LOGINFAIL_ACK;
         }
     }
 }

@@ -4,9 +4,11 @@
     {
         // TODO: SHN Load
 
+        public byte OrigData;
+
         public CharacterHair(byte hair)
         {
-
+            OrigData = hair;
         }
     }
 }

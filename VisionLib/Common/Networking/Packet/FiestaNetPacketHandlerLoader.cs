@@ -3,20 +3,22 @@ using System.Linq;
 using System.Reflection;
 using VisionLib.Common.Collections;
 using VisionLib.Common.Logging;
+using VisionLib.Core.Struct;
 
 namespace VisionLib.Common.Networking.Packet
 {
     public static class FiestaNetPacketHandlerLoader
     {
-        public static readonly FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate>> Handlers  = new FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate>>();
+        public static readonly FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate>> Handlers = new FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate>>();
+        public static readonly FastDictionary<FiestaNetCommand, TypeInfo> Structs = new FastDictionary<FiestaNetCommand, TypeInfo>();
 
         public static void LoadHandlers()
         {
             var allMethods = VisionAssembly.GetMethodsWithAttribute<FiestaNetPacketHandlerAttribute>().ToList();
-            foreach (Pair<FiestaNetPacketHandlerAttribute, MethodInfo> pair in allMethods)
+            foreach (var pair in allMethods)
             {
-                FiestaNetPacketHandlerAttribute first = pair.First;
-                MethodInfo second = pair.Second;
+                var first = pair.First;
+                var second = pair.Second;
                 if (Handlers.ContainsKey(first.Command))
                 {
                     Log.Write(LogType.EngineLog, LogLevel.Warning, $"Duplicate message handler found: [{first.Command}]");
@@ -40,6 +42,19 @@ namespace VisionLib.Common.Networking.Packet
                 }
 
                 Log.Write(LogType.EngineLog, LogLevel.Debug, $"Added message handler: (Command: {first.Command}, Destinations: {destinationsStr})");
+            }
+
+            var allStructs = VisionAssembly.GetTypesOfBase<NetPacketStruct>().ToList();
+
+            foreach (var @struct in allStructs)
+            {
+                var ctor = @struct.GetConstructor(Type.EmptyTypes);
+                if (ctor == null) continue;
+                var created = ctor.Invoke(new object[] { });
+                var command = (FiestaNetCommand)@struct.GetDeclaredMethod("GetCommand").Invoke(created, null);
+                Structs.Add(command, @struct);
+
+                Log.Write(LogType.EngineLog, LogLevel.Debug, $"Added struct: (Command: {command}, Struct: {@struct.Name}");
             }
         }
 

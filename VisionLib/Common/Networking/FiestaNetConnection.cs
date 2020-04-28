@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using VisionLib.Common.Collections;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Logging;
 using VisionLib.Common.Networking.Crypto;
@@ -190,6 +191,16 @@ namespace VisionLib.Common.Networking
         }
         */
 
+        public delegate void OnConnectCallback(FiestaNetConnDest dest, IPEndPoint endPoint);
+        public delegate void OnDisconnectCallback(FiestaNetConnDest dest, IPEndPoint endPoint);
+
+        private FastList<OnConnectCallback> _connectCallbacks = new FastList<OnConnectCallback>();
+        private FastList<OnDisconnectCallback> _disconnectCallbacks = new FastList<OnDisconnectCallback>();
+
+        public void AddConnectCallbact(OnConnectCallback callback) => _connectCallbacks.Add(callback);
+
+        public void AddDisconnectCallback(OnDisconnectCallback callback) => _disconnectCallbacks.Add(callback);
+
         /// <summary>
         /// Destroys the connection.
         /// </summary>
@@ -201,7 +212,12 @@ namespace VisionLib.Common.Networking
             //Client?.Connections.Remove(this);
             // TODO: child class for ServerConnection and ClientConnection?
 
-            Log.Write(LogType.SocketLog, LogLevel.Info, $"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+            foreach (var dc in _disconnectCallbacks)
+            {
+                dc.Invoke(TransmitDestinationType, RemoteEndPoint);
+            }
+
+            SocketLog.Info( $"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
             _socket?.Close(); // Close() will call Dispose() automatically for us.
             _socket = null;
         }
@@ -228,7 +244,7 @@ namespace VisionLib.Common.Networking
 
             if (bytesToSend >= ReceiveBufferSize)
             {
-                Log.Write(LogType.SocketLog, LogLevel.Debug, "Exceeded max message size while sending data to a connection.");
+                SocketLog.Debug("Exceeded max message size while sending data to a connection.");
             }
 
             while (bytesSent < bytesToSend)
@@ -236,7 +252,7 @@ namespace VisionLib.Common.Networking
                 bytesSent += _socket.Send(buffer, bytesSent, bytesToSend - bytesSent, SocketFlags.None);
 
                 if (bytesSent <= bytesToSend) continue;
-                Log.Write(LogType.SocketLog, LogLevel.Warning, $"BUFFER OVERFLOW OCCURRED - Sent {bytesSent - bytesToSend} bytes more than expected.");
+                SocketLog.Warning($"BUFFER OVERFLOW OCCURRED - Sent {bytesSent - bytesToSend} bytes more than expected.");
                 break;
             }
         }
@@ -284,12 +300,18 @@ namespace VisionLib.Common.Networking
             try
             {
                 _socket.EndConnect(e);
-                Log.Write(LogType.SocketLog, LogLevel.Info, $"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+
+                foreach (var c in _connectCallbacks)
+                {
+                    c.Invoke(TransmitDestinationType, RemoteEndPoint);
+                }
+
+                SocketLog.Info( $"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
                 BeginReceivingData();
             }
             catch
             {
-                Log.Write(LogType.SocketLog, LogLevel.Warning, "Remote socket connection attempt failed. Trying again...");
+                SocketLog.Warning("Remote socket connection attempt failed. Trying again...");
                 Thread.Sleep(3000); // 3 seconds.
                 Connect((IPEndPoint)e.AsyncState);
             }
@@ -438,20 +460,27 @@ namespace VisionLib.Common.Networking
 
             if (hasHandler && isForThisDest)
             {
-                var watch = new Stopwatch();
-                watch.Start();
-                handler(packet, this);
-                watch.Stop();
-                var millisString = $"{watch.Elapsed.TotalMilliseconds:N2}";
-                Log.Write(LogType.SocketLog, LogLevel.Debug, $"Handler for {packet.Command} took {millisString}ms to complete.");
+                if (!FiestaNetPacket.DebugSkipCommands.Contains(packet.Command))
+                {
+                    var watch = new Stopwatch();
+                    watch.Start();
+                    handler(packet, this);
+                    watch.Stop();
+                    var millisString = $"{watch.Elapsed.TotalMilliseconds:N2}";
+                    SocketLog.Debug($"Handler for {packet.Command} took {millisString}ms to complete.");
+                }
+                else
+                {
+                    handler(packet, this);
+                }
             }
             else if (hasHandler) // not this dest
             {
-                Log.Write(LogType.SocketLog, LogLevel.Warning, $"Got handled command from {TransmitDestinationType} NOT FOR {ReceiveDestinationType} : {packet.Command}");
+                SocketLog.Warning($"Got handled command from {TransmitDestinationType} NOT FOR {ReceiveDestinationType} : {packet.Command}");
             }
             else
             {
-                Log.Write(LogType.SocketLog, LogLevel.Warning, $"Got unhandled command from {TransmitDestinationType}: {packet.Command}");
+                SocketLog.Unhandled($"Got unhandled command from {TransmitDestinationType}: {packet.Command}");
             }
 
             // Trims the receive stream.

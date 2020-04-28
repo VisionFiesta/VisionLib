@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.Bat
@@ -19,13 +18,6 @@ namespace VisionLib.Core.Struct.Bat
             Index = index;
         }
 
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_BAT_SKILLBASH_HIT_OBJ_START_CMD);
-            Write(pkt.Writer);
-            return pkt;
-        }
-
         public override int GetSize()
         {
             return sizeof(ushort) * 3;
@@ -43,6 +35,11 @@ namespace VisionLib.Core.Struct.Bat
             writer.Write(Skill);
             writer.Write(TargetObj);
             writer.Write(Index);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_BAT_SKILLBASH_HIT_OBJ_START_CMD;
         }
     }
 }

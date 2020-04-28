@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.User
@@ -11,6 +10,15 @@ namespace VisionLib.Core.Struct.User
 
         public string ClientBinMD5 { get; private set; }
         public byte[] ExtraData { get; private set; }
+        private int AllDataLen = 0;
+
+        public NcUserClientVersionCheckReq() { }
+
+        public NcUserClientVersionCheckReq(byte[] allData)
+        {
+            ExtraData = allData;
+            AllDataLen = 64;
+        }
 
         public NcUserClientVersionCheckReq(string clientBinMd5, byte[] allExtraData)
         {
@@ -30,13 +38,6 @@ namespace VisionLib.Core.Struct.User
         //     }
         // }
 
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_CLIENT_VERSION_CHECK_REQ);
-            Write(pkt.Writer);
-            return pkt;
-        }
-
         public override int GetSize()
         {
             return 64;
@@ -46,12 +47,25 @@ namespace VisionLib.Core.Struct.User
         {
             ClientBinMD5 = reader.ReadString(ClientBinMD5Len);
             ExtraData = reader.ReadBytes(ExtraDataLen);
+            AllDataLen = 0;
         }
 
         public override void Write(WriterStream writer)
         {
-            writer.Write(ClientBinMD5, ClientBinMD5Len);
-            writer.Write(ExtraData, ExtraDataLen);
+            if (AllDataLen != 0)
+            {
+                writer.Write(ExtraData, AllDataLen);
+            }
+            else
+            {
+                writer.Write(ClientBinMD5, ClientBinMD5Len);
+                writer.Write(ExtraData, ExtraDataLen);
+            }
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_USER_CLIENT_VERSION_CHECK_REQ;
         }
     }
 }

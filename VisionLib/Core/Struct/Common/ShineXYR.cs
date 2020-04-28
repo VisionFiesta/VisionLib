@@ -8,7 +8,7 @@ namespace VisionLib.Core.Struct.Common
 
         public override int GetSize()
         {
-            return sizeof(double) + base.GetSize();
+            return 16;
         }
 
         public override void Read(ReaderStream reader)

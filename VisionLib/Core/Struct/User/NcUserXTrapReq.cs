@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.User
@@ -13,13 +12,6 @@ namespace VisionLib.Core.Struct.User
         {
             XTrapHashLength = xTrapHashLength;
             XTrapVersionHash = xTrapVersionHash;
-        }
-
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_XTRAP_REQ);
-            Write(pkt.Writer);
-            return pkt;
         }
 
         public override int GetSize()
@@ -37,6 +29,11 @@ namespace VisionLib.Core.Struct.User
         {
             writer.Write(XTrapHashLength);
             writer.Write(XTrapVersionHash, XTrapHashLength);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_USER_XTRAP_REQ;
         }
     }
 }

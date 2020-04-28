@@ -33,7 +33,7 @@ namespace VisionLib.Core.Struct.Common
 
         public override int GetSize()
         {
-            return sizeof(int) * 2;
+            return 8;
         }
 
         public override void Read(ReaderStream reader)

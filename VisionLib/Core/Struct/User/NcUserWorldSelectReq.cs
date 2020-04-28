@@ -1,5 +1,4 @@
 ﻿using VisionLib.Common.Networking;
-using VisionLib.Common.Networking.Packet;
 using VisionLib.Core.Stream;
 
 namespace VisionLib.Core.Struct.User
@@ -13,12 +12,6 @@ namespace VisionLib.Core.Struct.User
             WorldID = worldID;
         }
 
-        public override FiestaNetPacket ToPacket()
-        {
-            var pkt = new FiestaNetPacket(FiestaNetCommand.NC_USER_WORLDSELECT_REQ);
-            Write(pkt.Writer);
-            return pkt;
-        }
         public override int GetSize()
         {
             return sizeof(byte);
@@ -32,6 +25,11 @@ namespace VisionLib.Core.Struct.User
         public override void Write(WriterStream writer)
         {
             writer.Write(WorldID);
+        }
+
+        public override FiestaNetCommand GetCommand()
+        {
+            return FiestaNetCommand.NC_USER_WORLDSELECT_REQ;
         }
     }
 }
