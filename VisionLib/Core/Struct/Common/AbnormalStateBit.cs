@@ -2,24 +2,22 @@
 
 namespace VisionLib.Core.Struct.Common
 {
-    public class ShineXYR : ShineXY
+    public class AbnormalStateBit : AbstractStruct
     {
-        public new const int Size = 1 + ShineXY.Size;
+        public const int Size = 111;
 
-        public byte Rotation;
+        public byte[] State { get; protected set; } = new byte[Size];
 
         public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
-            base.Read(reader);
-            Rotation = reader.ReadByte();
+            State = reader.ReadBytes(Size);
         }
 
         public override void Write(WriterStream writer)
         {
-            base.Write(writer);
-            writer.Write(Rotation);
+            writer.Write(State, Size);
         }
     }
 }

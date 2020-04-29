@@ -1,4 +1,5 @@
-﻿using VisionLib.Common.Utils;
+﻿using VisionLib.Common.Game.Enums;
+using VisionLib.Common.Utils;
 using VisionLib.Core.Struct.Common;
 
 namespace VisionLib.Common.Game.Characters.Shape

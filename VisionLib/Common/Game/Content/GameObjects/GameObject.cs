@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VisionLib.Common.Collections;
 using VisionLib.Common.Extensions;
 using VisionLib.Common.Game.Characters;
 using VisionLib.Core.Struct.Common;
@@ -22,7 +23,7 @@ namespace VisionLib.Common.Game.Content.GameObjects
 		// public MoverInstance Mount { get; set; } TODO
 		// public string MapIndx => Position?.Map?.Info.MapName; TODO: Maps
 
-		public List<GameObject> VisibleObjects { get; set; }
+		public FastList<GameObject> VisibleObjects { get; set; }
 		public List<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToList();
 		// TODO: distance math in ShineXY
 		// public List<GameObject> TouchingObjects => VisibleObjects.Filter(obj => Vector2.Distance(Position, obj.Position) <= 10.0);

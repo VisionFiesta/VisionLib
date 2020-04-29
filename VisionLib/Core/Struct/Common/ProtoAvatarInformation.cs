@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using VisionLib.Common;
+using VisionLib.Common.Game.Characters;
 using VisionLib.Common.Game.Characters.Shape;
 using VisionLib.Common.Utils;
 using VisionLib.Core.Stream;
@@ -224,7 +225,7 @@ namespace VisionLib.Core.Struct.Common
 
         public override int GetSize()
         {
-            return sizeof(ushort) * 20 + Upgrade.GetSize();
+            return 43;
         }
 
         public override void Read(ReaderStream reader)

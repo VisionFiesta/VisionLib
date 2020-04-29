@@ -3,6 +3,7 @@ using System.Linq;
 using VisionLib.Common.Game.Characters.Shape;
 using VisionLib.Common.Game.Content.GameObjects;
 using VisionLib.Common.Game.Content.Items;
+using VisionLib.Core.Struct.BriefInfo;
 using VisionLib.Core.Struct.Char;
 using VisionLib.Core.Struct.Common;
 
@@ -48,27 +49,44 @@ namespace VisionLib.Common.Game.Characters
             Type = GameObjectType.GOT_CHARACTER;
         }
 
-        public void Initialize(NcCharClientBaseCmd baseData)
+        public void Initialize(NcCharClientBaseCmd data)
         {
-            Level = baseData.Level;
-            Stats.CurrentHP = baseData.HP;
-            Stats.CurrentSP = baseData.SP;
-            Stats.CurrentLP = baseData.LP; 
-            Stats.BonusSTR = baseData.STRBonus;
-            Stats.BonusEND = baseData.ENDBonus;
-            Stats.BonusDEX = baseData.DEXBonus;
-            Stats.BonusINT = baseData.INTBonus;
-            Stats.BonusSPR = baseData.SPRBonus;
+            Name = data.CharName;
+            Level = data.Level;
+            Stats.CurrentHP = data.HP;
+            Stats.CurrentSP = data.SP;
+            Stats.CurrentLP = data.LP; 
+            Stats.BonusSTR = data.STRBonus;
+            Stats.BonusEND = data.ENDBonus;
+            Stats.BonusDEX = data.DEXBonus;
+            Stats.BonusINT = data.INTBonus;
+            Stats.BonusSPR = data.SPRBonus;
 
-            Slot = baseData.Slot;
-            EXP = baseData.EXP;
-            HPStones = baseData.HPStones;
-            SPStones = baseData.SPStones;
-            Fame = baseData.Fame;
-            Money = baseData.Money;
-            KillPoints = baseData.KillPoints;
+            Slot = data.Slot;
+            EXP = data.EXP;
+            HPStones = data.HPStones;
+            SPStones = data.SPStones;
+            Fame = data.Fame;
+            Money = data.Money;
+            KillPoints = data.KillPoints;
 
-            Position = baseData.Position;
+            Position = data.Position;
+        }
+
+        public void Initialize(NcBriefInfoLoginCharacterCmd data)
+        {
+            Handle = data.Handle;
+            Level = data.Level;
+            Name = data.CharID;
+            Position = data.Position;
+            Shape = new CharacterShape(data.Shape);
+
+            CurrentTitle = new CharTitleInfo
+            {
+                Type = data.CharTitle.Type,
+                ElementNo = data.CharTitle.ElementNo,
+                ElementValue = data.CharTitle.ElementValue
+            };
         }
 
         public void SetShape(CharacterShape shape)

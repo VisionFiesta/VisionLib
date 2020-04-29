@@ -3,8 +3,9 @@
 namespace VisionLib.Core.Struct.Common
 {
     public class ShineXY : AbstractStruct
-
     {
+        public const int Size = 8;
+
         public uint X;
         public uint Y;
 
@@ -31,10 +32,7 @@ namespace VisionLib.Core.Struct.Common
             Y = pos.Y;
         }
 
-        public override int GetSize()
-        {
-            return 8;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
