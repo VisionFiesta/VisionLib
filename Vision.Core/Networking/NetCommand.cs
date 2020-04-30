@@ -4,7 +4,7 @@ namespace Vision.Core.Networking
     /// <summary>
     /// Identifies the type of network message.
     /// </summary>
-    public enum FiestaNetCommand : ushort
+    public enum NetCommand : ushort
     {
         #region NC_LOG
 

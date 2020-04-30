@@ -17,7 +17,7 @@ using Vision.Core.Networking.Packet;
 
 namespace Vision.Core.Networking
 {
-    public class FiestaNetConnection : VisionObject
+    public abstract class NetConnectionBase<T> : VisionObject where T : NetConnectionBase<T>
     {
         /// <summary>
         /// The maximum buffer size allowed.
@@ -27,7 +27,7 @@ namespace Vision.Core.Networking
         /// <summary>
         /// The crypto to use for this connection
         /// </summary>
-        public IFiestaNetCrypto Crypto { get; }
+        public INetCrypto Crypto { get; }
 
         /// <summary>
         /// The connection's unique identifier.
@@ -69,12 +69,12 @@ namespace Vision.Core.Networking
         /// <summary>
         /// The destination type of the connection.
         /// </summary>
-        public FiestaNetConnDest TransmitDestinationType { get; }
+        public NetConnectionDestination TransmitDestinationType { get; }
 
         /// <summary>
         /// The sender type of the connection.
         /// </summary>
-        public FiestaNetConnDest ReceiveDestinationType { get; }
+        public NetConnectionDestination ReceiveDestinationType { get; }
 
         /// <summary>
         /// Time since the connection's last heartbeat.
@@ -161,7 +161,7 @@ namespace Vision.Core.Networking
             }
         }
 
-        public FiestaNetConnection(FiestaNetConnDest txDest, FiestaNetConnDest rxDest, IFiestaNetCrypto crypto = null)
+        public NetConnectionBase(NetConnectionDestination txDest, NetConnectionDestination rxDest, INetCrypto crypto = null)
         {
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             TransmitDestinationType = txDest;
@@ -173,7 +173,7 @@ namespace Vision.Core.Networking
             _awaitingBuffers = new List<byte[]>();
 
             // default to 2020 NA crypto
-            Crypto = Crypto == null ? new FiestaNetCrypto_NA2020() : crypto;
+            Crypto = Crypto == null ? new NetCryptoNa2020() : crypto;
         }
 
         // TODO: FiestaNetworkServer ctor
@@ -193,8 +193,8 @@ namespace Vision.Core.Networking
         }
         */
 
-        public delegate void OnConnectCallback(FiestaNetConnDest dest, IPEndPoint endPoint);
-        public delegate void OnDisconnectCallback(FiestaNetConnDest dest, IPEndPoint endPoint);
+        public delegate void OnConnectCallback(NetConnectionDestination dest, IPEndPoint endPoint);
+        public delegate void OnDisconnectCallback(NetConnectionDestination dest, IPEndPoint endPoint);
 
         private readonly FastList<OnConnectCallback> _connectCallbacks = new FastList<OnConnectCallback>();
         private readonly FastList<OnDisconnectCallback> _disconnectCallbacks = new FastList<OnDisconnectCallback>();
@@ -219,7 +219,7 @@ namespace Vision.Core.Networking
                 dc.Invoke(TransmitDestinationType, RemoteEndPoint);
             }
 
-            SocketLog.Info( $"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+            SocketLog.Info($"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
             _socket?.Close(); // Close() will call Dispose() automatically for us.
             _socket = null;
         }
@@ -289,7 +289,7 @@ namespace Vision.Core.Networking
         /// <param name="targetPort">The target port.</param>
         public void Connect(string targetIP, ushort targetPort)
         {
-           Connect(new IPEndPoint(IPAddress.Parse(targetIP), targetPort));
+            Connect(new IPEndPoint(IPAddress.Parse(targetIP), targetPort));
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace Vision.Core.Networking
                     c.Invoke(TransmitDestinationType, RemoteEndPoint);
                 }
 
-                SocketLog.Info( $"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+                SocketLog.Info($"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
                 BeginReceivingData();
             }
             catch
@@ -320,7 +320,7 @@ namespace Vision.Core.Networking
         }
 
         /// <summary>
-        /// Destroys the <see cref="FiestaNetConnection"/> instance.
+        /// Destroys the <see cref="NetConnectionBase{T}"/> instance.
         /// </summary>
         protected override void Destroy()
         {
@@ -454,9 +454,9 @@ namespace Vision.Core.Networking
                 Crypto.XorBuffer(messageBuffer, 0, messageBuffer.Length);
             }
 
-            var packet = new FiestaNetPacket(messageBuffer);
+            var packet = new NetPacket(messageBuffer);
 
-            GetAndRunHandler(packet, this);
+            GetAndRunHandler(packet, this as T);
 
             // Trims the receive stream.
             var remainingByteCount = new byte[_receiveStream.Length - _receiveStream.Position];
@@ -467,14 +467,15 @@ namespace Vision.Core.Networking
             return true;
         }
 
-        protected static void GetAndRunHandler<T>(FiestaNetPacket packet, T connection) where T : FiestaNetConnection
+        protected void GetAndRunHandler(NetPacket packet, T connection)
         {
-            var hasHandler = FiestaNetPacketHandlerLoader<T>.TryGetHandler(packet.Command, out var handler, out var destinations);
+            var hasHandler =
+                NetPacketHandlerLoader<T>.TryGetHandler(packet.Command, out var handler, out var destinations);
             var isForThisDest = destinations?.Contains(connection.ReceiveDestinationType) ?? false;
 
             if (hasHandler && isForThisDest)
             {
-                if (!FiestaNetPacket.DebugSkipCommands.Contains(packet.Command))
+                if (!NetPacket.DebugSkipCommands.Contains(packet.Command))
                 {
                     var watch = Stopwatch.StartNew();
                     handler(packet, connection);

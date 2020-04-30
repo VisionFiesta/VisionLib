@@ -10,26 +10,26 @@ namespace Vision.Core.Networking.Packet
 {
     /// <summary>
 	/// Class that represents a network message sent to and from a
-	/// <see cref="FiestaNetConnection"/>
+	/// <see cref="NetConnectionBase{T}"/>
 	/// </summary>
-    public class FiestaNetPacket : VisionObject
+    public class NetPacket : VisionObject
     {
-        public static readonly FiestaNetCommand[] DebugSkipCommands =
+        public static readonly NetCommand[] DebugSkipCommands =
         {
-            FiestaNetCommand.NC_MISC_HEARTBEAT_REQ,
-            FiestaNetCommand.NC_MISC_HEARTBEAT_ACK,
-			FiestaNetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD,
-			FiestaNetCommand.NC_ACT_SOMEONEMOVERUN_CMD,
-			FiestaNetCommand.NC_ACT_SOMEONEMOVEWALK_CMD,
-			FiestaNetCommand.NC_ACT_SOMEONESTOP_CMD,
-			FiestaNetCommand.NC_BAT_ABSTATESET_CMD,
-			FiestaNetCommand.NC_BAT_CEASE_FIRE_CMD,
+            NetCommand.NC_MISC_HEARTBEAT_REQ,
+            NetCommand.NC_MISC_HEARTBEAT_ACK,
+			NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD,
+			NetCommand.NC_ACT_SOMEONEMOVERUN_CMD,
+			NetCommand.NC_ACT_SOMEONEMOVEWALK_CMD,
+			NetCommand.NC_ACT_SOMEONESTOP_CMD,
+			NetCommand.NC_BAT_ABSTATESET_CMD,
+			NetCommand.NC_BAT_CEASE_FIRE_CMD,
 		};
 
         /// <summary>
 		/// The type of the message.
 		/// </summary>
-        public FiestaNetCommand Command { get; set; }
+        public NetCommand Command { get; set; }
 
         /// <summary>
         /// Object to read data from the message.
@@ -49,24 +49,24 @@ namespace Vision.Core.Networking.Packet
         public int Size { get; protected set; }
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="FiestaNetPacket"/> class.
+		/// Creates a new instance of the <see cref="NetPacket"/> class.
 		/// </summary>
 		/// <param name="buffer">The message data.</param>
-		public FiestaNetPacket(byte[] buffer)
+		public NetPacket(byte[] buffer)
 		{
             _stream = new MemoryStream(buffer);
             Reader = new ReaderStream(ref _stream);
 			Writer = new WriterStream(ref _stream);
 			
-			Command = (FiestaNetCommand)Reader.ReadUInt16();
+			Command = (NetCommand)Reader.ReadUInt16();
             Size = Reader.RemainingBytes;
         }
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="FiestaNetPacket"/> class.
+		/// Creates a new instance of the <see cref="NetPacket"/> class.
 		/// </summary>
 		/// <param name="command">The type of message.</param>
-		public FiestaNetPacket(FiestaNetCommand command)
+		public NetPacket(NetCommand command)
 		{
 			_stream = new MemoryStream();
 			Writer = new WriterStream(ref _stream);
@@ -78,7 +78,7 @@ namespace Vision.Core.Networking.Packet
 		/// <summary>
 		/// Sends multiple messages as a chunk.
 		/// </summary>
-		public static void SendChunk(FiestaNetConnection connection, params FiestaNetPacket[] packets)
+		public static void SendChunk<T>(T connection, params NetPacket[] packets) where T : NetConnectionBase<T>
 		{
 			connection.SendChunk = true;
 
@@ -94,8 +94,8 @@ namespace Vision.Core.Networking.Packet
 		/// Sends the message to the connection.
 		/// </summary>
 		/// <param name="connection">The connection to send the message to.</param>
-		public void Send(FiestaNetConnection connection)
-        {
+		public void Send<T>(T connection) where T : NetConnectionBase<T>
+		{
 			connection?.SendData(ToArray(connection));
 
             if (!DebugSkipCommands.Contains(Command))
@@ -111,7 +111,7 @@ namespace Vision.Core.Networking.Packet
 		/// Returns a byte array representing the message.
 		/// </summary>
 		/// <returns></returns>
-		public byte[] ToArray(FiestaNetConnection connection = null)
+		public byte[] ToArray<T>(T connection = null) where T : NetConnectionBase<T>
 		{
 			byte[] ret;
 			var buffer = _stream.ToArray();
@@ -155,7 +155,7 @@ namespace Vision.Core.Networking.Packet
 		}
 
 		/// <summary>
-		/// Destroys the <see cref="FiestaNetPacket"/> instance.
+		/// Destroys the <see cref="NetPacket"/> instance.
 		/// </summary>
 		protected override void Destroy()
 		{

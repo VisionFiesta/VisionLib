@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Vision.Core.Common;
-using Vision.Core.Common.Collections;
 using Vision.Core.Common.Logging;
 using Vision.Core.Common.Logging.Loggers;
 
 namespace Vision.Core.Networking.Packet
 {
-    public static class FiestaNetPacketHandlerLoader <T> where T : FiestaNetConnection
+    public static class NetPacketHandlerLoader<T> where T : NetConnectionBase<T>
     {
-        private static readonly FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate<T>>> Handlers = new FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate<T>>>();
+        private static readonly Dictionary<NetCommand, Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>> Handlers = new Dictionary<NetCommand, Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>>();
         // public static readonly FastDictionary<FiestaNetCommand, TypeInfo> Structs = new FastDictionary<FiestaNetCommand, TypeInfo>();
 
         public static void LoadHandlers()
         {
-            var allMethods = VisionAssembly.GetMethodsWithAttribute<FiestaNetPacketHandlerAttribute>().ToList();
+            var allMethods = VisionAssembly.GetMethodsWithAttribute<NetPacketHandlerAttribute>().ToList();
             foreach (var pair in allMethods)
             {
                 var first = pair.First;
@@ -26,10 +28,8 @@ namespace Vision.Core.Networking.Packet
                 }
 
                 var destinations = first.Destinations;
-                var theDelegate =
-                    Delegate.CreateDelegate(typeof(FiestaNetPacketHandlerDelegate<T>),
-                        second) as FiestaNetPacketHandlerDelegate<T>;
-                var both = new Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate<T>>(destinations, theDelegate);
+                var theDelegate = Delegate.CreateDelegate(typeof(NetPacketHandlerDelegate<T>), second) as NetPacketHandlerDelegate<T>;
+                var both = new Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>(destinations, theDelegate);
 
                 Handlers.Add(first.Command, both);
 
@@ -53,25 +53,22 @@ namespace Vision.Core.Networking.Packet
             //     var ctor = @struct.GetConstructor(Type.EmptyTypes);
             //     if (ctor == null) continue;
             //     var created = ctor.Invoke(new object[] { });
-            //     var command = (FiestaNetCommand)@struct.GetDeclaredMethod("GetCommand").Invoke(created, null);
+            //     var command = (NetCommand)@struct.GetDeclaredMethod("GetCommand").Invoke(created, null);
             //     Structs.Add(command, @struct);
             //
             //     Log.Write(LogType.EngineLog, LogLevel.Debug, $"Added struct: (Command: {command}, Struct: {@struct.Name}");
             // }
         }
 
-        public static bool TryGetHandler(FiestaNetCommand command, out FiestaNetPacketHandlerDelegate<T> handler, out FiestaNetConnDest[] destinations)
+        public static bool TryGetHandler(NetCommand command, out NetPacketHandlerDelegate<T> handler, out NetConnectionDestination[] destinations)
         {
             var result = Handlers.TryGetValue(command, out var both);
 
             if (result)
             {
-                var handle = both.Item2;
-                var theDelegate =
-                    Delegate.CreateDelegate(typeof(FiestaNetPacketHandlerDelegate<T>),
-                        handle.Method) as FiestaNetPacketHandlerDelegate<T>;
-
-                var dest = both.Item1;
+                handler = both.Item2;
+                destinations = both.Item1;
+                return true;
             }
 
             handler = null;

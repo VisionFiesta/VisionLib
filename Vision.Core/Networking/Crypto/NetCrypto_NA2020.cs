@@ -1,6 +1,6 @@
 ﻿namespace Vision.Core.Networking.Crypto
 {
-    public class FiestaNetCrypto_NA2020 : IFiestaNetCrypto
+    public class NetCryptoNa2020 : INetCrypto
     {
         /// <summary>
         /// Array of xor values.

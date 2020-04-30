@@ -1,6 +1,6 @@
 ﻿namespace Vision.Core.Networking.Crypto
 {
-    public interface IFiestaNetCrypto
+    public interface INetCrypto
     {
         void SetSeed(ushort seed);
 
