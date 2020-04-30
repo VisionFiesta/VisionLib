@@ -35,9 +35,9 @@ namespace Vision.Game.Structs.User
             writer.Write(ConnectionHash, ConnectionHashLen);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_USER_LOGINWORLD_REQ;
+            return NetCommand.NC_USER_LOGINWORLD_REQ;
         }
     }
 }

@@ -6,8 +6,8 @@ namespace Vision.Client.Networking.Handlers
 {
     public class CharOptionHandlers
     {
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD(NetPacket packet, NetClientConnection connection)
         {
             var ack = new NcCharOptionImproveGetShortcutDataCmd();
             ack.Read(packet);
@@ -15,14 +15,14 @@ namespace Vision.Client.Networking.Handlers
             connection.Account.ActiveCharacter.ShortcutData = ack.Data;
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_OPTION_IMPROVE_GET_KEYMAP_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_OPTION_IMPROVE_GET_KEYMAP_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_OPTION_IMPROVE_GET_KEYMAP_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_OPTION_IMPROVE_GET_KEYMAP_CMD(NetPacket packet, NetClientConnection connection)
         {
 
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_OPTION_IMPROVE_GET_GAMEOPTION_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_OPTION_IMPROVE_GET_GAMEOPTION_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_OPTION_IMPROVE_GET_GAMEOPTION_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_OPTION_IMPROVE_GET_GAMEOPTION_CMD(NetPacket packet, NetClientConnection connection)
         {
 
         }

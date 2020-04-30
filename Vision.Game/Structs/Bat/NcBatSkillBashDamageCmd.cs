@@ -48,9 +48,9 @@ namespace Vision.Game.Structs.Bat
             }
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_BAT_SKILLBASH_HIT_DAMAGE_CMD;
+            return NetCommand.NC_BAT_SKILLBASH_HIT_DAMAGE_CMD;
         }
     }
 

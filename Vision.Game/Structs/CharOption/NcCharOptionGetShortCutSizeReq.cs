@@ -12,6 +12,6 @@ namespace Vision.Game.Structs.CharOption
 
         public override void Write(WriterStream writer) { }
 
-        public override FiestaNetCommand GetCommand() => FiestaNetCommand.NC_CHAR_OPTION_DB_GET_SHORTCUTSIZE_REQ;
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_OPTION_DB_GET_SHORTCUTSIZE_REQ;
     }
 }

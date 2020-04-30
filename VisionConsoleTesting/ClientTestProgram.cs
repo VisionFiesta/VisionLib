@@ -10,13 +10,13 @@ namespace VisionConsoleTesting
 {
     public class ClientTestProgram
     {
-        private const int ConsoleWidth = 260;
+        private const int ConsoleWidth = 200;
         private const int ConsoleHeight = 50;
 
         public static void Main(string[] arg)
         {
-            Console.SetBufferSize(ConsoleWidth, ConsoleHeight * 6);
             Console.SetWindowSize(ConsoleWidth, ConsoleHeight);
+            Console.SetBufferSize(ConsoleWidth, ConsoleHeight * 6);
 
             Log.SetConsoleLogLevel(LogLevel.Error);
             // SocketLog.SetPreciseLogLevels(SocketLogLevel.SLL_UNHANDLED, SocketLogLevel.SLL_ERROR, SocketLogLevel.SLL_WARNING, SocketLogLevel.SLL_INFO);

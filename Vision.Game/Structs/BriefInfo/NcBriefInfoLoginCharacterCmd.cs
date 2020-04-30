@@ -112,7 +112,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(IsUseItemMinimon);
         }
 
-        public override FiestaNetCommand GetCommand() => FiestaNetCommand.NC_BRIEFINFO_LOGINCHARACTER_CMD;
+        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_LOGINCHARACTER_CMD;
     }
 
     //$7E9DF37DA92D66C9DC9760D2E5111AAE shapedata

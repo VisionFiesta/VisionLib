@@ -28,9 +28,9 @@ namespace Vision.Game.Structs.Char
             writer.Write(CharSlot);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_CHAR_LOGIN_REQ;
+            return NetCommand.NC_CHAR_LOGIN_REQ;
         }
     }
 }

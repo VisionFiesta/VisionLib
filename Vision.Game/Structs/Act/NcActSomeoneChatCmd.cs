@@ -44,9 +44,9 @@ namespace Vision.Game.Structs.Act
             writer.Write(Message, Length);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_ACT_SOMEONECHAT_CMD;
+            return NetCommand.NC_ACT_SOMEONECHAT_CMD;
         }
     }
 }

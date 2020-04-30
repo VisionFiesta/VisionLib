@@ -33,9 +33,9 @@ namespace Vision.Game.Structs.Bat
             CastInfo.Write(writer);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_BAT_SOMEONESKILLBASH_HIT_OBJ_START_CMD;
+            return NetCommand.NC_BAT_SOMEONESKILLBASH_HIT_OBJ_START_CMD;
         }
     }
 }

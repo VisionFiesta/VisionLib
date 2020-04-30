@@ -29,9 +29,9 @@ namespace Vision.Game.Structs.Act
             Chat.Write(writer);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_ACT_PARTYCHAT_CMD;
+            return NetCommand.NC_ACT_PARTYCHAT_CMD;
         }
     }
 }

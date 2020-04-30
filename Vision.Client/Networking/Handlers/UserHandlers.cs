@@ -17,44 +17,44 @@ namespace Vision.Client.Networking.Handlers
     {
         #region LoginPackets
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK(FiestaNetPacket _, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK(NetPacket _, NetClientConnection connection)
         {
             ClientLog.Debug( "Client version check passed!");
             connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_VERIFIED);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_CLIENT_WRONGVERSION_CHECK_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_CLIENT_WRONGVERSION_CHECK_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_CLIENT_WRONGVERSION_CHECK_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_CLIENT_WRONGVERSION_CHECK_ACK(NetPacket packet, NetClientConnection connection)
         {
             ClientLog.Debug( "Client version check failed!");
             connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_NOTCONNECTED);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGIN_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_LOGIN_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_LOGIN_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_LOGIN_ACK(NetPacket packet, NetClientConnection connection)
         {
             ClientLog.Debug( "User login succeeded!");
             connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_LOGGEDIN);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGINFAIL_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_LOGINFAIL_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_LOGINFAIL_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_LOGINFAIL_ACK(NetPacket packet, NetClientConnection connection)
         {
             var err = (LoginResponse)packet.Reader.ReadUInt16();
             ClientLog.Warning("User login failed: " + err.ToMessage());
             connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_NOTCONNECTED);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_XTRAP_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_XTRAP_ACK(FiestaNetPacket packet, FiestaNetConnection _)
+        [NetPacketHandler(NetCommand.NC_USER_XTRAP_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_XTRAP_ACK(NetPacket packet, NetClientConnection connection)
         {
             var ack = packet.Reader.ReadByte();
             ClientLog.Debug( $"XTrap ACK {(ack == 1 ? "OK" : "FAIL")}");
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_WORLD_STATUS_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_WORLD_STATUS_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_WORLD_STATUS_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_WORLD_STATUS_ACK(NetPacket packet, NetClientConnection connection)
         {
             var ack = new NcUserWorldStatusAck();
             ack.Read(packet);
@@ -66,8 +66,8 @@ namespace Vision.Client.Networking.Handlers
             client?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_GOTWORLDS);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_WORLDSELECT_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_WORLDSELECT_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_WORLDSELECT_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_WORLDSELECT_ACK(NetPacket packet, NetClientConnection connection)
         {
             var result = new NcUserWorldSelectAck();
             result.Read(packet);
@@ -91,8 +91,8 @@ namespace Vision.Client.Networking.Handlers
 
         #region WorldPackets
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGINWORLD_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_LOGINWORLD_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_LOGINWORLD_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_LOGINWORLD_ACK(NetPacket packet, NetClientConnection connection)
         {
             var result = new NcUserLoginWorldAck();
             result.Read(packet);
@@ -132,8 +132,8 @@ namespace Vision.Client.Networking.Handlers
             connection.GameClient.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_GOTAVATARS);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_USER_LOGINWORLDFAIL_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_USER_LOGINWORLDFAIL_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_USER_LOGINWORLDFAIL_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_USER_LOGINWORLDFAIL_ACK(NetPacket packet, NetClientConnection connection)
         {
             var errorCode = new ProtoErrorcode();
             errorCode.Read(packet.Reader);

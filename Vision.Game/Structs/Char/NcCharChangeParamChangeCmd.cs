@@ -33,6 +33,6 @@ namespace Vision.Game.Structs.Char
             }
         }
 
-        public override FiestaNetCommand GetCommand() => FiestaNetCommand.NC_CHAR_CHANGEPARAMCHANGE_CMD;
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CHANGEPARAMCHANGE_CMD;
     }
 }

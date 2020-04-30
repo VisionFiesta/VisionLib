@@ -39,9 +39,9 @@ namespace Vision.Game.Structs.Map
             writer.Write(SHNHash, SHNHashLen_1_02_276);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_MAP_LOGIN_REQ;
+            return NetCommand.NC_MAP_LOGIN_REQ;
         }
     }
 }

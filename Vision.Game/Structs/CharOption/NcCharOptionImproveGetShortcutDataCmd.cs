@@ -41,9 +41,9 @@ namespace Vision.Game.Structs.CharOption
             }
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD;
+            return NetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD;
         }
     }
 }

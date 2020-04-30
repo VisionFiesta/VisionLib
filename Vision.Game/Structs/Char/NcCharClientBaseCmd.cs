@@ -95,9 +95,9 @@ namespace Vision.Game.Structs.Char
             writer.Fill(8, 0x00); // Unk03 from NA capture
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_CHAR_CLIENT_BASE_CMD;
+            return NetCommand.NC_CHAR_CLIENT_BASE_CMD;
         }
     }
 }

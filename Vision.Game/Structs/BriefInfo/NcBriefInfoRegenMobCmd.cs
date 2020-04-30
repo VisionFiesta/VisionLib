@@ -66,9 +66,9 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(RegenAni);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_BRIEFINFO_REGENMOB_CMD;
+            return NetCommand.NC_BRIEFINFO_REGENMOB_CMD;
         }
     }
 }

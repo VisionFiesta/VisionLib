@@ -12,6 +12,6 @@ namespace Vision.Game.Structs.User
 
         public override void Write(WriterStream writer) { }
 
-        public override FiestaNetCommand GetCommand() => FiestaNetCommand.NC_USER_WORLD_STATUS_REQ;
+        public override NetCommand GetCommand() => NetCommand.NC_USER_WORLD_STATUS_REQ;
     }
 }

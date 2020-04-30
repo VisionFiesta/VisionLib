@@ -36,9 +36,9 @@ namespace Vision.Game.Structs.Act
             writer.Write(Message, MessageLength);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_ACT_SOMEONEWHISPER_CMD;
+            return NetCommand.NC_ACT_SOMEONEWHISPER_CMD;
         }
     }
 }

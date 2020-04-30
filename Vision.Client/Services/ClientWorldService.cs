@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Vision.Client.Data;
 using Vision.Client.Enums;
+using Vision.Client.Networking;
 using Vision.Core.Common.Extensions;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
@@ -15,7 +16,7 @@ namespace Vision.Client.Services
         public ClientWorldServiceStatus WorldStatus { get; private set; } = ClientWorldServiceStatus.CWSS_NOTCONNECTED;
 
         private readonly FiestaClient _client;
-        private FiestaNetConnection WorldConnection => _client.WorldClient;
+        private NetClientConnection WorldConnection => _client.WorldClient;
         private ClientUserData Config => _client.UserData;
         private ClientLoginService LoginService => _client.LoginService;
         private ClientZoneService ZoneService => _client.ZoneService;

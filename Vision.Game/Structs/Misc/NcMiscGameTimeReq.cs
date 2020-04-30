@@ -12,6 +12,6 @@ namespace Vision.Game.Structs.Misc
 
         public override void Write(WriterStream writer) { }
 
-        public override FiestaNetCommand GetCommand() => FiestaNetCommand.NC_MISC_GAMETIME_REQ;
+        public override NetCommand GetCommand() => NetCommand.NC_MISC_GAMETIME_REQ;
     }
 }

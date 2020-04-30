@@ -33,6 +33,6 @@ namespace Vision.Game.Structs.BriefInfo
             }
         }
 
-        public override FiestaNetCommand GetCommand() => FiestaNetCommand.NC_BRIEFINFO_CHARACTER_CMD;
+        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHARACTER_CMD;
     }
 }

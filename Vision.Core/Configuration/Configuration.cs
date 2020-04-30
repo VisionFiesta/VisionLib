@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using Vision.Core.Common.Configuration;
-using Vision.Core.Common.Logging;
+using Vision.Core.Common.Logging.Loggers;
 
 namespace Vision.Core.Configuration
 {
@@ -66,7 +66,7 @@ namespace Vision.Core.Configuration
                 var instance = ReadJson();
                 if (instance != null)
                 {
-                    Log.Write(LogType.EngineLog, LogLevel.Info, $"Successfully read {shortTypeName} config.");
+                    EngineLog.Info($"Successfully read {shortTypeName} config.");
                     message = "";
                     return instance;
                 }
@@ -78,13 +78,13 @@ namespace Vision.Core.Configuration
                 }
                 pConfig.WriteJson();
 
-                Log.Write(LogType.EngineLog, LogLevel.Info, $"Successfully generated {shortTypeName} config.");
+                EngineLog.Info($"Successfully generated {shortTypeName} config.");
                 message = $"No {fullTypeName} found! Please edit generated config.";
                 return default;
             }
             catch (Exception ex)
             {
-                Log.Write(LogType.EngineLog, LogLevel.Error, $"Failed to load {shortTypeName} config:\n {0}", ex);
+                EngineLog.Error($"Failed to load {shortTypeName} config:\n {0}", ex);
                 message = $"Failed to load {fullTypeName}:\n {ex.StackTrace}";
                 return default;
             }

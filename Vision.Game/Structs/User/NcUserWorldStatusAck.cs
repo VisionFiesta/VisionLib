@@ -45,9 +45,9 @@ namespace Vision.Game.Structs.User
             }
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_USER_WORLD_STATUS_ACK;
+            return NetCommand.NC_USER_WORLD_STATUS_ACK;
         }
 
         public override string ToString()

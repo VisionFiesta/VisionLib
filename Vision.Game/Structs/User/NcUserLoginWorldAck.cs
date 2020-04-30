@@ -49,9 +49,9 @@ namespace Vision.Game.Structs.User
             writer.Write(AvatarCount);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_USER_LOGINWORLD_ACK;
+            return NetCommand.NC_USER_LOGINWORLD_ACK;
         }
     }
 }

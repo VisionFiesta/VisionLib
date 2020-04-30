@@ -41,9 +41,9 @@ namespace Vision.Game.Structs.User
             writer.Write(SpawnApp, StartupAppLen);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_USER_US_LOGIN_REQ;
+            return NetCommand.NC_USER_US_LOGIN_REQ;
         }
     }
 }

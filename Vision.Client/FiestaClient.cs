@@ -23,9 +23,9 @@ namespace Vision.Client
         public readonly ClientUserData UserData;
         public readonly ClientData ClientData;
 
-        public readonly FiestaNetClientConnection LoginClient;
-        public readonly FiestaNetClientConnection WorldClient;
-        public readonly FiestaNetClientConnection ZoneClient;
+        public readonly NetClientConnection LoginClient;
+        public readonly NetClientConnection WorldClient;
+        public readonly NetClientConnection ZoneClient;
 
         public readonly ClientLoginService LoginService;
         public readonly ClientWorldService WorldService;
@@ -44,11 +44,11 @@ namespace Vision.Client
 
             LoadSHN(gameConfig.ShinePath);
             
-            FiestaNetPacketHandlerLoader<FiestaNetClientConnection>.LoadHandlers();
+            NetPacketHandlerLoader<NetClientConnection>.LoadHandlers();
 
-            LoginClient = new FiestaNetClientConnection(this, FiestaNetConnDest.FNCDEST_LOGIN);
-            WorldClient = new FiestaNetClientConnection(this, FiestaNetConnDest.FNCDEST_WORLDMANAGER);
-            ZoneClient = new FiestaNetClientConnection(this, FiestaNetConnDest.FNCDEST_ZONE);
+            LoginClient = new NetClientConnection(this, NetConnectionDestination.NCD_LOGIN);
+            WorldClient = new NetClientConnection(this, NetConnectionDestination.NCD_WORLDMANAGER);
+            ZoneClient = new NetClientConnection(this, NetConnectionDestination.NCD_ZONE);
 
             LoginService = new ClientLoginService(this);
             WorldService = new ClientWorldService(this);
@@ -63,7 +63,7 @@ namespace Vision.Client
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            EngineLog.Error($"Unhandled Exception in context {sender.GetType().Name}", (Exception)e.ExceptionObject);
+            EngineLog.Error($"Unhandled Exception in context {sender?.GetType().Name}", (Exception)e.ExceptionObject);
         }
 
         private static void LoadSHN(string shnPath)

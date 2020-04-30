@@ -15,8 +15,8 @@ namespace Vision.Client.Services
     {
         private readonly FiestaClient _client;
         private Character ActiveCharacter => _client.GameData.ClientAccount.ActiveCharacter;
-        private FiestaNetClientConnection WorldClient => _client.WorldClient;
-        private FiestaNetClientConnection ZoneClient => _client.ZoneClient;
+        private NetClientConnection WorldClient => _client.WorldClient;
+        private NetClientConnection ZoneClient => _client.ZoneClient;
 
         public ClientChatService(FiestaClient client)
         {
@@ -71,7 +71,7 @@ namespace Vision.Client.Services
                     break;
                 case "jump":
                     // TODO: ClientMovementService
-                    new FiestaNetPacket(FiestaNetCommand.NC_ACT_JUMP_CMD).Send(ZoneClient);
+                    new NetPacket(NetCommand.NC_ACT_JUMP_CMD).Send(ZoneClient);
                     break;
                 case "follow":
                     // TODO: ClientMovementService

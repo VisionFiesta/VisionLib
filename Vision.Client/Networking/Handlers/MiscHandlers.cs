@@ -9,8 +9,16 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class MiscHandlers
     {
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_MISC_SEED_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_MISC_SEED_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        private static readonly NetPacket HeartbeatAck = new NetPacket(NetCommand.NC_MISC_HEARTBEAT_ACK);
+
+        [NetPacketHandler(NetCommand.NC_MISC_HEARTBEAT_REQ, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_MISC_HEARTBEAT_REQ(NetPacket packet, NetClientConnection connection)
+        {
+            HeartbeatAck.Send(connection);
+        }
+
+        [NetPacketHandler(NetCommand.NC_MISC_SEED_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_MISC_SEED_ACK(NetPacket packet, NetClientConnection connection)
         {
             var seed = packet.Reader.ReadUInt16();
             connection.Crypto.SetSeed(seed);
@@ -18,20 +26,20 @@ namespace Vision.Client.Networking.Handlers
 
             switch (connection.TransmitDestinationType)
             {
-                case FiestaNetConnDest.FNCDEST_LOGIN:
+                case NetConnectionDestination.NCD_LOGIN:
                     connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_CONNECTED);
                     break;
-                case FiestaNetConnDest.FNCDEST_WORLDMANAGER:
+                case NetConnectionDestination.NCD_WORLDMANAGER:
                     connection.GameClient.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_CONNECTED);
                     break;
-                case FiestaNetConnDest.FNCDEST_ZONE:
+                case NetConnectionDestination.NCD_ZONE:
                     connection.GameClient.ZoneService.SetStatus(ClientZoneServiceStatus.CZSS_CONNECTED);
                     break;
             }
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_MISC_GAMETIME_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_MISC_GAMETIME_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_MISC_GAMETIME_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_MISC_GAMETIME_ACK(NetPacket packet, NetClientConnection connection)
         {
             var ack = new NcGameTimeAck();
             ack.Read(packet);
@@ -39,7 +47,7 @@ namespace Vision.Client.Networking.Handlers
 
             switch (connection.TransmitDestinationType)
             {
-                case FiestaNetConnDest.FNCDEST_WORLDMANAGER:
+                case NetConnectionDestination.NCD_WORLDMANAGER:
                     connection.GameClient.GameData.GameTime.Set(ack.GameTime);
                     connection.GameClient.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_GOTGAMETIME);
                     break;

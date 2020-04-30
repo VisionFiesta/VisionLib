@@ -12,14 +12,14 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class BriefInfoHandlers
     {
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_UNEQUIP_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_UNEQUIP_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_UNEQUIP_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_UNEQUIP_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO:
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_ABSTATE_CHANGE_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_ABSTATE_CHANGE_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO:
 
@@ -39,14 +39,14 @@ namespace Vision.Client.Networking.Handlers
              */
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_LIST_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_ABSTATE_CHANGE_LIST_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_LIST_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_ABSTATE_CHANGE_LIST_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: 
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_CHARACTER_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_CHARACTER_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHARACTER_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_CHARACTER_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcBriefInfoCharacterCmd();
             cmd.Read(packet);
@@ -63,8 +63,8 @@ namespace Vision.Client.Networking.Handlers
             connection.Account.ActiveCharacter.VisibleObjects.AddRange(chrList);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_MOB_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_MOB_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_MOB_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_MOB_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcBriefInfoMobCmd();
             cmd.Read(packet);
@@ -79,8 +79,8 @@ namespace Vision.Client.Networking.Handlers
             connection.Account.ActiveCharacter.VisibleObjects.AddRange(mobList);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_REGENMOB_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_REGENMOB_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_REGENMOB_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_REGENMOB_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcBriefInfoRegenMobCmd();
             cmd.Read(packet);
@@ -89,14 +89,14 @@ namespace Vision.Client.Networking.Handlers
             ClientLog.Debug($"REGENMOB: Added mob. MobID: {cmd.MobID}");
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_REGENMOVER_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_REGENMOVER_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_REGENMOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_REGENMOVER_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO:
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_LOGINCHARACTER_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_LOGINCHARACTER_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_LOGINCHARACTER_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_LOGINCHARACTER_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcBriefInfoLoginCharacterCmd();
             cmd.Read(packet);
@@ -108,14 +108,14 @@ namespace Vision.Client.Networking.Handlers
             ClientLog.Debug($"LOGINCHARACTER: Added character. Name: {chr.Name}, Class: {chr.Shape.Class}");
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_MOVER_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_MOVER_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_MOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_MOVER_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO:
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_BRIEFINFO_BRIEFINFODELETE_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_BRIEFINFO_BRIEFINFODELETE_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_BRIEFINFO_BRIEFINFODELETE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_BRIEFINFO_BRIEFINFODELETE_CMD(NetPacket packet, NetClientConnection connection)
         {
             var handle = packet.Reader.ReadUInt16();
             var go = GameObject.Objects.First(o => o.Handle == handle);

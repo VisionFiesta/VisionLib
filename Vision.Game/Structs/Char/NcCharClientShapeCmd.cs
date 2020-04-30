@@ -34,9 +34,9 @@ namespace Vision.Game.Structs.Char
             raw.Write(writer);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_CHAR_CLIENT_SHAPE_CMD;
+            return NetCommand.NC_CHAR_CLIENT_SHAPE_CMD;
         }
     }
 }

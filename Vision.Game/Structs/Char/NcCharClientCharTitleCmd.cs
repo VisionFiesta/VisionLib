@@ -46,9 +46,9 @@ namespace Vision.Game.Structs.Char
             }
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD;
+            return NetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD;
         }
     }
 }

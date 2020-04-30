@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using Vision.Client.Data;
 using Vision.Client.Enums;
+using Vision.Client.Networking;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Game.Structs.User;
@@ -17,7 +18,7 @@ namespace Vision.Client.Services
         // private bool waitForUserInputToConnect = true;
 
         private readonly FiestaClient _client;
-        private FiestaNetConnection LoginConnection => _client.LoginClient;
+        private NetClientConnection LoginConnection => _client.LoginClient;
         private ClientUserData UserData => _client.UserData;
         private ClientData ClientData => _client.ClientData;
         private ClientWorldService WorldService => _client.WorldService;

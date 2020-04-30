@@ -28,9 +28,9 @@ namespace Vision.Game.Structs.Char
             writer.Write(Error);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_CHAR_LOGINFAIL_ACK;
+            return NetCommand.NC_CHAR_LOGINFAIL_ACK;
         }
     }
 }

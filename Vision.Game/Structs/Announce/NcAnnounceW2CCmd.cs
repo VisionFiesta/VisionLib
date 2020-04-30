@@ -30,9 +30,9 @@ namespace Vision.Game.Structs.Announce
             writer.Write(Message, MessageLength);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_ANNOUNCE_W2C_CMD;
+            return NetCommand.NC_ANNOUNCE_W2C_CMD;
         }
     }
 }

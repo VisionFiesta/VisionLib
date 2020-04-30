@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Net;
 using Vision.Client.Enums;
+using Vision.Client.Networking;
 using Vision.Core.Logging.Loggers;
-using Vision.Core.Networking;
 using Vision.Game.Structs.Map;
 
 namespace Vision.Client.Services
@@ -12,7 +12,7 @@ namespace Vision.Client.Services
         public ClientZoneServiceStatus ZoneStatus { get; private set; } = ClientZoneServiceStatus.CZSS_NOTCONNECTED;
 
         private readonly FiestaClient _client;
-        private FiestaNetConnection ZoneConnection => _client.ZoneClient;
+        private NetClientConnection ZoneConnection => _client.ZoneClient;
         private ClientWorldService WorldService => _client.WorldService;
 
         private readonly ClientZoneServiceData _data = new ClientZoneServiceData();

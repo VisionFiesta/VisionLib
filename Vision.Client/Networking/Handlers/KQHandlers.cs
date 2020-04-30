@@ -5,14 +5,14 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class KQHandlers
     {
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_KQ_JOINING_ALARM_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_KQ_JOINING_ALARM_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_KQ_JOINING_ALARM_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_KQ_JOINING_ALARM_CMD(NetPacket packet, NetClientConnection connection)
         {
 
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_KQ_JOINING_ALARM_END_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_KQ_JOINING_ALARM_END_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_KQ_JOINING_ALARM_END_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_KQ_JOINING_ALARM_END_CMD(NetPacket packet, NetClientConnection connection)
         {
 
         }

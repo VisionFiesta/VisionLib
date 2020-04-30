@@ -9,24 +9,24 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class MapHandlers
     {
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_MAP_LOGIN_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_MAP_LOGIN_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_MAP_LOGIN_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_MAP_LOGIN_ACK(NetPacket packet, NetClientConnection connection)
         {
             // TODO: move to ClientZoneService
-            new FiestaNetPacket(FiestaNetCommand.NC_MAP_LOGINCOMPLETE_CMD).Send(connection);
+            new NetPacket(NetCommand.NC_MAP_LOGINCOMPLETE_CMD).Send(connection);
             ClientLog.Info("Map Login OK");
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_MAP_LOGINFAIL_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_MAP_LOGINFAIL_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_MAP_LOGINFAIL_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_MAP_LOGINFAIL_ACK(NetPacket packet, NetClientConnection connection)
         {
             ClientLog.Warning("Map Login Failed");
             connection.GameClient.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_NOTCONNECTED);
             connection.Disconnect();
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_MAP_LOGOUT_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_MAP_LOGOUT_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_MAP_LOGOUT_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_MAP_LOGOUT_CMD(NetPacket packet, NetClientConnection connection)
         {
             var handle = packet.Reader.ReadUInt16();
 

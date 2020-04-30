@@ -28,9 +28,9 @@ namespace Vision.Game.Structs.User
             writer.Write(WorldID);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_USER_WORLDSELECT_REQ;
+            return NetCommand.NC_USER_WORLDSELECT_REQ;
         }
     }
 }

@@ -35,6 +35,6 @@ namespace Vision.Game.Structs.Char
             writer.Write(NeedClear);
         }
 
-        public override FiestaNetCommand GetCommand() => FiestaNetCommand.NC_CHAR_CLIENT_QUEST_DOING_CMD;
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_QUEST_DOING_CMD;
     }
 }

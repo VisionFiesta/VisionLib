@@ -52,9 +52,9 @@ namespace Vision.Game.Structs.Misc
             return new DateTime(now.Year, now.Month, now.Day, gameTime.Hour, gameTime.Minute, gameTime.Second);
         }
 
-        public override FiestaNetCommand GetCommand()
+        public override NetCommand GetCommand()
         {
-            return FiestaNetCommand.NC_MISC_GAMETIME_ACK;
+            return NetCommand.NC_MISC_GAMETIME_ACK;
         }
     }
 }

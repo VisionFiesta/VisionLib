@@ -6,8 +6,8 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class AnnounceHandlers
     {
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_ANNOUNCE_W2C_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_ANNOUNCE_W2C_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_ANNOUNCE_W2C_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_ANNOUNCE_W2C_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcAnnounceW2CCmd();
             cmd.Read(packet);

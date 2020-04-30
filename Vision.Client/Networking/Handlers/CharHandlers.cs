@@ -11,8 +11,8 @@ namespace Vision.Client.Networking.Handlers
     {
         #region From WorldManager
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_LOGIN_ACK, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_LOGIN_ACK(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_LOGIN_ACK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_LOGIN_ACK(NetPacket packet, NetClientConnection connection)
         {
             var ack = new NcCharLoginAck();
             ack.Read(packet);
@@ -25,8 +25,8 @@ namespace Vision.Client.Networking.Handlers
 
         #region From Zone
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_BASE_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_BASE_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_BASE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_BASE_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcCharClientBaseCmd();
             cmd.Read(packet);
@@ -44,8 +44,8 @@ namespace Vision.Client.Networking.Handlers
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_BASE);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_SHAPE_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_SHAPE_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_SHAPE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_SHAPE_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcCharClientShapeCmd();
             cmd.Read(packet);
@@ -53,8 +53,8 @@ namespace Vision.Client.Networking.Handlers
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_SHAPE);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_QUEST_DOING_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_QUEST_DOING_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_QUEST_DOING_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_QUEST_DOING_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcCharClientQuestDoingCmd();
             cmd.Read(packet);
@@ -70,8 +70,8 @@ namespace Vision.Client.Networking.Handlers
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_QUESTDOING);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_QUEST_DONE_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_QUEST_DONE_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_QUEST_DONE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_QUEST_DONE_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcCharClientQuestDoneCmd();
             cmd.Read(packet);
@@ -87,36 +87,36 @@ namespace Vision.Client.Networking.Handlers
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_QUESTDONE);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_QUEST_READ_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_QUEST_READ_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_QUEST_READ_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_QUEST_READ_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_QUESTREAD);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_QUEST_REPEAT_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_QUEST_REPEAT_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_QUEST_REPEAT_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_QUEST_REPEAT_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_QUESTREPEAT);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_SKILL_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_SKILL_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_SKILL_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_SKILL_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_SKILL);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_PASSIVE_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_PASSIVE_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_PASSIVE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_PASSIVE_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_PASSIVE);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_ITEM_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_ITEM_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_ITEM_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_ITEM_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
 
@@ -139,8 +139,8 @@ namespace Vision.Client.Networking.Handlers
             }
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_CHARTITLE_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_CHARTITLE_CMD(NetPacket packet, NetClientConnection connection)
         {
             var cmd = new NcCharClientCharTitleCmd();
             cmd.Read(packet);
@@ -148,22 +148,22 @@ namespace Vision.Client.Networking.Handlers
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_TITLE);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_CHARGEDBUFF_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_CHARGEDBUFF_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_CHARGEDBUFF_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_CHARGEDBUFF_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_CHARGEDBUFF);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_GAME_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_GAME_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_GAME_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_GAME_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_GAME);
         }
 
-        [FiestaNetPacketHandler(FiestaNetCommand.NC_CHAR_CLIENT_COININFO_CMD, FiestaNetConnDest.FNCDEST_CLIENT)]
-        public static void NC_CHAR_CLIENT_COININFO_CMD(FiestaNetPacket packet, FiestaNetClientConnection connection)
+        [NetPacketHandler(NetCommand.NC_CHAR_CLIENT_COININFO_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_CLIENT_COININFO_CMD(NetPacket packet, NetClientConnection connection)
         {
             // TODO: struct
             connection.GameClient.ZoneService.UpdateCharData(CharClientDataType.CCDT_COININFO);
