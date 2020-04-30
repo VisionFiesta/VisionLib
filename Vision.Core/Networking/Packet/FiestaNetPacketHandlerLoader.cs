@@ -3,12 +3,13 @@ using System.Linq;
 using Vision.Core.Common;
 using Vision.Core.Common.Collections;
 using Vision.Core.Common.Logging;
+using Vision.Core.Common.Logging.Loggers;
 
 namespace Vision.Core.Networking.Packet
 {
-    public static class FiestaNetPacketHandlerLoader<T> where T : FiestaNetConnection
+    public static class FiestaNetPacketHandlerLoader <T> where T : FiestaNetConnection
     {
-        public static readonly FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate<T>>> Handlers = new FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate<T>>>();
+        private static readonly FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate<T>>> Handlers = new FastDictionary<FiestaNetCommand, Tuple<FiestaNetConnDest[], FiestaNetPacketHandlerDelegate<T>>>();
         // public static readonly FastDictionary<FiestaNetCommand, TypeInfo> Structs = new FastDictionary<FiestaNetCommand, TypeInfo>();
 
         public static void LoadHandlers()
@@ -40,8 +41,10 @@ namespace Vision.Core.Networking.Packet
                     if (index != destinations.Length - 1) destinationsStr += ", ";
                 }
 
-                Log.Write(LogType.EngineLog, LogLevel.Debug, $"Added message handler: (Command: {first.Command}, Destinations: {destinationsStr})");
+                EngineLog.Debug($"Added message handler: (Command: {first.Command}, Destinations: {destinationsStr})");
             }
+
+            EngineLog.Info($"Loaded {Handlers.Count} packet handlers!");
 
             // var allStructs = VisionAssembly.GetTypesOfBase<NetPacketStruct>().ToList();
             //
@@ -60,11 +63,15 @@ namespace Vision.Core.Networking.Packet
         public static bool TryGetHandler(FiestaNetCommand command, out FiestaNetPacketHandlerDelegate<T> handler, out FiestaNetConnDest[] destinations)
         {
             var result = Handlers.TryGetValue(command, out var both);
+
             if (result)
             {
-                handler = both.Item2;
-                destinations = both.Item1;
-                return true;
+                var handle = both.Item2;
+                var theDelegate =
+                    Delegate.CreateDelegate(typeof(FiestaNetPacketHandlerDelegate<T>),
+                        handle.Method) as FiestaNetPacketHandlerDelegate<T>;
+
+                var dest = both.Item1;
             }
 
             handler = null;

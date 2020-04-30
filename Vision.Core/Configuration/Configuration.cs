@@ -58,8 +58,8 @@ namespace Vision.Core.Configuration
 
         private static T Initialize(out string message)
         {
-            var fullTypeName = typeof(T).FullName.Replace("VisionLib.Client.Configuration.", "");
-            var shortTypeName = fullTypeName.Replace("Configuration", "");
+            var fullTypeName = typeof(T).FullName?.Replace("Vision.Client.Configuration.", "");
+            var shortTypeName = fullTypeName?.Replace("Configuration", "");
 
             try
             {

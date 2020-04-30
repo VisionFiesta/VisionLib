@@ -5,12 +5,12 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vision.Core", "Vision.Core\Vision.Core.csproj", "{1B07E304-1B3E-49B0-A8C0-4EB9467127F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vision.Game", "Vision.Game\Vision.Game.csproj", "{56D1AFCC-9F14-4BF0-97DE-80D82DE2D922}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vision.Game", "Vision.Game\Vision.Game.csproj", "{56D1AFCC-9F14-4BF0-97DE-80D82DE2D922}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1B07E304-1B3E-49B0-A8C0-4EB9467127F3} = {1B07E304-1B3E-49B0-A8C0-4EB9467127F3}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vision.Client", "Vision.Client\Vision.Client.csproj", "{32771DC6-C002-4632-980A-14B30B0097E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vision.Client", "Vision.Client\Vision.Client.csproj", "{32771DC6-C002-4632-980A-14B30B0097E1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1B07E304-1B3E-49B0-A8C0-4EB9467127F3} = {1B07E304-1B3E-49B0-A8C0-4EB9467127F3}
 		{56D1AFCC-9F14-4BF0-97DE-80D82DE2D922} = {56D1AFCC-9F14-4BF0-97DE-80D82DE2D922}
@@ -19,6 +19,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BF423067-1D4E-497C-9C16-0DE778E3B2B0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionConsoleTesting", "VisionConsoleTesting\VisionConsoleTesting.csproj", "{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1B07E304-1B3E-49B0-A8C0-4EB9467127F3} = {1B07E304-1B3E-49B0-A8C0-4EB9467127F3}
+		{32771DC6-C002-4632-980A-14B30B0097E1} = {32771DC6-C002-4632-980A-14B30B0097E1}
+		{56D1AFCC-9F14-4BF0-97DE-80D82DE2D922} = {56D1AFCC-9F14-4BF0-97DE-80D82DE2D922}
 	EndProjectSection
 EndProject
 Global
@@ -39,6 +46,10 @@ Global
 		{32771DC6-C002-4632-980A-14B30B0097E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32771DC6-C002-4632-980A-14B30B0097E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32771DC6-C002-4632-980A-14B30B0097E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
