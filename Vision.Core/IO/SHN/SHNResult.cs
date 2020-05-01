@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Globalization;
-using Vision.Core.Common.Logging.Loggers;
-using Vision.Core.IO.SHN;
+using Vision.Core.Logging.Loggers;
 
-namespace Vision.Core.Common.IO.SHN
+namespace Vision.Core.IO.SHN
 {
     public class SHNResult : DataTable
     {

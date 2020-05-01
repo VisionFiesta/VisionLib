@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vision.Core.Common.Utils;
+using Vision.Core.Utils;
 
-namespace Vision.Core.Common.Collections
+namespace Vision.Core.Collections
 {
     public class FastList<T> : List<T>
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vision.Core.Common.Collections;
+using Vision.Core.Collections;
 
-namespace Vision.Core.Common.Extensions
+namespace Vision.Core.Extensions
 {
     public static class IEnumerableExtensions
     {

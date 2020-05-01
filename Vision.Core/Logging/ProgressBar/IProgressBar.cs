@@ -2,7 +2,7 @@
 using Colorful;
 using Console = Colorful.Console;
 
-namespace Vision.Core.Common.Logging.ProgressBar
+namespace Vision.Core.Logging.ProgressBar
 {
     public abstract class AProgressBar
     {
@@ -30,7 +30,7 @@ namespace Vision.Core.Common.Logging.ProgressBar
 
         private readonly byte _logLevel;
         private readonly ColorfulConsoleLogger _loggerInstance;
-        protected readonly Color _color;
+        protected readonly Color Color;
 
         protected AProgressBar(byte logLevel, ColorfulConsoleLogger loggerInstance, Color? color = null)
         {
@@ -38,7 +38,7 @@ namespace Vision.Core.Common.Logging.ProgressBar
             _loggerInstance = loggerInstance;
 
             if (!color.HasValue) color = loggerInstance.BaseColor;
-            _color = color.Value;
+            Color = color.Value;
         }
 
         protected internal void MoveCursor(int cols)
@@ -51,12 +51,12 @@ namespace Vision.Core.Common.Logging.ProgressBar
         }
 
         protected internal void Write(params Formatter[] formatters) => _loggerInstance.WriteRawFormatted(_logLevel, formatters);
-
         protected internal void Write(string str) => _loggerInstance.WriteRaw(_logLevel, str);
+        protected internal void Write(string str, Color color) => _loggerInstance.WriteRaw(_logLevel, str, color);
 
         protected internal void WriteLine() => _loggerInstance.WriteLineRaw(_logLevel, "");
 
         public abstract void Update(int percent);
-        public abstract void Complete(string message);
+        public abstract void Complete(string message, Color color);
     }
 }

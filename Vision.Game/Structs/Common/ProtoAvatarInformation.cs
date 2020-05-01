@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Vision.Core.Common;
+using Vision.Core;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
 using Vision.Game.Characters;

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Vision.Core.Common.Utils
+namespace Vision.Core.Utils
 {
     public static class MD5Utils
     {

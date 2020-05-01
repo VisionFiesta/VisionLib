@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace Vision.Core.Common.Collections
+namespace Vision.Core.Collections
 {
     public class FastConcurrentDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>
     {

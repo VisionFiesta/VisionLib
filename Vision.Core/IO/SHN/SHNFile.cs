@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
-using Vision.Core.Common.Exceptions;
-using Vision.Core.Common.Extensions;
-using Vision.Core.Common.IO.SHN;
-using Vision.Core.Common.Logging.Loggers;
+using Vision.Core.Exceptions;
+using Vision.Core.Extensions;
+using Vision.Core.Logging.Loggers;
 
 namespace Vision.Core.IO.SHN
 {

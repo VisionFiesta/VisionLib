@@ -6,14 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
-using Vision.Core.Common;
-using Vision.Core.Common.Collections;
-using Vision.Core.Common.Extensions;
-using Vision.Core.Common.Logging.Loggers;
-using Vision.Core.Common.Utils;
+using Vision.Core.Collections;
+using Vision.Core.Extensions;
+using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking.Crypto;
 using Vision.Core.Networking.Packet;
+using Vision.Core.Utils;
 
 namespace Vision.Core.Networking
 {

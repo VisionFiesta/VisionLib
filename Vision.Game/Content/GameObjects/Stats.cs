@@ -4,7 +4,7 @@ namespace Vision.Game.Content.GameObjects
 {
 	public class Stats
 	{
-		private GameObject Object;
+		private readonly GameObject _object;
 
 		public byte FreeSTR { get; set; }
 		public byte FreeEND { get; set; }
@@ -150,12 +150,12 @@ namespace Vision.Game.Content.GameObjects
 
 		public Stats(GameObject obj)
 		{
-			Object = obj;
+			_object = obj;
 		}
 
 		public void Update()
 		{
-			if (Object is Character character)
+			if (_object is Character character)
 			{
 				BaseSTR = character.Parameters.STR;
 				BaseEND = character.Parameters.END;
@@ -177,9 +177,7 @@ namespace Vision.Game.Content.GameObjects
 				BaseMaxHP = character.Parameters.MaxHP;
 				BaseMaxSP = character.Parameters.MaxSP;
 				BaseMaxLP = character.Parameters.MaxLP;
-
-
-			}
+            }
 		}
 	}
 }

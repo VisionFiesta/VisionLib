@@ -1,5 +1,4 @@
 ﻿using Vision.Client.Enums;
-using Vision.Core.Common.Logging.Loggers;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;

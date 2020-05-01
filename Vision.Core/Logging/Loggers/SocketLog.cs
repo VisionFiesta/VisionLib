@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Vision.Core.Common.Extensions;
+using Vision.Core.Extensions;
 
-namespace Vision.Core.Common.Logging.Loggers
+namespace Vision.Core.Logging.Loggers
 {
     public sealed class SocketLog : ColorfulConsoleLogger
     {

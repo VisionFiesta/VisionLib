@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Vision.Core.Common;
-using Vision.Core.Common.Extensions;
-using Vision.Core.Common.Logging.Loggers;
+using Vision.Core.Extensions;
+using Vision.Core.Logging.Loggers;
 using Vision.Core.Streams;
 
 namespace Vision.Core.Networking.Packet

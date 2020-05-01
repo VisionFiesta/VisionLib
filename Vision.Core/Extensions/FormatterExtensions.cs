@@ -2,7 +2,7 @@
 using System.Linq;
 using Colorful;
 
-namespace Vision.Core.Common.Extensions
+namespace Vision.Core.Extensions
 {
     public static class FormatterExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Vision.Core.Common.Extensions;
+using Vision.Core.Extensions;
 
 namespace Vision.Core.Dump
 {

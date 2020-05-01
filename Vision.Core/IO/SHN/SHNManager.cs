@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using System.Text;
-using Vision.Core.Common.Logging.Loggers;
-using Vision.Core.IO.SHN;
+using Vision.Core.Logging.Loggers;
 
-namespace Vision.Core.Common.IO.SHN
+namespace Vision.Core.IO.SHN
 {
     public class SHNManager
     {

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Vision.Core.Common;
-using Vision.Core.Common.Logging;
-using Vision.Core.Common.Logging.Loggers;
+using Vision.Core.Logging.Loggers;
 
 namespace Vision.Core.Networking.Packet
 {
@@ -23,8 +21,8 @@ namespace Vision.Core.Networking.Packet
                 var second = pair.Second;
                 if (Handlers.ContainsKey(first.Command))
                 {
-                    Log.Write(LogType.EngineLog, LogLevel.Warning, $"Duplicate message handler found: [{first.Command}]");
-                    Handlers.Remove(first.Command);
+                    EngineLog.Warning($"Duplicate message handler found: [{first.Command}], ignoring.");
+                    continue;
                 }
 
                 var destinations = first.Destinations;

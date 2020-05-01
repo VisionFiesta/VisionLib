@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace Vision.Core.Common.Utils
+namespace Vision.Core.Utils
 {
 	/// <summary>
 	/// Class that contains commonly used math functions.
@@ -26,7 +26,7 @@ namespace Vision.Core.Common.Utils
 		/// <summary>
 		/// A class instance the produces random data.
 		/// </summary>
-		private static readonly RandomNumberGenerator RNG = RandomNumberGenerator.Create();
+		private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
 		///<summary>
 		/// Returns a random number within the specified range.
@@ -70,7 +70,7 @@ namespace Vision.Core.Common.Utils
 		public static double RandomDouble()
 		{
 			var buffer = new byte[4];
-			RNG.GetBytes(buffer);
+			Rng.GetBytes(buffer);
 
 			return (double)BitConverter.ToUInt32(buffer, 0) / uint.MaxValue;
 		}

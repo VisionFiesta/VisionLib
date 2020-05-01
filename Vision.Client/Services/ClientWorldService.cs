@@ -2,7 +2,7 @@
 using Vision.Client.Data;
 using Vision.Client.Enums;
 using Vision.Client.Networking;
-using Vision.Core.Common.Extensions;
+using Vision.Core.Extensions;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Game.Structs.Char;

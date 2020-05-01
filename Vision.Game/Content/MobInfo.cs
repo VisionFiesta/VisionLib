@@ -1,4 +1,4 @@
-﻿using Vision.Core.Common.IO.SHN;
+﻿using Vision.Core.IO.SHN;
 
 namespace Vision.Game.Content
 {

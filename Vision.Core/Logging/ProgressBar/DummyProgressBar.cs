@@ -1,4 +1,6 @@
-﻿namespace Vision.Core.Common.Logging.ProgressBar
+﻿using System.Drawing;
+
+namespace Vision.Core.Logging.ProgressBar
 {
     public class DummyProgressBar : AProgressBar
     {
@@ -11,9 +13,9 @@
             // nothin
         }
 
-        public override void Complete(string message)
+        public override void Complete(string message, Color color)
         {
-            Write(message);
+            Write(message, color);
             WriteLine();
         }
     }

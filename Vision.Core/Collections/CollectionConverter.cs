@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Vision.Core.Common.Extensions;
+using Vision.Core.Extensions;
 
-namespace Vision.Core.Common.Collections
+namespace Vision.Core.Collections
 {
     public static class CollectionConverter
     {

@@ -2,8 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using Colorful;
-using Vision.Core.Common.Extensions;
-using Vision.Core.Common.Logging;
+using Vision.Core.Extensions;
 
 namespace Vision.Core.Logging.Loggers
 {

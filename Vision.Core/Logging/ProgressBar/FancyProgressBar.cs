@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using Colorful;
-using Vision.Core.Common.Extensions;
+using Vision.Core.Extensions;
 using Console = Colorful.Console;
 
-namespace Vision.Core.Common.Logging.ProgressBar
+namespace Vision.Core.Logging.ProgressBar
 {
     public class FancyProgressBar : AProgressBar
     {
@@ -21,11 +21,11 @@ namespace Vision.Core.Common.Logging.ProgressBar
             _prePercentLen = prefix.Length() + 5 + BarSize;
         }
 
-        public override void Complete(string message)
+        public override void Complete(string message, Color color)
         {
             // MoveCursor(FullLen - _prefixLength - 1);
             Update(100);
-            Write(" -> " + message);
+            Write(" -> " + message, color);
             WriteLine();
         }
 
@@ -35,7 +35,7 @@ namespace Vision.Core.Common.Logging.ProgressBar
             var isFirstRun = percent == 0 && !_hasWrittenOnce;
             if (percent <= _lastPercent && !isFirstRun) return;
 
-            Console.ForegroundColor = _color;
+            Console.ForegroundColor = Color;
 
             // clear
             if (!_hasWrittenOnce)
@@ -66,11 +66,6 @@ namespace Vision.Core.Common.Logging.ProgressBar
             Write(str);
 
             Console.ResetColor();
-
-            // if (percent == 100)
-            // {
-                // WriteLine();
-            // }
 
             _lastPercent = percent;
         }

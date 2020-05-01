@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Vision.Core.Common.Configuration
+namespace Vision.Core.Configuration
 {
 	public class PrivateSetterContractResolver : DefaultContractResolver
 	{

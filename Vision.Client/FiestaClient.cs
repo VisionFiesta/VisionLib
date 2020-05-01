@@ -6,14 +6,16 @@ using Vision.Client.Data;
 using Vision.Client.Enums;
 using Vision.Client.Networking;
 using Vision.Client.Services;
-using Vision.Core.Common.Collections;
-using Vision.Core.Common.IO.SHN;
-using Vision.Core.Common.Logging.Loggers;
+using Vision.Core.Collections;
+using Vision.Core.IO.SHN;
+using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
 using Vision.Game;
 using Vision.Game.Characters.Shape;
 using Vision.Game.Content;
+using Vision.Game.Content.Data.AbnormalState;
+using Vision.Game.Enums;
 using Vision.Game.Structs.User;
 
 namespace Vision.Client
@@ -70,8 +72,12 @@ namespace Vision.Client
         {
             SHNManager.Initialize(shnPath, new SHNCrypto());
 
+            #region AbnormalState
+            AbnormalStateDataProvider.Initialize();
+            #endregion
+
             #region FaceInfo
-            new SHNLoader<byte, CharacterFace>(SHNType.FaceInfo).Load((shnResult, index) =>
+            new SHNLoader(SHNType.FaceInfo).Load((shnResult, index) =>
             {
                 var face = new CharacterFace(shnResult, index);
                 CharacterFace.AllFacesByID.Add(face.ID, face);
@@ -79,7 +85,7 @@ namespace Vision.Client
             #endregion
 
             #region MobInfo
-            new SHNLoader<ushort, MobInfo>(SHNType.MobInfo).Load((shnResult, index) =>
+            new SHNLoader(SHNType.MobInfo).Load((shnResult, index) =>
             {
                 var mi = new MobInfo(shnResult, index);
                 SHNData.AllMobInfosByID.Add(mi.ID, mi);

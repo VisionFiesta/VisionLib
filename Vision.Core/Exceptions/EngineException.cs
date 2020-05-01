@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vision.Core.Common.Exceptions
+namespace Vision.Core.Exceptions
 {
     public class EngineException : Exception
     {

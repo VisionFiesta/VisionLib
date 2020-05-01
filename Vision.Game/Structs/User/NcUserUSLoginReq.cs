@@ -1,7 +1,7 @@
-﻿using Vision.Core.Common.Utils;
-using Vision.Core.Networking;
+﻿using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
+using Vision.Core.Utils;
 
 namespace Vision.Game.Structs.User
 {

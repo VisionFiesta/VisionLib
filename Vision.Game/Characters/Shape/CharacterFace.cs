@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Vision.Core.Common.Collections;
-using Vision.Core.Common.Extensions;
-using Vision.Core.Common.IO.SHN;
+using Vision.Core.Collections;
+using Vision.Core.Extensions;
+using Vision.Core.IO.SHN;
 using Vision.Game.Enums;
 
 namespace Vision.Game.Characters.Shape

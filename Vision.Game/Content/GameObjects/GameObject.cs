@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vision.Core.Common.Collections;
-using Vision.Core.Common.Extensions;
+using Vision.Core.Collections;
+using Vision.Core.Extensions;
 using Vision.Game.Characters;
 using Vision.Game.Structs.Common;
 

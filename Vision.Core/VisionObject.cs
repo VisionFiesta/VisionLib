@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vision.Core.Common
+namespace Vision.Core
 {
 	/// <summary>
 	/// Class for objects that can be referenced.

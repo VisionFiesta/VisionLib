@@ -1,4 +1,4 @@
-﻿namespace Vision.Core.Common.Extensions
+﻿namespace Vision.Core.Extensions
 {
     public static class Int32Extensions
     {

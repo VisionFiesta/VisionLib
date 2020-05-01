@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Vision.Core.Common.Collections;
+using Vision.Core.Collections;
 
-namespace Vision.Core.Common
+namespace Vision.Core
 {
     public static class VisionAssembly
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vision.Core.Common.Extensions
+namespace Vision.Core.Extensions
 {
     public static class DoubleExtensions
     {

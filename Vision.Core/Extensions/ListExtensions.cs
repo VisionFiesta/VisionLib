@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vision.Core.Common.Extensions
+namespace Vision.Core.Extensions
 {
 	/// <summary>
 	/// Class that extends the use of the List class.

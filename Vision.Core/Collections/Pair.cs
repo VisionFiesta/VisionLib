@@ -1,4 +1,4 @@
-﻿namespace Vision.Core.Common.Collections
+﻿namespace Vision.Core.Collections
 {
     public class Pair<T1, T2>
     {

@@ -4,7 +4,7 @@ using System.Drawing;
 using Colorful;
 using Console = Colorful.Console;
 
-namespace Vision.Core.Common.Logging
+namespace Vision.Core.Logging
 {
     public abstract class ColorfulConsoleLogger
     {

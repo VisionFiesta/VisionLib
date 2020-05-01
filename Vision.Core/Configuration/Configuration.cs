@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
-using Vision.Core.Common.Configuration;
-using Vision.Core.Common.Logging.Loggers;
+using Vision.Core.Logging.Loggers;
 
 namespace Vision.Core.Configuration
 {

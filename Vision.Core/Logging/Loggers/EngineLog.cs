@@ -2,10 +2,10 @@
 using System.Drawing;
 using System.Linq;
 using Colorful;
-using Vision.Core.Common.Extensions;
-using Vision.Core.Common.Logging.ProgressBar;
+using Vision.Core.Extensions;
+using Vision.Core.Logging.ProgressBar;
 
-namespace Vision.Core.Common.Logging.Loggers
+namespace Vision.Core.Logging.Loggers
 {
     public sealed class EngineLog : ColorfulConsoleLogger
     {
@@ -35,7 +35,7 @@ namespace Vision.Core.Common.Logging.Loggers
         {
             if (!color.HasValue) color = Instance.BaseColor;
 
-            const EngineLogLevel level = EngineLogLevel.ELL_DEBUG;
+            const EngineLogLevel level = EngineLogLevel.ELL_INFO;
             var prefixFormatter = Instance.GetMessagePrefixFormat(level.ToName(), level.ToColor());
             prefixFormatter.Add(new Formatter(prefix + " -> ", color.Value));
 
@@ -46,7 +46,7 @@ namespace Vision.Core.Common.Logging.Loggers
             return new DummyProgressBar((byte)level, Instance);
         }
 
-        private static void WriteLine(EngineLogLevel level, string message) => Instance.WriteLine((byte)level, level.ToName(), message, level.ToColor());
+        public static void WriteLine(EngineLogLevel level, string message) => Instance.WriteLine((byte)level, level.ToName(), message, level.ToColor());
 
         protected internal override bool ShouldLogPrecise(byte messageLogLevel) => _preciseLogLevels.Contains(messageLogLevel);
     }

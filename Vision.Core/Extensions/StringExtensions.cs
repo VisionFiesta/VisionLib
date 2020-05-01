@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Vision.Core.Common.Extensions
+namespace Vision.Core.Extensions
 {
 	public static class StringExtensions
 	{

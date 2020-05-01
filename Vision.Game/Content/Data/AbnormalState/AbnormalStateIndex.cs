@@ -1,6 +1,6 @@
-﻿namespace Vision.Game.Enums
+﻿namespace Vision.Game.Content.Data.AbnormalState
 {
-    public enum AbstateIndex : ushort
+    public enum AbnormalStateIndex : ushort
     {
         STA_SEVERBONE = 0x0,
         STA_REDSLASH = 0x1,

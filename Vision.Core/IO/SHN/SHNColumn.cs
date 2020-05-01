@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vision.Core.Common.IO.SHN
+namespace Vision.Core.IO.SHN
 {
     public class SHNColumn
     {

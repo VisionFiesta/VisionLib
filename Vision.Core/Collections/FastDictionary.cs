@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Vision.Core.Common.Collections
+namespace Vision.Core.Collections
 {
     public class FastDictionary<TKey, TValue> : Dictionary<TKey, TValue>
     {

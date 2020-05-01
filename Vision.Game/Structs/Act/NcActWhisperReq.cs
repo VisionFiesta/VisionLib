@@ -1,5 +1,5 @@
-﻿using Vision.Core.Common;
-using Vision.Core.Common.Extensions;
+﻿using Vision.Core;
+using Vision.Core.Extensions;
 using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;

@@ -1,5 +1,5 @@
-﻿using Vision.Core.Common.Collections;
-using Vision.Core.Common.Extensions;
+﻿using Vision.Core.Collections;
+using Vision.Core.Extensions;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;

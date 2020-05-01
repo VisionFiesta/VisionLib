@@ -1,4 +1,4 @@
-﻿namespace Vision.Core.Common
+﻿namespace Vision.Core
 {
     public static class NameN
     {

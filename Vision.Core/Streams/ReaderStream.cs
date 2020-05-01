@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using Vision.Core.Common;
 using Vision.Core.Dump;
 
 namespace Vision.Core.Streams
