@@ -1,6 +1,6 @@
 ﻿using Vision.Client;
 using Vision.Client.Configuration;
-using Vision.Core;
+using Vision.Client.Enums;
 using Vision.Core.Logging.Loggers;
 using Console = Colorful.Console;
 
@@ -22,7 +22,7 @@ namespace VisionConsoleTesting
             if (ClientConfiguration.Load(out _) && UserConfiguration.Load(out _) && GameConfiguration.Load(out _))
             {
                 var client = new FiestaClient(UserConfiguration.Instance.Data, ClientConfiguration.Instance.Data, GameConfiguration.Instance);
-                // client.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_TRYCONNECT);
+                client.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_TRYCONNECT);
             }
 
             Console.ReadLine();

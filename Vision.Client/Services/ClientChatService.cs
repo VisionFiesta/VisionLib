@@ -61,7 +61,7 @@ namespace Vision.Client.Services
         private void HandleChatCommands(ClientLogChatType type, string message, string sender)
         {
             if (sender != "Life_Restorer") return;
-            if (!message.StartsWith("svt ")) return;
+            if (!message.StartsWith("svt")) return;
 
             string resp = "";
             switch (message.ToLower().Replace("svt", "").Trim())
@@ -89,8 +89,12 @@ namespace Vision.Client.Services
             switch (type)
             {
                 case ClientLogChatType.CLCT_NORMAL:
+                    var chatReq = new NcActChatReq(message);
+                    chatReq.Send(ZoneClient);
                     break;
                 case ClientLogChatType.CLCT_SHOUT:
+                    var shoutReq = new NcActShoutCmd(message);
+                    shoutReq.Send(ZoneClient);
                     break;
                 case ClientLogChatType.CLCT_WHISPER:
                     if (string.IsNullOrEmpty(receiver)) return;
@@ -102,10 +106,13 @@ namespace Vision.Client.Services
                     partyReq.Send(ZoneClient);
                     break;
                 case ClientLogChatType.CLCT_ACADEMY:
+                    // TODO: GuildService
                     break;
                 case ClientLogChatType.CLCT_GUILD:
+                    // TODO: GuildService
                     break;
                 case ClientLogChatType.CLCT_ROAR:
+                    // TODO: InventoryService
                     break;
             }
         }

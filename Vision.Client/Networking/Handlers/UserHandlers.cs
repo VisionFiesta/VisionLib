@@ -34,8 +34,16 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_USER_LOGIN_ACK, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_USER_LOGIN_ACK(NetPacket packet, NetClientConnection connection)
         {
-            ClientLog.Debug( "User login succeeded!");
+            ClientLog.Debug("User login succeeded!");
+#if SHINE_GER
+            var ack = new NcUserLoginAck();
+            ack.Read(packet);
+
+            connection.GameClient.GameData.Worlds.AddRange(ack.WorldStatuses);
+            connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_GOTWORLDS)
+#else
             connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_LOGGEDIN);
+#endif
         }
 
         [NetPacketHandler(NetCommand.NC_USER_LOGINFAIL_ACK, NetConnectionDestination.NCD_CLIENT)]
@@ -61,9 +69,8 @@ namespace Vision.Client.Networking.Handlers
 
             ClientLog.Debug( "Got world list: " + ack);
 
-            var client = connection.GameClient;
-            client?.GameData.Worlds.AddRange(ack.WorldStatuses);
-            client?.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_GOTWORLDS);
+            connection.GameClient.GameData.Worlds.AddRange(ack.WorldStatuses);
+            connection.GameClient.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_GOTWORLDS);
         }
 
         [NetPacketHandler(NetCommand.NC_USER_WORLDSELECT_ACK, NetConnectionDestination.NCD_CLIENT)]
@@ -87,9 +94,9 @@ namespace Vision.Client.Networking.Handlers
             }
         }
 
-        #endregion
+#endregion
 
-        #region WorldPackets
+#region WorldPackets
 
         [NetPacketHandler(NetCommand.NC_USER_LOGINWORLD_ACK, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_USER_LOGINWORLD_ACK(NetPacket packet, NetClientConnection connection)
@@ -143,6 +150,6 @@ namespace Vision.Client.Networking.Handlers
             connection.GameClient.WorldService.SetStatus(ClientWorldServiceStatus.CWSS_NOTCONNECTED);
         }
 
-        #endregion
+#endregion
     }
 }

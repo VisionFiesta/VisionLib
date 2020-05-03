@@ -72,11 +72,11 @@ namespace Vision.Client.Services
                 case ClientLoginServiceStatus.CLSS_VERIFIED:
                     {
                         ClientLog.Info("ClientLoginService: Version verified");
-                        // Thread.Sleep(50);
+#if SHINE_GER
+                        new NCUserGERLoginReq(UserData.username, UserData.Password).Send(LoginConnection);
+#else
                         new NcUserUSLoginReq(UserData.Username, UserData.Password).Send(LoginConnection);
-                        // new NcUserXTrapReq((byte)ClientData.XTrapVersionHash.Length, ClientData.XTrapVersionHash).Send(LoginConnection);
-                        // new STRUCT_NC_USER_XTRAP_REQ((byte) _config.XTrapVersionHash.Length,
-                        // _config.XTrapVersionHash).ToPacket().Send(_loginConnection);
+#endif                   
                         break;
                     }
                 case ClientLoginServiceStatus.CLSS_LOGGEDIN:
