@@ -1,9 +1,7 @@
 ﻿using Vision.Client;
 using Vision.Client.Configuration;
-using Vision.Client.Enums;
-using Vision.Core.Common.Logging;
-using Vision.Core.Common.Logging.Loggers;
-
+using Vision.Core;
+using Vision.Core.Logging.Loggers;
 using Console = Colorful.Console;
 
 namespace VisionConsoleTesting
@@ -18,18 +16,16 @@ namespace VisionConsoleTesting
             Console.SetWindowSize(ConsoleWidth, ConsoleHeight);
             Console.SetBufferSize(ConsoleWidth, ConsoleHeight * 6);
 
-            Log.SetConsoleLogLevel(LogLevel.Error);
-            // SocketLog.SetPreciseLogLevels(SocketLogLevel.SLL_UNHANDLED, SocketLogLevel.SLL_ERROR, SocketLogLevel.SLL_WARNING, SocketLogLevel.SLL_INFO);
-            SocketLog.SetLogLevel(SocketLogLevel.SLL_UNHANDLED);
-            // ClientLog.SetLogLevel(ClientLogLevel.CLL_ERROR);
+            EngineLog.SetLogLevel(EngineLogLevel.ELL_ERROR);
+            SocketLog.SetLogLevel(SocketLogLevel.SLL_ERROR);
 
             if (ClientConfiguration.Load(out _) && UserConfiguration.Load(out _) && GameConfiguration.Load(out _))
             {
                 var client = new FiestaClient(UserConfiguration.Instance.Data, ClientConfiguration.Instance.Data, GameConfiguration.Instance);
-                client.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_TRYCONNECT);
+                // client.LoginService.SetStatus(ClientLoginServiceStatus.CLSS_TRYCONNECT);
             }
 
-            Console.ReadKey();
+            Console.ReadLine();
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class SHNCrypto : ISHNCrypto
     {
-        public void Calculate(byte[] data)
+        public void Decrypt(byte[] data)
         {
             var dataLen = (byte)data.Length;
             for (var i = data.Length - 1; i >= 0; i--)

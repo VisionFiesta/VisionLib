@@ -35,7 +35,7 @@ namespace Vision.Game.Content.Data.AbnormalState
             _subAbnormalStatesByID = new ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>>();
             _subAbnormalStatesDataByID = new ConcurrentDictionary<ushort, SubAbnormalStateInfo>();
 
-            var subabstateShnLoader = new SHNLoader(SHNType.SubAbState);
+            var subabstateShnLoader = SHNManager.GetSHNLoader(SHNType.SubAbState);
             subabstateShnLoader.Load((result, index) =>
             {
                 var info = new SubAbnormalStateInfo(result, index);
@@ -61,19 +61,19 @@ namespace Vision.Game.Content.Data.AbnormalState
             _abnormalStatesByID = new ConcurrentDictionary<ushort, AbnormalStateInfo>();
             _abnormalStatesByAbnormalStateIndex = new ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo>();
 
-            var abstateShnLoader = new SHNLoader(SHNType.AbState);
+            var abstateShnLoader = SHNManager.GetSHNLoader(SHNType.AbState);
             abstateShnLoader.Load((result, index) =>
             {
                 var info = new AbnormalStateInfo(result, index);
                 if (!_abnormalStatesByID.TryAdd(info.ID, info))
                 {
-                    abstateShnLoader.QueueMessage(EngineLogLevel.ELL_WARNING, $"AbnormalStateDataProvider->LoadAbnormalStates(): Duplicate AbnormalState ID found: {info.ID}");
+                    abstateShnLoader.QueueMessage(EngineLogLevel.ELL_WARNING, $"AbnormalStateDataProvider->LoadAbnormalStates() : Duplicate AbnormalState ID found: {info.ID}");
                 }
 
                 if (!_abnormalStatesByAbnormalStateIndex.TryAdd(info.AbnormalStateIndex, info))
                 {
                     _abnormalStatesByID.TryRemove(info.ID, out info);
-                    abstateShnLoader.QueueMessage(EngineLogLevel.ELL_WARNING, $"AbnormalStateDataProvider->LoadAbnormalStates(): Duplicate AbnormalStateIndex found: {info.AbnormalStateIndex}");
+                    abstateShnLoader.QueueMessage(EngineLogLevel.ELL_WARNING, $"AbnormalStateDataProvider->LoadAbnormalStates() : Duplicate AbnormalStateIndex found: {info.AbnormalStateIndex}");
                 }
             });
 
@@ -82,8 +82,11 @@ namespace Vision.Game.Content.Data.AbnormalState
 
         private static bool LoadAbnormalStateExtras()
         {
-            if (!TryGetAbnormalState(RestEXPID, out AbnormalStateInfo abState))
-                throw new InvalidOperationException($"Can't find 'Rest EXP' buff (ID: {RestEXPID}).");
+            if (!TryGetAbnormalState(RestEXPID, out var abState))
+            {
+                EngineLog.Error($"AbnormalStateDataProvider->LoadAbnormalStateExtras() : Can't find 'Rest EXP' buff (ID: {RestEXPID}).");
+                return false;
+            }
             RestEXP = abState;
             abState.SubAbnormalStates.TryAdd(0, new SubAbnormalStateInfo(ushort.MaxValue, 0, 0, 0, TimeSpan.Zero));
             return true;

@@ -2,6 +2,6 @@
 {
     public interface ISHNCrypto
     {
-        void Calculate(byte[] data);
+        void Decrypt(byte[] data);
     }
 }

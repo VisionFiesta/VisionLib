@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Colorful;
 using Console = Colorful.Console;
+// ReSharper disable InconsistentlySynchronizedField
 
 namespace Vision.Core.Logging
 {

@@ -18,6 +18,9 @@
         ActiveSkillInfoServer,
         ActiveSkillView,
         AdminLvSet,
+        AnimationEffectInfo,
+        AnimationSoundInfo,
+        AnimationViewInfo,
         AnnounceData,
         AreaSkill,
         AttendReward,
@@ -221,6 +224,7 @@
         PupView,
         QuestData,
         QuestDialog,
+        QuestReward,
         QuestScript,
         QuestSpecies,
         RaceNameInfo,
@@ -261,6 +265,68 @@
         WeaponTitleData,
         WorldMapAvatarInfo,
         WPConfig,
-        Unknown
+        Unknown,
+    }
+
+    public static class SHNTypeExtensions
+    {
+        public static string ToFilename(this SHNType type) => $"{type}.shn";
+
+        /// <summary>
+        /// If the SHN is larger than 100kB
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsLarge(this SHNType type)
+        {
+            switch (type)
+            {
+                case SHNType.ItemViewInfo:
+                case SHNType.ItemInfo:
+                case SHNType.ItemInfoServer:
+                case SHNType.QuestDialog:
+                case SHNType.ActiveSkillView:
+                case SHNType.ActiveSkill:
+                case SHNType.AnimationEffectInfo:
+                case SHNType.MobViewInfo:
+                case SHNType.AnimationSoundInfo:
+                case SHNType.UpgradeInfo:
+                case SHNType.RandomOption:
+                case SHNType.AnimationViewInfo:
+                case SHNType.QuestSpecies:
+                case SHNType.MobInfoServer:
+                case SHNType.AbStateView:
+                case SHNType.ItemViewDummy:
+                case SHNType.MobSpecies:
+                case SHNType.ActionEffectInfo:
+                case SHNType.NPCViewInfo:
+                case SHNType.MobInfo:
+                case SHNType.GradeItemOption:
+                case SHNType.ScriptMsg:
+                case SHNType.ItemActionEffectDesc:
+                case SHNType.MapLinkPoint:
+                case SHNType.AbState:
+                case SHNType.ChargedEffect:
+                case SHNType.CharacterTitleStateView:
+                case SHNType.ItemShop:
+                case SHNType.MapWayPoint:
+                case SHNType.TextData:
+                case SHNType.SubAbState:
+                case SHNType.PassiveSkillView:
+                case SHNType.TextData2:
+                case SHNType.MobCoordinate:
+                case SHNType.WeaponTitleData:
+                case SHNType.MoverView:
+                case SHNType.PassiveSkill:
+                case SHNType.CollectCardView:
+                case SHNType.QuestReward:
+                case SHNType.ItemShopView:
+                case SHNType.BasicInfoLink:
+                case SHNType.Produce:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

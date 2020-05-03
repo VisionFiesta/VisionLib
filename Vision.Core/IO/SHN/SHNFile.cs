@@ -24,7 +24,7 @@ namespace Vision.Core.IO.SHN
         private int _dataLength;
         private uint _header;
         private uint _rowCount;
-        private uint _defaultRowLength;
+        // private uint _defaultRowLength;
         private uint _columnCount;
 
         public static SHNFile Create(string shnFolder, SHNType shnType, ISHNCrypto shnCrypto, Encoding shnEncoding)
@@ -82,13 +82,13 @@ namespace Vision.Core.IO.SHN
                 _data = shnReader.ReadBytes(_dataLength - 36);
             }
 
-            _shnCrypto.Calculate(_data);
+            _shnCrypto.Decrypt(_data);
 
             shnReader = new SHNBinaryReader(new MemoryStream(_data), _shnEncoding);
 
             _header = shnReader.ReadUInt32();
             _rowCount = shnReader.ReadUInt32();
-            _defaultRowLength = shnReader.ReadUInt32();
+            /*_defaultRowLength =*/ shnReader.ReadUInt32();
             _columnCount = shnReader.ReadUInt32();
 
             var unknownCount = 0;
@@ -418,7 +418,7 @@ namespace Vision.Core.IO.SHN
 
             Array.Copy(unencryptedData, encryptedData, shnStream.Length);
 
-            _shnCrypto.Calculate(encryptedData);
+            _shnCrypto.Decrypt(encryptedData);
 
             shnWriter.Close();
             shnWriter = new SHNBinaryWriter(File.Create(writePath), _shnEncoding);

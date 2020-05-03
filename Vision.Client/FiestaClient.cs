@@ -77,7 +77,7 @@ namespace Vision.Client
             #endregion
 
             #region FaceInfo
-            new SHNLoader(SHNType.FaceInfo).Load((shnResult, index) =>
+            SHNManager.GetSHNLoader(SHNType.FaceInfo).Load((shnResult, index) =>
             {
                 var face = new CharacterFace(shnResult, index);
                 CharacterFace.AllFacesByID.Add(face.ID, face);
@@ -85,7 +85,7 @@ namespace Vision.Client
             #endregion
 
             #region MobInfo
-            new SHNLoader(SHNType.MobInfo).Load((shnResult, index) =>
+            SHNManager.GetSHNLoader(SHNType.MobInfo).Load((shnResult, index) =>
             {
                 var mi = new MobInfo(shnResult, index);
                 SHNData.AllMobInfosByID.Add(mi.ID, mi);
