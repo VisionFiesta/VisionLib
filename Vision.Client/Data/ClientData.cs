@@ -2,6 +2,8 @@
 {
     public class ClientData
     {
+        public string ShinePath { get; set; } = @"D:\Games\GamigoFiesta\ressystem";
+
         // Latest as of NA 1.02.276
         public byte[] VersionKey { get; protected set; } =
         {

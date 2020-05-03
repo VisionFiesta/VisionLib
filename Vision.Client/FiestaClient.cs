@@ -37,14 +37,14 @@ namespace Vision.Client
 
         public GameData GameData = new GameData();
 
-        public FiestaClient(ClientUserData userData, ClientData clientData, GameConfiguration gameConfig)
+        public FiestaClient(ClientUserData userData, ClientData clientData)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             UserData = userData;
             ClientData = clientData;
 
-            LoadSHN(gameConfig.ShinePath);
+            LoadSHN(clientData.ShinePath);
             
             NetPacketHandlerLoader<NetClientConnection>.LoadHandlers();
 
