@@ -13,12 +13,10 @@
 
         public ClientUserData() { }
 
-        public ClientUserData(string username, string password, string loginIp, ushort loginPort)
+        public ClientUserData(string username, string password)
         {
             Username = username;
             Password = password;
-            LoginServerIP = loginIp;
-            LoginServerPort = loginPort;
         }
     }
 }
