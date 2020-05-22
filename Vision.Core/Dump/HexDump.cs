@@ -59,15 +59,19 @@ namespace Vision.Core.Dump
             }
         }
 
-        public static void Dump(System.IO.Stream stream, byte[] src, int srcIndex, int length)
+        public static void Dump(Stream stream, byte[] src, int srcIndex, int length)
         {
-            if (length == 0) return;
-
-            if (length == -1)
+            switch (length)
             {
-                length = src.Length - srcIndex;
+                case 0:
+                    return;
+                case -1:
+                {
+                    length = src.Length - srcIndex;
 
-                if (length < 1) return;
+                    if (length < 1) return;
+                    break;
+                }
             }
 
             var s = length % 16;
@@ -130,28 +134,24 @@ namespace Vision.Core.Dump
             } while (si < length);
 
             var str = new string(c);
-            using (var sw = new StreamWriter(stream, Encoding.UTF8, str.Length, true))
-            {
-                sw.Write(str);
-                sw.Flush();
-                stream.Seek(0, SeekOrigin.Begin);
-            }
+            using var sw = new StreamWriter(stream, Encoding.UTF8, str.Length, true);
+            sw.Write(str);
+            sw.Flush();
+            stream.Seek(0, SeekOrigin.Begin);
         }
 
-        public static void Dump(System.IO.Stream s, byte[] src)
+        public static void Dump(Stream s, byte[] src)
         {
             Dump(s, src, 0, -1);
         }
 
         public static string Dump(byte[] buffer)
         {
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            {
-                Dump(stream, buffer);
-                var str = reader.ReadToEnd();
-                return str;
-            }
+            using var stream = new MemoryStream();
+            using var reader = new StreamReader(stream);
+            Dump(stream, buffer);
+            var str = reader.ReadToEnd();
+            return str;
         }
     }
 }

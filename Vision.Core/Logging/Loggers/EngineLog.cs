@@ -10,7 +10,7 @@ namespace Vision.Core.Logging.Loggers
     public sealed class EngineLog : ColorfulConsoleLogger
     {
         private static EngineLog _instance;
-        public static EngineLog Instance => _instance ?? (_instance = new EngineLog());
+        public static EngineLog Instance => _instance ??= new EngineLog();
 
         internal EngineLog() : base("EngineLog", Color.Orange) { }
 
@@ -22,7 +22,7 @@ namespace Vision.Core.Logging.Loggers
 
         public static void Debug(string message) => WriteLine(EngineLogLevel.ELL_DEBUG, message);
 
-        public static void Error(string prependMessage, System.Exception ex) 
+        public static void Error(string prependMessage, System.Exception ex)
             => Instance.WriteLine((byte)EngineLogLevel.ELL_ERROR, "Exception", $"{prependMessage}:\n{ex.Message}\n{ex.StackTrace}", Color.OrangeRed);
 
         public static void Error(string message) => WriteLine(EngineLogLevel.ELL_ERROR, message);
@@ -63,26 +63,26 @@ namespace Vision.Core.Logging.Loggers
     {
         public static Color ToColor(this EngineLogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case EngineLogLevel.ELL_DEBUG: return Color.BlueViolet;
-                case EngineLogLevel.ELL_ERROR: return Color.Red;
-                case EngineLogLevel.ELL_WARNING: return Color.DarkOrange;
-                case EngineLogLevel.ELL_INFO: return Color.Chartreuse;
-                default: return Color.White;
-            }
+                EngineLogLevel.ELL_DEBUG => Color.BlueViolet,
+                EngineLogLevel.ELL_ERROR => Color.Red,
+                EngineLogLevel.ELL_WARNING => Color.DarkOrange,
+                EngineLogLevel.ELL_INFO => Color.Chartreuse,
+                _ => Color.White
+            };
         }
 
         public static string ToName(this EngineLogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case EngineLogLevel.ELL_DEBUG: return "Debug";
-                case EngineLogLevel.ELL_ERROR: return "Error";
-                case EngineLogLevel.ELL_WARNING: return "Warning";
-                case EngineLogLevel.ELL_INFO: return "Info";
-                default: return "Unk";
-            }
+                EngineLogLevel.ELL_DEBUG => "Debug",
+                EngineLogLevel.ELL_ERROR => "Error",
+                EngineLogLevel.ELL_WARNING => "Warning",
+                EngineLogLevel.ELL_INFO => "Info",
+                _ => "Unk"
+            };
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Vision.Game.Structs.User
         public NcUserUSLoginReq(string username, string password, string spawnApp = "Original", bool isPassPlaintext = true)
         {
             Username = username;
-            PasswordMD5 = isPassPlaintext ? MD5Utils.CreateMD5(password).ToLower() : password;
+            PasswordMD5 = isPassPlaintext ? Md5Utils.CalcMd5(password).ToLower() : password;
             SpawnApp = spawnApp;
         }
 

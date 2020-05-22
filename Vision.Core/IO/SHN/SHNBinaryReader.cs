@@ -7,9 +7,9 @@ namespace Vision.Core.IO.SHN
     {
         private readonly Encoding _shnEncoding;
 
-        private readonly byte[] _buffer = new byte[0x100];
+        private readonly byte[] _buffer = new byte[256];
 
-        public SHNBinaryReader(System.IO.Stream s, Encoding se) : base(s) => _shnEncoding = se;
+        public SHNBinaryReader(Stream s, Encoding se) : base(s) => _shnEncoding = se;
 
         public string ReadString(int bytes) => bytes > 0 ? ReadString((uint)bytes) : string.Empty;
 

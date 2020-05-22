@@ -69,9 +69,9 @@ namespace Vision.Game.Structs.User
             public string WorldName { get; private set; }
             public WorldServerStatus WorldStatus { get; private set; }
 
-            internal WorldStatusStruct() { }
+            public WorldStatusStruct() { }
 
-            internal WorldStatusStruct(byte worldId, string worldName, byte worldStatus)
+            public WorldStatusStruct(byte worldId, string worldName, byte worldStatus)
             {
                 WorldID = worldId;
                 WorldName = worldName;

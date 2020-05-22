@@ -1,6 +1,6 @@
 ﻿using Vision.Core.Streams;
 using Vision.Core.Structs;
-using VisionLib.Common.Utils;
+using Vision.Core.Utils;
 
 namespace Vision.Game.Structs.Common
 {

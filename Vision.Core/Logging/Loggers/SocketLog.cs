@@ -8,7 +8,7 @@ namespace Vision.Core.Logging.Loggers
     public sealed class SocketLog : ColorfulConsoleLogger
     {
         private static SocketLog _instance;
-        private static SocketLog Instance => _instance ?? (_instance = new SocketLog());
+        private static SocketLog Instance => _instance ??= new SocketLog();
 
         internal SocketLog() : base("SocketLog", Color.Purple) {}
 
@@ -38,7 +38,7 @@ namespace Vision.Core.Logging.Loggers
         {
             Instance.WriteLine((byte)level, level.ToName(), message, level.ToColor());
         }
-        
+
         protected internal override bool ShouldLogPrecise(byte messageLogLevel)
         {
             return _preciseLogLevels.Contains(messageLogLevel);
@@ -58,28 +58,28 @@ namespace Vision.Core.Logging.Loggers
     {
         public static Color ToColor(this SocketLogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case SocketLogLevel.SLL_DEBUG: return Color.BlueViolet;
-                case SocketLogLevel.SLL_UNHANDLED: return Color.LightCoral;
-                case SocketLogLevel.SLL_ERROR: return Color.Red;
-                case SocketLogLevel.SLL_WARNING: return Color.DarkOrange;
-                case SocketLogLevel.SLL_INFO: return Color.Chartreuse;
-                default: return Color.White;
-            }
+                SocketLogLevel.SLL_DEBUG => Color.BlueViolet,
+                SocketLogLevel.SLL_UNHANDLED => Color.LightCoral,
+                SocketLogLevel.SLL_ERROR => Color.Red,
+                SocketLogLevel.SLL_WARNING => Color.DarkOrange,
+                SocketLogLevel.SLL_INFO => Color.Chartreuse,
+                _ => Color.White
+            };
         }
 
         public static string ToName(this SocketLogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case SocketLogLevel.SLL_DEBUG: return "Debug";
-                case SocketLogLevel.SLL_UNHANDLED: return "Unhandled";
-                case SocketLogLevel.SLL_ERROR: return "Error";
-                case SocketLogLevel.SLL_WARNING: return "Warning";
-                case SocketLogLevel.SLL_INFO: return "Info";
-                default: return "Unk";
-            }
+                SocketLogLevel.SLL_DEBUG => "Debug",
+                SocketLogLevel.SLL_UNHANDLED => "Unhandled",
+                SocketLogLevel.SLL_ERROR => "Error",
+                SocketLogLevel.SLL_WARNING => "Warning",
+                SocketLogLevel.SLL_INFO => "Info",
+                _ => "Unk"
+            };
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
-using VisionLib.Common.Utils;
+using Vision.Core.Utils;
 
 namespace Vision.Game.Structs.Bat
 {
@@ -80,45 +80,41 @@ namespace Vision.Game.Structs.Bat
 
             public SkillDamageFlags(ushort flag)
             {
-                using (var bs = new BitStream())
-                {
-                    bs.Write(flag);
-                    bs.Read(out IsDamage);
-                    bs.Read(out IsCritical);
-                    bs.Read(out IsMissed);
-                    bs.Read(out IsShieldBlock);
-                    bs.Read(out IsHeal);
-                    bs.Read(out IsEnchant);
-                    bs.Read(out IsResist);
-                    bs.Read(out IsCostumeWeapon);
-                    bs.Read(out IsDead);
-                    bs.Read(out IsImmune);
-                    bs.Read(out IsCostumeShield);
-                }
+                using var bs = new BitStream();
+                bs.Write(flag);
+                bs.Read(out IsDamage);
+                bs.Read(out IsCritical);
+                bs.Read(out IsMissed);
+                bs.Read(out IsShieldBlock);
+                bs.Read(out IsHeal);
+                bs.Read(out IsEnchant);
+                bs.Read(out IsResist);
+                bs.Read(out IsCostumeWeapon);
+                bs.Read(out IsDead);
+                bs.Read(out IsImmune);
+                bs.Read(out IsCostumeShield);
             }
 
             public ushort ToUShort()
             {
-                using (var bs = new BitStream())
+                using var bs = new BitStream();
+                bs.Write(new[]
                 {
-                    bs.Write(new[]
-                    {
-                        IsDamage,
-                        IsCritical,
-                        IsMissed,
-                        IsShieldBlock,
-                        IsHeal,
-                        IsEnchant,
-                        IsResist,
-                        IsCostumeWeapon,
-                        IsDead,
-                        IsImmune,
-                        IsCostumeShield
-                    });
+                    IsDamage,
+                    IsCritical,
+                    IsMissed,
+                    IsShieldBlock,
+                    IsHeal,
+                    IsEnchant,
+                    IsResist,
+                    IsCostumeWeapon,
+                    IsDead,
+                    IsImmune,
+                    IsCostumeShield
+                });
 
-                    bs.Read(out ushort flag);
-                    return flag;
-                }
+                bs.Read(out ushort flag);
+                return flag;
             }
         }
 

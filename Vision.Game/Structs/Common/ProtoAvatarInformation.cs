@@ -3,9 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using Vision.Core;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
+using Vision.Core.Utils;
 using Vision.Game.Characters;
 using Vision.Game.Characters.Shape;
-using VisionLib.Common.Utils;
 
 namespace Vision.Game.Structs.Common
 {
@@ -167,16 +167,14 @@ namespace Vision.Game.Structs.Common
             HairColor = reader.ReadByte();
             Face = reader.ReadByte();
 
-            using (var bs = new BitStream())
-            {
-                bs.Write(JobGender);
+            using var bs = new BitStream();
+            bs.Write(JobGender);
 
-                bs.Read(out byte job, 0, 7);
-                bs.Read(out byte gender, 0, 1);
+            bs.Read(out byte job, 0, 7);
+            bs.Read(out byte gender, 0, 1);
 
-                Job = (CharacterClass)job;
-                Gender = (CharacterGender)gender;
-            }
+            Job = (CharacterClass)job;
+            Gender = (CharacterGender)gender;
         }
 
         public override void Write(WriterStream writer)

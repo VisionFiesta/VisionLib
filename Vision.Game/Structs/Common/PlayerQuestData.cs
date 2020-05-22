@@ -1,6 +1,6 @@
 ﻿using Vision.Core.Streams;
 using Vision.Core.Structs;
-using VisionLib.Common.Utils;
+using Vision.Core.Utils;
 
 namespace Vision.Game.Structs.Common
 {
@@ -10,7 +10,7 @@ namespace Vision.Game.Structs.Common
         public long EndTime;
         public uint RepeatCount;
         public byte ProgressStep;
-        public byte[] EndNPCMobCount { get; private set; } = new byte[5];
+        public byte[] EndNPCMobCount { get; } = new byte[5];
         public byte EndLocationScenario { get; private set; } // bitpacked, 1 ea
         public ushort EndRunningTimeSec;
 

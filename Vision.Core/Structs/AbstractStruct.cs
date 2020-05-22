@@ -17,8 +17,6 @@ namespace Vision.Core.Structs
             reader.SetOffset(offset);
 
             Read(reader);
-
-
         }
 
         public abstract void Read(ReaderStream reader);

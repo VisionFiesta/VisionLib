@@ -1,6 +1,6 @@
 ﻿using Vision.Core.Streams;
 using Vision.Core.Structs;
-using VisionLib.Common.Utils;
+using Vision.Core.Utils;
 
 namespace Vision.Game.Structs.Common
 {
@@ -22,12 +22,10 @@ namespace Vision.Game.Structs.Common
             Type = reader.ReadByte();
             ElementNoValue = reader.ReadByte();
 
-            using (var bs = new BitStream())
-            {
-                bs.Write(ElementNoValue);
-                bs.Read(out ElementNo, 0, 6);
-                bs.Read(out ElementValue, 0, 2);
-            }
+            using var bs = new BitStream();
+            bs.Write(ElementNoValue);
+            bs.Read(out ElementNo, 0, 6);
+            bs.Read(out ElementValue, 0, 2);
         }
 
         public override void Write(WriterStream writer)

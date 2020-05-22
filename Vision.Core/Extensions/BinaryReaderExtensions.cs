@@ -5,7 +5,7 @@ namespace Vision.Core.Extensions
 {
     public static class BinaryReaderExtensions
     {
-		public static string ReadString(this BinaryReader reader, int length)
+        public static string ReadString(this BinaryReader reader, int length)
         {
             var ret = string.Empty;
             var offset = 0;
@@ -23,5 +23,5 @@ namespace Vision.Core.Extensions
 
             return ret;
         }
-	}
+    }
 }

@@ -9,7 +9,7 @@ namespace Vision.Core.Logging.Loggers
     public sealed class ClientLog : ColorfulConsoleLogger
     {
         private static ClientLog _instance;
-        public static ClientLog Instance => _instance ?? (_instance = new ClientLog());
+        public static ClientLog Instance => _instance ??= new ClientLog();
 
         internal ClientLog() : base("ClientLog", Color.CornflowerBlue) { }
 
@@ -125,28 +125,28 @@ namespace Vision.Core.Logging.Loggers
     {
         public static Color ToColor(this ClientLogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case ClientLogLevel.CLL_DEBUG: return Color.BlueViolet;
-                case ClientLogLevel.CLL_GAME: return Color.LightSeaGreen;
-                case ClientLogLevel.CLL_ERROR: return Color.Red;
-                case ClientLogLevel.CLL_WARNING: return Color.DarkOrange;
-                case ClientLogLevel.CLL_INFO: return Color.Chartreuse;
-                default: return Color.White;
-            }
+                ClientLogLevel.CLL_DEBUG => Color.BlueViolet,
+                ClientLogLevel.CLL_GAME => Color.LightSeaGreen,
+                ClientLogLevel.CLL_ERROR => Color.Red,
+                ClientLogLevel.CLL_WARNING => Color.DarkOrange,
+                ClientLogLevel.CLL_INFO => Color.Chartreuse,
+                _ => Color.White
+            };
         }
 
         public static string ToName(this ClientLogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case ClientLogLevel.CLL_DEBUG: return "Debug";
-                case ClientLogLevel.CLL_GAME: return "Game";
-                case ClientLogLevel.CLL_ERROR: return "Error";
-                case ClientLogLevel.CLL_WARNING: return "Warning";
-                case ClientLogLevel.CLL_INFO: return "Info";
-                default: return "Unk";
-            }
+                ClientLogLevel.CLL_DEBUG => "Debug",
+                ClientLogLevel.CLL_GAME => "Game",
+                ClientLogLevel.CLL_ERROR => "Error",
+                ClientLogLevel.CLL_WARNING => "Warning",
+                ClientLogLevel.CLL_INFO => "Info",
+                _ => "Unk"
+            };
         }
     }
 
@@ -165,32 +165,32 @@ namespace Vision.Core.Logging.Loggers
     {
         public static Color ToColor(this ClientLogChatType level)
         {
-            switch (level)
+            return level switch
             {
-                case ClientLogChatType.CLCT_NORMAL: return Color.White;
-                case ClientLogChatType.CLCT_SHOUT: return FiestaColors.ChatShoutColor;
-                case ClientLogChatType.CLCT_WHISPER: return FiestaColors.ChatWhisperColor;
-                case ClientLogChatType.CLCT_PARTY: return FiestaColors.ChatPartyColor;
-                case ClientLogChatType.CLCT_ACADEMY: return FiestaColors.ChatAcademyColor;
-                case ClientLogChatType.CLCT_GUILD: return FiestaColors.ChatGuildColor;
-                case ClientLogChatType.CLCT_ROAR: return FiestaColors.ChatRoarColor;
-                default: return Color.White;
-            }
+                ClientLogChatType.CLCT_NORMAL => Color.White,
+                ClientLogChatType.CLCT_SHOUT => FiestaColors.ChatShoutColor,
+                ClientLogChatType.CLCT_WHISPER => FiestaColors.ChatWhisperColor,
+                ClientLogChatType.CLCT_PARTY => FiestaColors.ChatPartyColor,
+                ClientLogChatType.CLCT_ACADEMY => FiestaColors.ChatAcademyColor,
+                ClientLogChatType.CLCT_GUILD => FiestaColors.ChatGuildColor,
+                ClientLogChatType.CLCT_ROAR => FiestaColors.ChatRoarColor,
+                _ => Color.White
+            };
         }
 
         public static string ToName(this ClientLogChatType level)
         {
-            switch (level)
+            return level switch
             {
-                case ClientLogChatType.CLCT_NORMAL: return "Normal";
-                case ClientLogChatType.CLCT_SHOUT: return "Shout";
-                case ClientLogChatType.CLCT_WHISPER: return "Whisper";
-                case ClientLogChatType.CLCT_PARTY: return "Party";
-                case ClientLogChatType.CLCT_ACADEMY: return "Academy";
-                case ClientLogChatType.CLCT_GUILD: return "Guild";
-                case ClientLogChatType.CLCT_ROAR: return "Roar";
-                default: return "Unk";
-            }
+                ClientLogChatType.CLCT_NORMAL => "Normal",
+                ClientLogChatType.CLCT_SHOUT => "Shout",
+                ClientLogChatType.CLCT_WHISPER => "Whisper",
+                ClientLogChatType.CLCT_PARTY => "Party",
+                ClientLogChatType.CLCT_ACADEMY => "Academy",
+                ClientLogChatType.CLCT_GUILD => "Guild",
+                ClientLogChatType.CLCT_ROAR => "Roar",
+                _ => "Unk"
+            };
         }
     }
 }

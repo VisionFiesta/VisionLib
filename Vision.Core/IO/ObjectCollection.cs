@@ -22,12 +22,9 @@ namespace Vision.Core.IO
 		/// <summary>
 		/// Creates a new instance of the <see cref="ObjectCollection{T}"/> class.
 		/// </summary>
-		public ObjectCollection()
-		{
-			_objects = new Dictionary<dynamic, T>();
-		}
+		public ObjectCollection() => _objects = new Dictionary<dynamic, T>();
 
-		/// <summary>
+        /// <summary>
 		/// Returns the object with the identity.
 		/// </summary>
 		/// <param name="identity">The identity of the object.</param>

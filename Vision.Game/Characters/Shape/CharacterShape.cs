@@ -1,5 +1,5 @@
-﻿using Vision.Game.Structs.Common;
-using VisionLib.Common.Utils;
+﻿using Vision.Core.Utils;
+using Vision.Game.Structs.Common;
 
 namespace Vision.Game.Characters.Shape
 {
@@ -24,13 +24,11 @@ namespace Vision.Game.Characters.Shape
 
         public byte GetJobGenderByte()
         {
-            using (var bs = new BitStream())
-            {
-                bs.Write((byte)Class, 0, 7);
-                bs.Write((byte)Gender, 0, 1);
+            using var bs = new BitStream();
+            bs.Write((byte)Class, 0, 7);
+            bs.Write((byte)Gender, 0, 1);
 
-                return (byte) bs.ReadByte();
-            }
+            return (byte) bs.ReadByte();
         }
     }
 }
