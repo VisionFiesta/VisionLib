@@ -5,7 +5,7 @@ using Vision.Core.Logging.Loggers;
 
 namespace Vision.Core.Configuration
 {
-    public class Configuration<T>
+    public class Configuration<T> where T:Configuration<T>
     {
         private const string ConfigFolder = "Config";
 
@@ -37,7 +37,7 @@ namespace Vision.Core.Configuration
             file.Close();
         }
 
-        private static T ReadJson(string configName = null)
+        private static async System.Threading.Tasks.Task<T> ReadJsonAsync(string configName = null)
         {
             var settings = new JsonSerializerSettings
             {
@@ -47,12 +47,10 @@ namespace Vision.Core.Configuration
             var path = Path.Combine(ConfigFolder, $"{configName ?? typeof(T).Name}.json");
             if (!File.Exists(path)) return default;
 
-            using (var file = File.OpenText(path))
-            {
-                var text = file.ReadToEnd();
-                var obj = JsonConvert.DeserializeObject<T>(text, settings);
-                return obj;
-            }
+            using var file = File.OpenText(path);
+            var text = await file.ReadToEndAsync();
+            var obj = JsonConvert.DeserializeObject<T>(text, settings);
+            return obj;
         }
 
         private static T Initialize(out string message)
@@ -62,7 +60,7 @@ namespace Vision.Core.Configuration
 
             try
             {
-                var instance = ReadJson();
+                var instance = ReadJsonAsync().Result;
                 if (instance != null)
                 {
                     EngineLog.Info($"Successfully read {shortTypeName} config.");
@@ -70,7 +68,7 @@ namespace Vision.Core.Configuration
                     return instance;
                 }
 
-                if (!Write(out var pConfig))
+                if (!Create(out var pConfig))
                 {
                     message = $"Failed to create default {fullTypeName}.";
                     return default;
@@ -89,9 +87,9 @@ namespace Vision.Core.Configuration
             }
         }
 
-        private static bool Write(out dynamic pConfig)
+        private static bool Create(out T pConfig)
         {
-            pConfig = default(T);
+            pConfig = default;
             try
             {
                 pConfig = (T)Activator.CreateInstance(typeof(T));

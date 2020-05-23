@@ -45,18 +45,18 @@ namespace Vision.Core.IO.SHN
             {
                 Parallel.Invoke(new ParallelOptions(), new Action[]
                 {
-                    () => Parallel.ForEach(parallelTypes, shnType =>
+                    () => Parallel.ForEach(parallelTypes, async shnType =>
                     {
-                        if (SingleLoad(shnType, true))
+                        if (await SingleLoadAsync(shnType, true))
                         {
                             Types.Add(shnType);
                         }
                     }),
-                    () =>
+                    async () =>
                     {
                         foreach (var shnType in nonParallelTypes)
                         {
-                            if (SingleLoad(shnType, false))
+                            if (await SingleLoadAsync(shnType, false))
                             {
                                 Types.Add(shnType);
                             }
@@ -69,7 +69,7 @@ namespace Vision.Core.IO.SHN
             {
                 foreach (var shnType in newTypes)
                 {
-                    if (SingleLoad(shnType, false))
+                    if (SingleLoadAsync(shnType, false).Result)
                     {
                         Types.Add(shnType);
                     }
@@ -77,7 +77,7 @@ namespace Vision.Core.IO.SHN
             }
         }
 
-        private static bool SingleLoad(SHNType type, bool parallel)
+        private static async Task<bool> SingleLoadAsync(SHNType type, bool parallel)
         {
             var definition = AllFileDefinitions.FirstOrDefault(def => def.Name == type.ToString());
             if (definition == null)
@@ -109,9 +109,11 @@ namespace Vision.Core.IO.SHN
             using (var file = new SimpleSHNFile(Path.Combine(_shnFolder, type.ToFilename()), _crypto))
             using (var reader = new DataTableReader(file._table))
             {
-                while (reader.Read())
+                var res = true;
+                while (res)
                 {
                     created.Add(reader);
+                    res = await reader.ReadAsync();
                 }
             }
 

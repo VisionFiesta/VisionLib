@@ -1,4 +1,6 @@
-﻿namespace Vision.Core.IO.SHN
+﻿using System.Collections.Generic;
+
+namespace Vision.Core.IO.SHN
 {
     public enum SHNType
     {
@@ -266,10 +268,78 @@
         WorldMapAvatarInfo,
         WPConfig,
         Unknown,
+        DeprecatedFiles,
+        QuestEndNpc,
+        QuestEndItem,
+        QuestAction
     }
 
     public static class SHNTypeExtensions
     {
+        public static readonly List<SHNType> EUHashOrder = new List<SHNType>()
+        {
+            SHNType.AbState,
+            SHNType.ActiveSkill,
+            SHNType.CharacterTitleData,
+            SHNType.ChargedEffect,
+            SHNType.ClassName,
+            SHNType.Gather,
+            SHNType.GradeItemOption,
+            SHNType.ItemDismantle,
+            SHNType.ItemInfo,
+            SHNType.MapInfo,
+            SHNType.MiniHouseFurniture,
+            SHNType.MiniHouse,
+            SHNType.MiniHouseObjAni,
+            SHNType.MobInfo,
+            SHNType.PassiveSkill,
+            SHNType.Riding,
+            SHNType.SubAbState,
+            SHNType.UpgradeInfo,
+            SHNType.WeaponAttrib,
+            SHNType.WeaponTitleData,
+            SHNType.MiniHouseFurnitureObjEffect,
+            SHNType.MiniHouseEndure,
+            SHNType.DiceDividind,
+            SHNType.ActionViewInfo,
+            SHNType.MapLinkPoint,
+            SHNType.MapWayPoint,
+            SHNType.AbStateView,
+            SHNType.ActiveSkillView,
+            SHNType.CharacterTitleStateView,
+            SHNType.EffectViewInfo,
+            SHNType.ItemShopView,
+            SHNType.ItemViewInfo,
+            SHNType.MapViewInfo,
+            SHNType.MobViewInfo,
+            SHNType.NPCViewInfo,
+            SHNType.PassiveSkillView,
+            SHNType.ProduceView,
+            SHNType.CollectCardView,
+            SHNType.GTIView,
+            SHNType.ItemViewEquipTypeInfo,
+            SHNType.SingleData,
+            SHNType.MarketSearchInfo,
+            SHNType.ItemMoney,
+            SHNType.PupMain,
+            SHNType.ChatColor,
+            SHNType.TermExtendMatch,
+            SHNType.MinimonInfo,
+            SHNType.MinimonAutoUseItem,
+            SHNType.ChargedDeletableBuff,
+            SHNType.SlanderFilter,
+        };
+
+        public static readonly List<SHNType> NAHashOrder = new List<SHNType>(EUHashOrder)
+        {
+            SHNType.DeprecatedFiles,
+            SHNType.QuestData,
+            SHNType.QuestEndNpc,
+            SHNType.QuestEndItem,
+            SHNType.QuestAction,
+            SHNType.QuestReward,
+        };
+
         public static string ToFilename(this SHNType type) => $"{type}.shn";
 
         /// <summary>
@@ -326,6 +396,81 @@
                     return true;
                 default:
                     return false;
+            }
+        }
+
+
+        public static bool InHash_EU(this SHNType type)
+        {
+            switch (type)
+            {
+                case SHNType.AbState:
+                case SHNType.ActiveSkill:
+                case SHNType.CharacterTitleData:
+                case SHNType.ChargedEffect:
+                case SHNType.ClassName:
+                case SHNType.Gather:
+                case SHNType.GradeItemOption:
+                case SHNType.ItemDismantle:
+                case SHNType.ItemInfo:
+                case SHNType.MapInfo:
+                case SHNType.MiniHouseFurniture:
+                case SHNType.MiniHouse:
+                case SHNType.MiniHouseObjAni:
+                case SHNType.MobInfo:
+                case SHNType.PassiveSkill:
+                case SHNType.Riding:
+                case SHNType.SubAbState:
+                case SHNType.UpgradeInfo:
+                case SHNType.WeaponAttrib:
+                case SHNType.WeaponTitleData:
+                case SHNType.MiniHouseFurnitureObjEffect:
+                case SHNType.MiniHouseEndure:
+                case SHNType.DiceDividind:
+                case SHNType.ActionViewInfo:
+                case SHNType.MapLinkPoint:
+                case SHNType.MapWayPoint:
+                case SHNType.AbStateView:
+                case SHNType.ActiveSkillView:
+                case SHNType.CharacterTitleStateView:
+                case SHNType.EffectViewInfo:
+                case SHNType.ItemShopView:
+                case SHNType.ItemViewInfo:
+                case SHNType.MapViewInfo:
+                case SHNType.MobViewInfo:
+                case SHNType.NPCViewInfo:
+                case SHNType.PassiveSkillView:
+                case SHNType.ProduceView:
+                case SHNType.CollectCardView:
+                case SHNType.GTIView:
+                case SHNType.ItemViewEquipTypeInfo:
+                case SHNType.SingleData:
+                case SHNType.MarketSearchInfo:
+                case SHNType.ItemMoney:
+                case SHNType.PupMain:
+                case SHNType.ChatColor:
+                case SHNType.TermExtendMatch:
+                case SHNType.MinimonInfo:
+                case SHNType.MinimonAutoUseItem:
+                case SHNType.ChargedDeletableBuff:
+                case SHNType.SlanderFilter:
+                    return true;
+                default: return false;
+            }
+        }
+        public static bool InHash_NA(this SHNType type)
+        {
+            switch (type)
+            {
+                case SHNType.DeprecatedFiles:
+                case SHNType.QuestData:
+                case SHNType.QuestEndNpc:
+                case SHNType.QuestEndItem:
+                case SHNType.QuestAction:
+                case SHNType.QuestReward:
+                    return true;
+                default:
+                    return InHash_EU(type);
             }
         }
     }

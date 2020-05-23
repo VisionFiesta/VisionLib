@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Vision.Core.Collections;
 using Vision.Core.Extensions;
 using Vision.Core.Logging.Loggers;
@@ -177,17 +178,17 @@ namespace Vision.Core.Networking
         // TODO: FiestaNetworkServer ctor
         /*
         public FiestaNetworkConnection(FiestaNetworkClient client, Socket socket, FiestaNetworkConnectionType type)
-        { 
-            Client = client; 
-            this.socket = socket; 
-            Type = type; 
-            Guid = System.Guid.NewGuid().ToString().Replace("-", ""); 
-            Handle = (ushort)MathUtils.Random(ushort.MaxValue); 
-            receiveStream = new MemoryStream(); 
-            awaitingBuffers = new List<byte[]>(); 
-         
-            // wait on seed ack to do `seed`, `setSeed`, and `IsEstablished` 
-            // somehow? or is this not needed at all, since we only Connect? 
+        {
+            Client = client;
+            this.socket = socket;
+            Type = type;
+            Guid = System.Guid.NewGuid().ToString().Replace("-", "");
+            Handle = (ushort)MathUtils.Random(ushort.MaxValue);
+            receiveStream = new MemoryStream();
+            awaitingBuffers = new List<byte[]>();
+
+            // wait on seed ack to do `seed`, `setSeed`, and `IsEstablished`
+            // somehow? or is this not needed at all, since we only Connect?
         }
         */
 
@@ -329,14 +330,14 @@ namespace Vision.Core.Networking
         /// Gets all messages from the buffer.
         /// </summary>
         /// <param name="buffer">The buffer to get message from.</param>
-        private void GetMessagesFromBuffer(byte[] buffer)
+        private async Task GetMessagesFromBuffer(byte[] buffer)
         {
             if (!IsConnected)
             {
                 return;
             }
 
-            _receiveStream.Write(buffer, 0, buffer.Length);
+            await _receiveStream.WriteAsync(buffer, 0, buffer.Length);
 
             while (TryParseMessage())
             {
@@ -365,7 +366,7 @@ namespace Vision.Core.Networking
             }
 
             Array.Copy(_receiveBuffer, 0, buffer, 0, count);
-            GetMessagesFromBuffer(buffer);
+            GetMessagesFromBuffer(buffer).RunSynchronously();
 
             BeginReceivingData();
         }
@@ -418,7 +419,7 @@ namespace Vision.Core.Networking
             ushort messageSize;
             var sizeBuffer = new byte[1];
 
-            _receiveStream.Read(sizeBuffer, 0, 1);
+            _receiveStream.ReadAsync(sizeBuffer, 0, 1);
 
             if (sizeBuffer[0] != 0)
             {
