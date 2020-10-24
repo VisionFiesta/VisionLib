@@ -5,6 +5,6 @@ namespace Vision.Client.Configuration
 {
     public class ClientConfiguration : Configuration<ClientConfiguration>
     {
-        public ClientData Data = new ClientData();
+        public StaticClientData Data = new StaticClientData();
     }
 }

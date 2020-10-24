@@ -10,9 +10,13 @@ namespace Vision.Core.IO.SHN
 {
     public class SHNLoader
     {
+        private static readonly EngineLog Logger = new EngineLog(typeof(SHNLoader));
+
         private readonly string _shnFolder;
         private readonly SHNType _type;
         private readonly ISHNCrypto _crypto;
+
+        public string MD5Hash { get; private set; }
 
         protected internal SHNLoader(string shnFolder, SHNType type, ISHNCrypto crypto)
         {
@@ -27,30 +31,29 @@ namespace Vision.Core.IO.SHN
 
         public void QueueMessage(EngineLogLevel level, string message) => _messageQueue.Enqueue(new Tuple<EngineLogLevel, string>(level, message));
 
-        private bool Load(out SHNResult shnResult)
+        private bool Load(out SHNFile shnFile)
         {
-            shnResult = new SHNResult();
-
             var encoding = _type == SHNType.TextData ? Encoding.ASCII : Encoding.GetEncoding("ISO-8859-1");
 
-            var shnFile = SHNFile.Create(_shnFolder, _type, _crypto, encoding);
+            shnFile = SHNFile.Create(_shnFolder, _type, _crypto, encoding);
             if (shnFile == null) return false;
             shnFile.Read();
             shnFile.DisallowRowChanges();
-
-            shnResult.Load(shnFile);
+            MD5Hash = shnFile.MD5Hash;
             return true;
         }
 
         public void Load(SHNProcessor shnProcFunc)
         {
-            var progressBar = EngineLog.CreateProgressBar($"Loading {_type}.shn", Color.SteelBlue);
+            var progressBar = Logger.CreateProgressBar($"Loading {_type}.shn", Color.SteelBlue);
             var watch = Stopwatch.StartNew();
 
-            if (!Load(out var shnResult))
+            if (!Load(out var shnFile))
             {
-                EngineLog.Error($"SHNLoader->Load() : Failed to load SHN file {_type}");
+                Logger.Error($"SHNLoader->Load() : Failed to load SHN file {_type}");
             }
+
+            var shnResult = shnFile.Data;
 
             progressBar.Update(0);
             for (var i = 0; i < shnResult.Count; i++)
@@ -68,7 +71,7 @@ namespace Vision.Core.IO.SHN
             progressBar.Complete(cmpMessage, Color.SteelBlue);
 
 
-            _messageQueue.DequeueAll(tuple => { EngineLog.WriteLine(tuple.Item1, tuple.Item2); });
+            _messageQueue.DequeueAll(tuple => { Logger.WriteLine(tuple.Item1, tuple.Item2); });
         }
     }
 }

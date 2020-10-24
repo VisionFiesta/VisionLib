@@ -11,16 +11,19 @@ using Vision.Game.Structs.Act;
 
 namespace Vision.Client.Services
 {
-    public class ClientChatService
+    public sealed class ChatService
     {
+        private static readonly ClientLog Logger = new ClientLog(typeof(ChatService));
+
         private readonly FiestaClient _client;
-        private Character ActiveCharacter => _client.GameData.ClientAccount.ActiveCharacter;
+        private Character ActiveCharacter => _client.ClientSessionData.ClientAccount.ActiveCharacter;
         private NetClientConnection WorldClient => _client.WorldClient;
         private NetClientConnection ZoneClient => _client.ZoneClient;
 
-        public ClientChatService(FiestaClient client)
+        public ChatService(FiestaClient client)
         {
             _client = client;
+            Logger.Info("Initialized");
         }
 
         public void ReceiveChat(ClientLogChatType type, string message, int senderHandle)
@@ -42,7 +45,7 @@ namespace Vision.Client.Services
                             senderName = character.Name;
                             break;
                         case Mob mob:
-                            var hasMobInfo = SHNData.AllMobInfosByID.TryGetValue(mob.MobID, out var mobInfo);
+                            var hasMobInfo = MobInfo.GetMobInfoById(mob.MobID, out var mobInfo);
                             senderName = hasMobInfo ? $"Mob: {mobInfo.Name}" : $"MobID: {mob.MobID}";
                             break;
                     }
@@ -128,7 +131,7 @@ namespace Vision.Client.Services
 
             var messageColor = type.ToColor();
 
-            var prefixFormatter = ClientLog.Instance.GetMessagePrefixFormat("Chat");
+            var prefixFormatter = Logger.GetMessagePrefixFormat("Chat");
 
 
             if (sender != "")
@@ -151,7 +154,7 @@ namespace Vision.Client.Services
             prefixFormatter.Add(new Formatter($"", messageColor));
             prefixFormatter.Add(new Formatter($" : {message}", messageColor));
 
-            ClientLog.Instance.WriteLineRawFormatted((byte) level, prefixFormatter.ToArray());
+            Logger.WriteLineRawFormatted((byte) level, prefixFormatter.ToArray());
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Vision.Core.Configuration
     {
         private const string ConfigFolder = "Config";
 
+        private static readonly EngineLog Logger = new EngineLog(typeof(Configuration<>));
+
         public static T Instance { get; set; }
 
         public static bool Load(out string message)
@@ -63,7 +65,7 @@ namespace Vision.Core.Configuration
                 var instance = ReadJsonAsync().Result;
                 if (instance != null)
                 {
-                    EngineLog.Info($"Successfully read {shortTypeName} config.");
+                    Logger.Info($"Successfully read {shortTypeName} config.");
                     message = "";
                     return instance;
                 }
@@ -75,13 +77,13 @@ namespace Vision.Core.Configuration
                 }
                 pConfig.WriteJson();
 
-                EngineLog.Info($"Successfully generated {shortTypeName} config.");
+                Logger.Info($"Successfully generated {shortTypeName} config.");
                 message = $"No {fullTypeName} found! Please edit generated config.";
                 return default;
             }
             catch (Exception ex)
             {
-                EngineLog.Error($"Failed to load {shortTypeName} config:\n {0}", ex);
+                Logger.Error($"Failed to load {shortTypeName} config:\n {0}", ex);
                 message = $"Failed to load {fullTypeName}:\n {ex.StackTrace}";
                 return default;
             }

@@ -13,6 +13,8 @@ namespace Vision.Core.Networking.Packet
 	/// </summary>
     public class NetPacket : VisionObject
     {
+        private static readonly SocketLog Logger = new SocketLog(typeof(NetPacket));
+
         public static readonly NetCommand[] DebugSkipCommands =
         {
             NetCommand.NC_MISC_HEARTBEAT_REQ,
@@ -100,7 +102,7 @@ namespace Vision.Core.Networking.Packet
             if (!DebugSkipCommands.Contains(Command))
             {
                 var endpointStr = connection == null ? "Connection Null" : connection.RemoteEndPoint.ToSimpleString();
-                SocketLog.Debug($"Sent {Command} packet to endpoint {endpointStr}, Size: {Size}");
+                Logger.Debug($"Sent {Command} packet to endpoint {endpointStr}, Size: {Size}");
 			}
 
             Destroy(this);

@@ -8,6 +8,8 @@ namespace Vision.Game.Structs.Char
     {
         public ushort Error;
 
+        public NcCharLoginFailAck() {}
+
         public NcCharLoginFailAck(ushort error)
         {
             Error = error;

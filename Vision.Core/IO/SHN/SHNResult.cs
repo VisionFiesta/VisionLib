@@ -7,7 +7,9 @@ namespace Vision.Core.IO.SHN
 {
     public class SHNResult : DataTable
     {
-        public int Count { get; protected set; }
+        private static readonly EngineLog Logger = new EngineLog(typeof(SHNResult));
+
+        public int Count { get; protected internal set; }
 
         public T Read<T>(int row, string columnName, int number = 0) where T : IConvertible
         {
@@ -31,16 +33,6 @@ namespace Vision.Core.IO.SHN
             return obj;
         }
 
-        public void Load(SHNFile file)
-        {
-            using (var data = file.Table.CreateDataReader())
-            {
-                Load(data);
-            }
-
-            Count = file.Table.Rows.Count;
-        }
-
         public T ToOrDefault<T>(DataRow row, string columnName) where T : IConvertible
         {
             try
@@ -49,19 +41,19 @@ namespace Vision.Core.IO.SHN
             }
             catch (InvalidCastException ex)
             {
-                EngineLog.Error($"SHNResult: Invalid Cast (ColumnName {columnName} : {row[columnName]})", ex);
+                Logger.Error($"SHNResult: Invalid Cast (ColumnName {columnName} : {row[columnName]})", ex);
             }
             catch (FormatException ex)
             {
-                EngineLog.Error($"SHNResult: Invalid Format (ColumnName {columnName} : {row[columnName]})", ex);
+                Logger.Error($"SHNResult: Invalid Format (ColumnName {columnName} : {row[columnName]})", ex);
             }
             catch (OverflowException ex)
             {
-                EngineLog.Error($"SHNResult: Overflowed (ColumnName {columnName} : {row[columnName]})", ex);
+                Logger.Error($"SHNResult: Overflowed (ColumnName {columnName} : {row[columnName]})", ex);
             }
             catch (ArgumentException ex)
             {
-                EngineLog.Error($"SHNResult: Invalid Argument (ColumnName {columnName} : {row[columnName]})", ex);
+                Logger.Error($"SHNResult: Invalid Argument (ColumnName {columnName} : {row[columnName]})", ex);
             }
             return default;
         }

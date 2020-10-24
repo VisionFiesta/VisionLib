@@ -19,9 +19,12 @@ namespace Vision.Core.IO.SHN
         {
             var returnString = string.Empty;
 
-            if (bytes > 0x100) { returnString = ReadString(bytes - 0x100); }
-
+            if (bytes > 0x100)
+            {
+                returnString = ReadString(bytes - 0x100);
+            }
             Read(_buffer, 0, (int)bytes);
+
 
             return returnString + _shnEncoding.GetString(_buffer, 0, (int)bytes);
         }

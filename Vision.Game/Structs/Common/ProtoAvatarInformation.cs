@@ -170,11 +170,14 @@ namespace Vision.Game.Structs.Common
             using var bs = new BitStream();
             bs.Write(JobGender);
 
-            bs.Read(out byte job, 0, 7);
-            bs.Read(out byte gender, 0, 1);
+            var jobByte = byte.MaxValue;
+            var genderByte = byte.MaxValue;
 
-            Job = (CharacterClass)job;
-            Gender = (CharacterGender)gender;
+            bs.Read(out jobByte, 0, 7);
+            bs.Read(out genderByte, 0, 1);
+
+            Job = (CharacterClass)jobByte;
+            Gender = (CharacterGender)genderByte;
         }
 
         public override void Write(WriterStream writer)

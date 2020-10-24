@@ -8,21 +8,30 @@ namespace Vision.Game.Content.Data.AbnormalState
 {
     public class AbnormalStateDataProvider
     {
+        private static readonly EngineLog Logger = new EngineLog(typeof(AbnormalStateDataProvider));
+
         public const ushort RestEXPID = 8817;
-        public static AbnormalStateInfo RestEXP { get; private set; }
 
-        private static ConcurrentDictionary<ushort, SubAbnormalStateInfo> _subAbnormalStatesDataByID;
-        private static ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>> _subAbnormalStatesByID;
-        private static ConcurrentDictionary<ushort, AbnormalStateInfo> _abnormalStatesByID;
-        private static ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo> _abnormalStatesByAbnormalStateIndex;
+        private readonly SHNManager _shnManager;
+        public AbnormalStateInfo RestEXP { get; private set; }
 
-        public static bool TryGetAbnormalState(ushort id, out AbnormalStateInfo info) =>
+        private readonly ConcurrentDictionary<ushort, SubAbnormalStateInfo> _subAbnormalStatesDataByID = new ConcurrentDictionary<ushort, SubAbnormalStateInfo>();
+        private readonly ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>> _subAbnormalStatesByID = new ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>>();
+        private readonly ConcurrentDictionary<ushort, AbnormalStateInfo> _abnormalStatesByID = new ConcurrentDictionary<ushort, AbnormalStateInfo>();
+        private readonly ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo> _abnormalStatesByAbnormalStateIndex = new ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo>();
+
+        public AbnormalStateDataProvider(SHNManager shnManager)
+        {
+            _shnManager = shnManager;
+        }
+
+        public bool TryGetAbnormalState(ushort id, out AbnormalStateInfo info) =>
             _abnormalStatesByID.TryGetValue(id, out info);
 
-        public static bool TryGetAbnormalState(AbnormalStateIndex index, out AbnormalStateInfo info) =>
+        public bool TryGetAbnormalState(AbnormalStateIndex index, out AbnormalStateInfo info) =>
             _abnormalStatesByAbnormalStateIndex.TryGetValue(index, out info);
 
-        public static bool Initialize()
+        public bool Initialize()
         {
             var ok = LoadSubAbnormalStates();
             if (!LoadAbnormalStates()) ok = false;
@@ -30,12 +39,9 @@ namespace Vision.Game.Content.Data.AbnormalState
             return ok;
         }
 
-        private static bool LoadSubAbnormalStates()
+        private bool LoadSubAbnormalStates()
         {
-            _subAbnormalStatesByID = new ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>>();
-            _subAbnormalStatesDataByID = new ConcurrentDictionary<ushort, SubAbnormalStateInfo>();
-
-            var subabstateShnLoader = SHNManager.GetSHNLoader(SHNType.SubAbState);
+            var subabstateShnLoader = _shnManager.GetSHNLoader(SHNType.SubAbState);
             subabstateShnLoader.Load((result, index) =>
             {
                 var info = new SubAbnormalStateInfo(result, index);
@@ -56,12 +62,9 @@ namespace Vision.Game.Content.Data.AbnormalState
             return true;
         }
 
-        private static bool LoadAbnormalStates()
+        private bool LoadAbnormalStates()
         {
-            _abnormalStatesByID = new ConcurrentDictionary<ushort, AbnormalStateInfo>();
-            _abnormalStatesByAbnormalStateIndex = new ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo>();
-
-            var abstateShnLoader = SHNManager.GetSHNLoader(SHNType.AbState);
+            var abstateShnLoader = _shnManager.GetSHNLoader(SHNType.AbState);
             abstateShnLoader.Load((result, index) =>
             {
                 var info = new AbnormalStateInfo(result, index);
@@ -80,11 +83,11 @@ namespace Vision.Game.Content.Data.AbnormalState
             return true;
         }
 
-        private static bool LoadAbnormalStateExtras()
+        private bool LoadAbnormalStateExtras()
         {
             if (!TryGetAbnormalState(RestEXPID, out var abState))
             {
-                EngineLog.Error($"AbnormalStateDataProvider->LoadAbnormalStateExtras() : Can't find 'Rest EXP' buff (ID: {RestEXPID}).");
+                Logger.Error($"AbnormalStateDataProvider->LoadAbnormalStateExtras() : Can't find 'Rest EXP' buff (ID: {RestEXPID}).");
                 return false;
             }
             RestEXP = abState;

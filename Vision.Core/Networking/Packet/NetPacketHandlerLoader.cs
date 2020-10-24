@@ -9,6 +9,8 @@ namespace Vision.Core.Networking.Packet
 {
     public static class NetPacketHandlerLoader<T> where T : NetConnectionBase<T>
     {
+        private static readonly EngineLog Logger = new EngineLog(typeof(NetPacketHandlerLoader<T>));
+
         private static readonly Dictionary<NetCommand, Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>> Handlers = new Dictionary<NetCommand, Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>>();
         // public static readonly FastDictionary<FiestaNetCommand, TypeInfo> Structs = new FastDictionary<FiestaNetCommand, TypeInfo>();
 
@@ -21,7 +23,7 @@ namespace Vision.Core.Networking.Packet
                 var second = pair.Second;
                 if (Handlers.ContainsKey(first.Command))
                 {
-                    EngineLog.Warning($"Duplicate message handler found: [{first.Command}], ignoring.");
+                    Logger.Warning($"Duplicate message handler found: [{first.Command}], ignoring.");
                     continue;
                 }
 
@@ -39,10 +41,10 @@ namespace Vision.Core.Networking.Packet
                     if (index != destinations.Length - 1) destinationsStr += ", ";
                 }
 
-                EngineLog.Debug($"Added message handler: (Command: {first.Command}, Destinations: {destinationsStr})");
+                Logger.Debug($"Added message handler: (Command: {first.Command}, Destinations: {destinationsStr})");
             }
 
-            EngineLog.Info($"Loaded {Handlers.Count} packet handlers!");
+            Logger.Info($"Loaded {Handlers.Count} packet handlers!");
 
             // var allStructs = VisionAssembly.GetTypesOfBase<NetPacketStruct>().ToList();
             //

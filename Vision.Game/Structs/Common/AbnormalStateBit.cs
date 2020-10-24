@@ -5,7 +5,7 @@ namespace Vision.Game.Structs.Common
 {
     public class AbnormalStateBit : AbstractStruct
     {
-        public const int Size = 111;
+        public const int Size = 112;
 
         public byte[] State { get; protected set; } = new byte[Size];
 

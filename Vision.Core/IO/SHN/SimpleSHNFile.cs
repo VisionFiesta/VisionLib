@@ -10,6 +10,8 @@ namespace Vision.Core.IO.SHN
 {
     public class SimpleSHNFile : IDisposable
     {
+		private static readonly EngineLog Logger = new EngineLog(typeof(SimpleSHNFile));
+
         private readonly string _filename;
         private readonly ISHNCrypto _crypto;
 
@@ -60,7 +62,7 @@ namespace Vision.Core.IO.SHN
 		{
 			if (!File.Exists(_filename))
 			{
-				EngineLog.Error($"The file '{_filename}' could not be found.");
+                Logger.Error($"The file '{_filename}' could not be found.");
 				return;
 			}
 

@@ -1,73 +1,76 @@
-﻿using System.Collections.Generic;
-using Vision.Core.Utils;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Console = Colorful.Console;
 
 namespace Vision.Core.IO.SHN
 {
     public class SHNHashManager
     {
+        private readonly SHNManager _shnManager;
         private readonly bool _isNA;
         private readonly SortedDictionary<SHNType, string> _shnHashes;
 
-        public SHNHashManager(bool isNA = true)
+        public SHNHashManager(SHNManager shnManager, bool isNA)
         {
+            _shnManager = shnManager;
             _isNA = isNA;
-            _shnHashes = new SortedDictionary<SHNType, string>(new SHNHashOrderComparer(isNA));
+            _shnHashes = new SortedDictionary<SHNType, string>(new SHNOrderComparer(isNA));
         }
 
-        protected class SHNHashOrderComparer : IComparer<SHNType>
+        protected class IntegerOrderComparer : IComparer<int>
         {
-            private readonly bool _isNA;
-            protected internal SHNHashOrderComparer(bool isNA)
+            public int Compare(int one, int two)
             {
-                _isNA = isNA;
-            }
-            public int Compare(SHNType x, SHNType y)
-            {
-                int xIndex, yIndex;
-                if (_isNA)
-                {
-                    xIndex = SHNTypeExtensions.NAHashOrder.IndexOf(x);
-                    yIndex = SHNTypeExtensions.NAHashOrder.IndexOf(y);
-                }
-                else
-                {
-                    xIndex = SHNTypeExtensions.EUHashOrder.IndexOf(x);
-                    yIndex = SHNTypeExtensions.EUHashOrder.IndexOf(y);
-                }
-
-                if (xIndex > yIndex)
-                {
-                    return -1;
-                }
-                else if (xIndex < yIndex)
-                {
-                    return 1;
-                }
-
-                return 0;
+                return one.CompareTo(two);
             }
         }
 
-        public void AddHash(SHNType type, ref byte[] fileBytes)
+        protected class SHNOrderComparer : IComparer<SHNType>
         {
-            if (_isNA && !type.InHash_NA()) return;
-            if (!_isNA && !type.InHash_EU()) return;
+            private readonly ImmutableList<SHNType> _orderList;
+            protected internal SHNOrderComparer(bool isNA)
+            {
+                _orderList = isNA ? SHNTypeExtensions.NAHashOrder : SHNTypeExtensions.EUHashOrder;
+
+            }
+            public int Compare(SHNType s1, SHNType s2)
+            {
+                return _orderList.IndexOf(s1).CompareTo(_orderList.IndexOf(s2));
+            }
+        }
+
+        public void AddHash(SHNType type, string hash)
+        {
+            if (_isNA && !type.IsInNAHash()) return;
+            if (!_isNA && !type.IsInEUHash()) return;
             if (_shnHashes.ContainsKey(type)) return;
-            _shnHashes.Add(type, Md5Utils.CalcMd5(ref fileBytes));
+            _shnHashes.Add(type, hash);
         }
 
+        public void LoadRemainingHashes()
+        {
+            var shnsToHash = _isNA ? SHNTypeExtensions.NAHashOrder : SHNTypeExtensions.EUHashOrder;
+            shnsToHash.RemoveAll(s => _shnHashes.ContainsKey(s));
 
-        public bool GetFullHash(out string hash, bool isNA = true)
+            var shnFiles = _shnManager.LoadSHNFiles(shnsToHash.ToArray());
+            foreach (var shnFile in shnFiles)
+            {
+                AddHash(shnFile.SHNType, shnFile.MD5Hash);
+            }
+        }
+
+        public bool GetFullHash(out string hash)
         {
             hash = null;
 
-            if (_shnHashes.Count != (isNA ? 56 : 50)) return false;
+            var requiredCount = _isNA ? SHNTypeExtensions.NAHashOrder.Count : SHNTypeExtensions.EUHashOrder.Count;
 
-            foreach (var value in _shnHashes.Values)
-            {
-                hash = hash += value;
+            var shnHashesTypes = _shnHashes.Keys;
+            if (_shnHashes.Count != requiredCount) return false;
 
-            }
+            hash = _shnHashes.Values.Aggregate<string, string>(null, (current, value) => current += value);
             return true;
         }
     }

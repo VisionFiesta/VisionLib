@@ -30,7 +30,6 @@ namespace Vision.Game.Structs.User
 
         public override void Read(ReaderStream reader)
         {
-
             AccountID = reader.ReadUInt16();
             AvatarCount = reader.ReadByte();
 

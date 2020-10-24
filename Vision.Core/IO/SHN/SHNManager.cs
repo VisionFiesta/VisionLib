@@ -1,60 +1,74 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Vision.Core.Logging.Loggers;
 
 namespace Vision.Core.IO.SHN
 {
     public class SHNManager
     {
-        private static SHNManager _instance;
+        private readonly EngineLog Logger = new EngineLog(typeof(SHNManager));
 
         private readonly string _shnFolder;
         private readonly ISHNCrypto _crypto;
-
-        private SHNManager(string shnFolder, ISHNCrypto crypto)
+        public SHNManager(string shnFolder, ISHNCrypto crypto)
         {
             _shnFolder = shnFolder;
             _crypto = crypto;
             SimpleSHNLoader.Initialize(shnFolder, crypto);
+
+            if (Directory.Exists(shnFolder)) return;
+            Logger.Error("SHNManager->Initialize() : SHN Folder does not exist!");
+            throw new Exception("SHNManager->Initialize() : SHN Folder does not exist!");
         }
 
-        public static bool Initialize(string shnFolder, ISHNCrypto crypto)
+        public bool Load(SHNType type, out SHNFile file)
         {
-            if (!Directory.Exists(shnFolder))
-            {
-                EngineLog.Error("SHNManager->Initialize() : SHN Folder does not exist!");
-                return false;
-            }
-
-            _instance = new SHNManager(shnFolder, crypto);
-            return true;
-        }
-
-        protected internal static bool Load(SHNType type, out SHNResult result)
-        {
-            result = new SHNResult();
-
-            if (_instance == null)
-            {
-                EngineLog.Error("SHNManager->Load() : Attempted to call SHNManager uninitialized!");
-                return false;
-            }
-
             var encoding = type == SHNType.TextData ? Encoding.ASCII : Encoding.GetEncoding("ISO-8859-1");
 
-            var shnFile = SHNFile.Create(_instance._shnFolder, type, _instance._crypto, encoding);
-            if (shnFile == null) return false;
-            shnFile.Read();
-            shnFile.DisallowRowChanges();
-
-            result.Load(shnFile);
+            file = SHNFile.Create(_shnFolder, type, _crypto, encoding);
+            if (file == null) return false;
+            file.Read();
+            file.DisallowRowChanges();
             return true;
         }
 
-        public static SHNLoader GetSHNLoader(SHNType type) => new SHNLoader(_instance._shnFolder, type, _instance._crypto);
+        public SHNLoader GetSHNLoader(SHNType type) => new SHNLoader(_shnFolder, type, _crypto);
 
-        public static void SimpleLoadSHNs(params SHNType[] types) => SimpleSHNLoader.Load(true, types);
+        public List<SHNFile> LoadSHNFiles(params SHNType[] types)
+        {
+            var loadedSHNs = new List<SHNFile>();
 
-        public static bool TryGetSimpleSHNObject<T>(SHNType type, out ObjectCollection<T> objects) => SimpleSHNLoader.TryGetObjects(type, out objects);
+            var parallelTypes = types.Where(shnType => shnType.IsLarge());
+            var nonParallelTypes = types.Where(shnType => !shnType.IsLarge());
+
+            Parallel.Invoke(new ParallelOptions(),
+                () => Parallel.ForEach(parallelTypes,
+                            shnType =>
+                                    {
+                                        if (Load(shnType, out var shnFile))
+                                        {
+                                            loadedSHNs.Add(shnFile);
+                                        }
+                                    }),
+                        () =>
+                        {
+                            foreach (var shnType in nonParallelTypes)
+                            {
+                                if (Load(shnType, out var shnFile))
+                                {
+                                    loadedSHNs.Add(shnFile);
+                                }
+                            }
+                        });
+            return loadedSHNs;
+        }
+
+        public void SimpleLoadSHNs(params SHNType[] types) => SimpleSHNLoader.Load(true, types);
+
+        public bool TryGetSimpleSHNObject<T>(SHNType type, out ObjectCollection<T> objects) => SimpleSHNLoader.TryGetObjects(type, out objects);
     }
 }

@@ -16,6 +16,7 @@ namespace Vision.Game.Characters
         public uint CharNo { get; }
         public string Name { get; private set; }
         public CharacterShape Shape { get; private set; }
+        public CharacterState CharacterState { get; private set; }
         public Equipment Equipment { get; private set; }
 
         public CharTitleInfo CurrentTitle;
@@ -80,6 +81,8 @@ namespace Vision.Game.Characters
             Name = data.CharID;
             Position = data.Position;
             Shape = new CharacterShape(data.Shape);
+            Shape.Class = data.Class;
+            CharacterState = data.State;
 
             CurrentTitle = new CharTitleInfo
             {
@@ -131,6 +134,11 @@ namespace Vision.Game.Characters
             };
 
             return character;
+        }
+
+        public override string ToString()
+        {
+            return $"Character - Name: {Name}, Level: {Level}, Class: {Shape.Class}, Gender: {Shape.Gender} Mode: {CharacterState}";
         }
     }
 }

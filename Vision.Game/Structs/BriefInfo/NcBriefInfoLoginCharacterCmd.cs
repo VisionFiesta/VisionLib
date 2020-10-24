@@ -18,7 +18,7 @@ namespace Vision.Game.Structs.BriefInfo
         //     char mode;
         //     char chrclass;
         //     PROTO_AVATAR_SHAPE_INFO shape;
-        //         $7E9DF37DA92D66C9DC9760D2E5111AAE shapedata;
+        //     PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD::<unnamed-type-shapedata> shapedata;
         //     unsigned __int16 polymorph;
         //     STOPEMOTICON_DESCRIPT emoticon;
         //     CHARTITLE_BRIEFINFO chartitle;

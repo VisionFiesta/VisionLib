@@ -33,10 +33,7 @@ namespace Vision.Game.Structs.BriefInfo
         public KQTeamType KQTeam;
         public bool RegenAni;
 
-        public override int GetSize()
-        {
-            return 161;
-        }
+        public override int GetSize() => 161;
 
         public override void Read(ReaderStream reader)
         {
@@ -66,9 +63,6 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(RegenAni);
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_BRIEFINFO_REGENMOB_CMD;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_REGENMOB_CMD;
     }
 }

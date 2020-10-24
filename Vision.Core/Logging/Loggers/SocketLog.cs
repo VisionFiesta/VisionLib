@@ -1,48 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using Vision.Core.Extensions;
 
 namespace Vision.Core.Logging.Loggers
 {
     public sealed class SocketLog : ColorfulConsoleLogger
     {
-        private static SocketLog _instance;
-        private static SocketLog Instance => _instance ??= new SocketLog();
+        private const string LoggerName = "SocketLog";
+        private static readonly Color LoggerColor = Color.Purple;
 
-        internal SocketLog() : base("SocketLog", Color.Purple) {}
+        private static SocketLogLevel _logLevel;
+
+        public SocketLog(MemberInfo ownerClass) : base(LoggerName, ownerClass.Name, LoggerColor) {}
 
         private static List<byte> _preciseLogLevels = new List<byte>(EnumExtensions.GetValuesCasted<SocketLogLevel, byte>());
 
-        public static void SetPreciseLogLevels(params SocketLogLevel[] levels)
-        {
-            _preciseLogLevels = new List<byte>(levels.Cast<byte>());
-        }
+        public static void SetPreciseLogLevels(params SocketLogLevel[] levels) => _preciseLogLevels = new List<byte>(levels.Cast<byte>());
 
-        public static void SetLogLevel(SocketLogLevel maxLogLevel)
-        {
-            Instance.SetLogLevel((byte)maxLogLevel);
-        }
+        public static void SetLogLevel(SocketLogLevel maxLogLevel) => _logLevel = maxLogLevel;
 
-        public static void Debug(string message) => WriteLine(SocketLogLevel.SLL_DEBUG, message);
+        public  void Debug(string message) => WriteLine(SocketLogLevel.SLL_DEBUG, message);
 
-        public static void Unhandled(string message) => WriteLine(SocketLogLevel.SLL_UNHANDLED, message);
+        public  void Unhandled(string message) => WriteLine(SocketLogLevel.SLL_UNHANDLED, message);
 
-        public static void Error(string message) => WriteLine(SocketLogLevel.SLL_ERROR, message);
+        public  void Error(string message) => WriteLine(SocketLogLevel.SLL_ERROR, message);
 
-        public static void Warning(string message) => WriteLine(SocketLogLevel.SLL_WARNING, message);
+        public  void Warning(string message) => WriteLine(SocketLogLevel.SLL_WARNING, message);
 
-        public static void Info(string message) => WriteLine(SocketLogLevel.SLL_INFO, message);
+        public  void Info(string message) => WriteLine(SocketLogLevel.SLL_INFO, message);
 
-        private static void WriteLine(SocketLogLevel level, string message)
-        {
-            Instance.WriteLine((byte)level, level.ToName(), message, level.ToColor());
-        }
+        private void WriteLine(SocketLogLevel level, string message) => WriteLine((byte)level, level.ToName(), message, level.ToColor());
 
-        protected internal override bool ShouldLogPrecise(byte messageLogLevel)
-        {
-            return _preciseLogLevels.Contains(messageLogLevel);
-        }
+        protected internal override byte GetLogLevel() => (byte) _logLevel;
+
+        protected internal override bool ShouldLogPrecise(byte messageLogLevel) => _preciseLogLevels.Contains(messageLogLevel);
     }
 
     public enum SocketLogLevel : byte

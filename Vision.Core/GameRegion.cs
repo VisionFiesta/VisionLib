@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vision.Game.Enums
+namespace Vision.Core
 {
     using GR_KVP_Short = KeyValuePair<GameRegion, string>;
 
@@ -18,6 +18,21 @@ namespace Vision.Game.Enums
 
     public static class GameRegionExtensions
     {
+        public static string ToPacketShortName(this GameRegion region)
+        {
+            // todo: find the rest of these
+            return region switch
+            {
+                GameRegion.GR_NA => "US",
+                GameRegion.GR_DE => "GER",
+                GameRegion.GR_TW => "TW",
+                GameRegion.GR_KR => "KR",
+                GameRegion.GR_JP => "JP",
+                GameRegion.GR_CN => "CN",
+                _ => "UNK"
+            };
+        }
+
         public static string ToShortName(this GameRegion region)
         {
             return region switch

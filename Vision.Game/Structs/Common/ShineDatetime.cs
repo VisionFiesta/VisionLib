@@ -19,7 +19,7 @@ namespace Vision.Game.Structs.Common
 
         public ShineDatetime()
         {
-            Bitfield0 = ToBitField(DateTime.MinValue);
+            // Bitfield0 = ToBitField(DateTime.MinValue);
         }
 
         public DateTime ToDateTime() => ToDateTime(Bitfield0);
@@ -45,7 +45,7 @@ namespace Vision.Game.Structs.Common
 
         public static int ToBitField(DateTime dt)
         {
-            using var bs = new BitStream(sizeof(int));
+            using var bs = new BitStream();
             bs.Write(dt.Year, 0, 8);
             bs.Write(dt.Month, 0, 5);
             bs.Write(dt.Day, 0, 6);

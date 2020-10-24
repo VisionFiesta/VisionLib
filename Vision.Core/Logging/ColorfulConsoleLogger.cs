@@ -13,40 +13,38 @@ namespace Vision.Core.Logging
         private static Formatter GetTimeFormat => new Formatter($"[{GetTimePrefix}] ", Color.Aqua);
 
         private const string DefaultFormattingString = "{0}{1}{2}{3}";
-
-        protected byte MaxLogLevel;
-
+        
         public readonly string BasePrefix;
+        public readonly string OwnerClassName;
         public readonly Color BaseColor;
 
         private readonly object _ioLocker = new object();
 
-        protected internal ColorfulConsoleLogger(string basePrefix, Color baseColor)
+        protected internal ColorfulConsoleLogger(string basePrefix, string className, Color baseColor)
         {
             BasePrefix = basePrefix;
+            OwnerClassName = className.Replace("`1", "");
             BaseColor = baseColor;
-        }
-
-        public void SetLogLevel(byte maxLevel)
-        {
-            MaxLogLevel = maxLevel;
         }
 
         public List<Formatter> GetMessagePrefixFormat(string messagePrefix, Color? prefixColor = null)
         {
-            if (!prefixColor.HasValue) prefixColor = BaseColor;
+            prefixColor ??= BaseColor;
+
+            var ownerClassPrefix = OwnerClassName.Equals("") ? "" : $"[{OwnerClassName}] ";
+            var fullBasePrefix = $"[{BasePrefix}] ";
 
             return new List<Formatter>
             {
                 GetTimeFormat,
-                new Formatter($"[{BasePrefix}] ", BaseColor),
-                new Formatter($"[{messagePrefix}] ", prefixColor.Value)
+                new Formatter(fullBasePrefix, BaseColor),
+                new Formatter($"[{messagePrefix}] " + ownerClassPrefix, prefixColor.Value)
             };
         }
 
         public Formatter[] GetFormattedMessage(string messagePrefix, string messageContent, Color? messageColor = null)
         {
-            if (!messageColor.HasValue) messageColor = BaseColor;
+            messageColor ??= BaseColor;
 
             var formatters = GetMessagePrefixFormat(messagePrefix, messageColor);
             formatters.Add(new Formatter(messageContent, messageColor.Value));
@@ -71,19 +69,11 @@ namespace Vision.Core.Logging
             lock (_ioLocker) { Console.WriteLineFormatted(DefaultFormattingString, BaseColor, msg); }
         }
 
-        public void WriteRaw(string str)
-        {
-            lock (_ioLocker)
-            {
-                Console.Write(str);
-            }
-        }
-
         public void WriteRaw(byte messageLogLevel, string message, Color? color = null)
         {
             if (!ShouldLogByLogLevel(messageLogLevel)) return;
 
-            if (!color.HasValue) color = BaseColor;
+            color ??= BaseColor;
 
             lock (_ioLocker) { Console.Write(message, color.Value); }
         }
@@ -92,7 +82,7 @@ namespace Vision.Core.Logging
         {
             if (!ShouldLogByLogLevel(messageLogLevel)) return;
 
-            if (!color.HasValue) color = BaseColor;
+            color ??= BaseColor;
 
             lock (_ioLocker) { Console.WriteLine(message, color.Value); }
         }
@@ -125,8 +115,10 @@ namespace Vision.Core.Logging
 
         private bool ShouldLogByLogLevel(byte messageLogLevel)
         {
-            return ShouldLogPrecise(messageLogLevel) && messageLogLevel >= MaxLogLevel;
+            return ShouldLogPrecise(messageLogLevel) && messageLogLevel >= GetLogLevel();
         }
+
+        protected internal abstract byte GetLogLevel();
 
         protected internal abstract bool ShouldLogPrecise(byte messageLogLevel);
     }

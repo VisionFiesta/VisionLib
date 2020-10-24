@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionConsoleTesting", "VisionConsoleTesting\VisionConsoleTesting.csproj", "{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisionConsoleTesting", "VisionConsoleTesting\VisionConsoleTesting.csproj", "{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1B07E304-1B3E-49B0-A8C0-4EB9467127F3} = {1B07E304-1B3E-49B0-A8C0-4EB9467127F3}
 		{32771DC6-C002-4632-980A-14B30B0097E1} = {32771DC6-C002-4632-980A-14B30B0097E1}

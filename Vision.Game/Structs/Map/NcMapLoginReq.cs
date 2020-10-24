@@ -7,8 +7,6 @@ namespace Vision.Game.Structs.Map
 {
     public class NcMapLoginReq : NetPacketStruct
     {
-        public const int SHNHashLen_1_02_276 = 1792;
-
         public ushort AccountID;
         public string CharacterName;
         public string SHNHash;
@@ -22,7 +20,7 @@ namespace Vision.Game.Structs.Map
 
         public override int GetSize()
         {
-            return sizeof(ushort) + NameN.Name5Len + SHNHashLen_1_02_276;
+            return sizeof(ushort) + NameN.Name5Len + SHNHash.Length;
         }
 
         public override void Read(ReaderStream reader)
@@ -36,7 +34,7 @@ namespace Vision.Game.Structs.Map
         {
             writer.Write(AccountID);
             writer.Write(CharacterName, NameN.Name5Len);
-            writer.Write(SHNHash, SHNHashLen_1_02_276);
+            writer.Write(SHNHash);
         }
 
         public override NetCommand GetCommand()

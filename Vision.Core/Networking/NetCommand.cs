@@ -1,9 +1,13 @@
 ﻿// ReSharper disable InconsistentNaming
+
+using System.Diagnostics.CodeAnalysis;
+
 namespace Vision.Core.Networking
 {
     /// <summary>
     /// Identifies the type of network message.
     /// </summary>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public enum NetCommand : ushort
     {
         #region NC_LOG
@@ -642,6 +646,8 @@ namespace Vision.Core.Networking
         NC_CHAR_ANI_FILE_CHECK_CMD = 0x1143,
 
         #endregion
+
+        NC_UNK00 = 0x114B,
 
         #region NC_AVATAR
 

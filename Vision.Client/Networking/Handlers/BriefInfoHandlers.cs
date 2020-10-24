@@ -12,6 +12,8 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class BriefInfoHandlers
     {
+        private static readonly ClientLog Logger = new ClientLog(typeof(BriefInfoHandlers));
+
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_UNEQUIP_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_UNEQUIP_CMD(NetPacket packet, NetClientConnection connection)
         {
@@ -42,7 +44,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_LIST_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_ABSTATE_CHANGE_LIST_CMD(NetPacket packet, NetClientConnection connection)
         {
-            // TODO: 
+            // TODO:
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHARACTER_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -57,7 +59,7 @@ namespace Vision.Client.Networking.Handlers
                 var newChr = new Character(chr.Handle);
                 newChr.Initialize(chr);
                 chrList.Add(newChr);
-                ClientLog.Debug($"CHARACTER: Added character. Name: {newChr.Name}, Class: {newChr.Shape.Class}");
+                Logger.Debug($"BI_CHARACTER: Added {newChr}");
             }
 
             connection.Account.ActiveCharacter.VisibleObjects.AddRange(chrList);
@@ -70,10 +72,11 @@ namespace Vision.Client.Networking.Handlers
             cmd.Read(packet);
 
             var mobList = new FastList<Mob>();
-            foreach (var mob in cmd.Mobs)
+            foreach (var mobRaw in cmd.Mobs)
             {
-                mobList.Add(new Mob(mob));
-                ClientLog.Debug($"MOB: Added mob. MobID: {mob.MobID}");
+                var mob = new Mob(mobRaw);
+                mobList.Add(mob);
+                Logger.Debug($"BI_MOB: Added {mob}");
             }
 
             connection.Account.ActiveCharacter.VisibleObjects.AddRange(mobList);
@@ -85,8 +88,10 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoRegenMobCmd();
             cmd.Read(packet);
 
-            connection.Account.ActiveCharacter.VisibleObjects.Add(new Mob(cmd));
-            ClientLog.Debug($"REGENMOB: Added mob. MobID: {cmd.MobID}");
+            var mob = new Mob(cmd);
+
+            connection.Account.ActiveCharacter.VisibleObjects.Add(mob);
+            Logger.Debug($"BI_REGENMOB: Added {mob}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_REGENMOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -105,7 +110,7 @@ namespace Vision.Client.Networking.Handlers
             chr.Initialize(cmd);
 
             connection.Account.ActiveCharacter.VisibleObjects.Add(chr);
-            ClientLog.Debug($"LOGINCHARACTER: Added character. Name: {chr.Name}, Class: {chr.Shape.Class}");
+            Logger.Debug($"BI_LOGINCHARACTER: Added {chr}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -121,15 +126,18 @@ namespace Vision.Client.Networking.Handlers
             var go = GameObject.Objects.First(o => o.Handle == handle);
             if (go == null)
             {
-                ClientLog.Error($"Missing GameObject for delete! Handle: {handle}");
+                // Logger.Error($"Missing GameObject for delete! Handle: {handle}");
                 return;
             }
 
-            var result = connection.Account.ActiveCharacter.VisibleObjects.Remove(go);
+            var visibleObjects = connection.Account.ActiveCharacter.VisibleObjects;
 
-            ClientLog.Debug(result
-                ? $"BRIEFINFODELETE_CMD: Removed GameObject - Handle: {go.Handle}"
-                : $"BRIEFINFODELETE_CMD: Failed to remove GameObject - Handle: {go.Handle}");
+            var result = visibleObjects.Remove(go);
+            if (!result) result = visibleObjects.Remove(go);
+
+            Logger.Debug(result
+                ? $"BI_DELETE: Removed GameObject {go.Type.ToFriendlyName()}, Handle: {go.Handle} "
+                : $"BI_DELETE: Failed to remove GameObject - Handle: {go.Handle}");
         }
     }
 }

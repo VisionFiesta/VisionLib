@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using Colorful;
 using Vision.Core.Extensions;
 using Vision.Core.Logging.ProgressBar;
@@ -9,44 +10,48 @@ namespace Vision.Core.Logging.Loggers
 {
     public sealed class EngineLog : ColorfulConsoleLogger
     {
-        private static EngineLog _instance;
-        public static EngineLog Instance => _instance ??= new EngineLog();
+        private const string LoggerPrefix = "EngineLog";
+        private static readonly Color LoggerColor = Color.Orange;
 
-        internal EngineLog() : base("EngineLog", Color.Orange) { }
+        private static EngineLogLevel _logLevel;
+
+        public EngineLog(MemberInfo ownerClass) : base(LoggerPrefix, ownerClass.Name, LoggerColor) {}
 
         private static List<byte> _preciseLogLevels = new List<byte>(EnumExtensions.GetValuesCasted<EngineLogLevel, byte>());
 
         public static void SetPreciseLogLevels(params EngineLogLevel[] levels) => _preciseLogLevels = new List<byte>(levels.Cast<byte>());
 
-        public static void SetLogLevel(EngineLogLevel maxLogLevel) => Instance.SetLogLevel((byte)maxLogLevel);
+        public static void SetLogLevel(EngineLogLevel maxLogLevel) => _logLevel = maxLogLevel;
 
-        public static void Debug(string message) => WriteLine(EngineLogLevel.ELL_DEBUG, message);
+        public void Debug(string message) => WriteLine(EngineLogLevel.ELL_DEBUG, message);
 
-        public static void Error(string prependMessage, System.Exception ex)
-            => Instance.WriteLine((byte)EngineLogLevel.ELL_ERROR, "Exception", $"{prependMessage}:\n{ex.Message}\n{ex.StackTrace}", Color.OrangeRed);
+        public void Error(string prependMessage, System.Exception ex)
+            => WriteLine((byte)EngineLogLevel.ELL_ERROR, "Exception", $"{prependMessage}: {ex.Message}", Color.OrangeRed);
 
-        public static void Error(string message) => WriteLine(EngineLogLevel.ELL_ERROR, message);
+        public void Error(string message) => WriteLine(EngineLogLevel.ELL_ERROR, message);
 
-        public static void Warning(string message) => WriteLine(EngineLogLevel.ELL_WARNING, message);
+        public void Warning(string message) => WriteLine(EngineLogLevel.ELL_WARNING, message);
 
-        public static void Info(string message) => WriteLine(EngineLogLevel.ELL_INFO, message);
+        public void Info(string message) => WriteLine(EngineLogLevel.ELL_INFO, message);
 
-        public static AProgressBar CreateProgressBar(string prefix, Color? color = null)
+        public AProgressBar CreateProgressBar(string prefix, Color? color = null)
         {
-            if (!color.HasValue) color = Instance.BaseColor;
+            color ??= BaseColor;
 
             const EngineLogLevel level = EngineLogLevel.ELL_INFO;
-            var prefixFormatter = Instance.GetMessagePrefixFormat(level.ToName(), level.ToColor());
+            var prefixFormatter = GetMessagePrefixFormat(level.ToName(), level.ToColor());
             prefixFormatter.Add(new Formatter(prefix + " -> ", color.Value));
 
-            if ((EngineLogLevel) Instance.MaxLogLevel == EngineLogLevel.ELL_DEBUG)
+            if (_logLevel == EngineLogLevel.ELL_DEBUG)
             {
-                return new FancyProgressBar(prefixFormatter, (byte)level, Instance);
+                return new FancyProgressBar(prefixFormatter, (byte)level, this);
             }
-            return new DummyProgressBar((byte)level, Instance);
+            return new DummyProgressBar((byte)level, this);
         }
 
-        public static void WriteLine(EngineLogLevel level, string message) => Instance.WriteLine((byte)level, level.ToName(), message, level.ToColor());
+        public void WriteLine(EngineLogLevel level, string message) => WriteLine((byte)level, level.ToName(), message, level.ToColor());
+
+        protected internal override byte GetLogLevel() => (byte) _logLevel;
 
         protected internal override bool ShouldLogPrecise(byte messageLogLevel) => _preciseLogLevels.Contains(messageLogLevel);
     }

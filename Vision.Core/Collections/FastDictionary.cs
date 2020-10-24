@@ -34,7 +34,7 @@ namespace Vision.Core.Collections
 
         public new TValue this[TKey index]
         {
-            get => ContainsKey(index) ? base[index] : default(TValue);
+            get => ContainsKey(index) ? base[index] : default;
             set
             {
                 if (!ContainsKey(index))

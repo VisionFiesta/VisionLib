@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Authentication.ExtendedProtection;
 using System.Threading;
 using System.Threading.Tasks;
 using Vision.Core.Collections;
@@ -18,6 +19,8 @@ namespace Vision.Core.Networking
 {
     public abstract class NetConnectionBase<T> : VisionObject where T : NetConnectionBase<T>
     {
+        private readonly SocketLog Logger;
+
         /// <summary>
         /// The maximum buffer size allowed.
         /// </summary>
@@ -31,12 +34,12 @@ namespace Vision.Core.Networking
         /// <summary>
         /// The connection's unique identifier.
         /// </summary>
-        public string Guid { get; }
+        public string Guid { get; protected set; }
 
         /// <summary>
         /// The client's handle.
         /// </summary>
-        public ushort Handle { get; }
+        public ushort Handle { get; protected set; }
 
         /// <summary>
         /// Returns true if the connection exists.
@@ -76,9 +79,14 @@ namespace Vision.Core.Networking
         public NetConnectionDestination ReceiveDestinationType { get; }
 
         /// <summary>
-        /// Time since the connection's last heartbeat.
+        /// The region of the connection.
         /// </summary>
-        public long LastPing { get; set; }
+        public GameRegion Region { get; }
+
+        /// <summary>
+        /// Time of the connection's last heartbeat.
+        /// </summary>
+        public DateTime LastPing { get; set; }
 
         /// <summary>
         /// List of buffers waiting to be sent.
@@ -106,11 +114,8 @@ namespace Vision.Core.Networking
         private Socket _socket;
 
         /// <summary>
-        /// Gets the sockets remote endpoint IP address
+        /// Returns the remote endpoint of the connection.
         /// </summary>
-        /// <returns>Remote endpoint IP address</returns>
-        public string GetRemoteIp => (_socket.RemoteEndPoint as IPEndPoint)?.Address.ToString();
-
         public IPEndPoint RemoteEndPoint => _socket.RemoteEndPoint as IPEndPoint;
 
         /// <summary>
@@ -160,18 +165,21 @@ namespace Vision.Core.Networking
             }
         }
 
-        public NetConnectionBase(NetConnectionDestination txDest, NetConnectionDestination rxDest, INetCrypto crypto = null)
+        protected NetConnectionBase(NetConnectionDestination txDest, NetConnectionDestination rxDest, GameRegion region = GameRegion.GR_NA, INetCrypto crypto = null)
         {
+            Logger = new SocketLog(GetType());
+
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             TransmitDestinationType = txDest;
             ReceiveDestinationType = rxDest;
+            Region = region;
             IsEstablished = true;
             Guid = System.Guid.NewGuid().ToString().Replace("-", "");
-            Handle = (ushort)MathUtils.Random(ushort.MaxValue);
+            Handle = (ushort)MathUtils.Random(ushort.MaxValue); // TODO: Create handles in a range based on their destination/source
             _receiveStream = new MemoryStream();
             _awaitingBuffers = new List<byte[]>();
 
-            // default to 2020 NA crypto
+            // default to 2020 NA crypto TODO: handle region cryptos separate
             Crypto = Crypto == null ? new NetCryptoNa2020() : crypto;
         }
 
@@ -198,7 +206,7 @@ namespace Vision.Core.Networking
         private readonly FastList<OnConnectCallback> _connectCallbacks = new FastList<OnConnectCallback>();
         private readonly FastList<OnDisconnectCallback> _disconnectCallbacks = new FastList<OnDisconnectCallback>();
 
-        public void AddConnectCallbact(OnConnectCallback callback) => _connectCallbacks.Add(callback);
+        public void AddConnectCallback(OnConnectCallback callback) => _connectCallbacks.Add(callback);
 
         public void AddDisconnectCallback(OnDisconnectCallback callback) => _disconnectCallbacks.Add(callback);
 
@@ -207,18 +215,12 @@ namespace Vision.Core.Networking
         /// </summary>
         public void Disconnect()
         {
-            // May not want to remove here, might want to handle disconnections
-            // individually per server by checking the list for disconnected
-            // clients.
-            //Client?.Connections.Remove(this);
-            // TODO: child class for ServerConnection and ClientConnection?
-
             foreach (var dc in _disconnectCallbacks)
             {
                 dc.Invoke(TransmitDestinationType, RemoteEndPoint);
             }
 
-            SocketLog.Info($"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+            Logger.Info($"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
             _socket?.Close(); // Close() will call Dispose() automatically for us.
             _socket = null;
         }
@@ -245,7 +247,7 @@ namespace Vision.Core.Networking
 
             if (bytesToSend >= ReceiveBufferSize)
             {
-                SocketLog.Debug("Exceeded max message size while sending data to a connection.");
+                Logger.Debug("Exceeded max message size while sending data to a connection.");
             }
 
             while (bytesSent < bytesToSend)
@@ -253,8 +255,52 @@ namespace Vision.Core.Networking
                 bytesSent += _socket.Send(buffer, bytesSent, bytesToSend - bytesSent, SocketFlags.None);
 
                 if (bytesSent <= bytesToSend) continue;
-                SocketLog.Warning($"BUFFER OVERFLOW OCCURRED - Sent {bytesSent - bytesToSend} bytes more than expected.");
+                Logger.Warning($"BUFFER OVERFLOW OCCURRED - Sent {bytesSent - bytesToSend} bytes more than expected.");
                 break;
+            }
+        }
+
+        public void SendDataAsync(byte[] buffer, EventHandler<SocketAsyncEventArgs> completedCallback)
+        {
+            if (!IsConnected)
+            {
+                return;
+            }
+
+            if (_sendChunk)
+            {
+                _awaitingBuffers.Add(buffer);
+                return;
+            }
+
+            var bytesToSend = buffer.Length;
+
+            if (bytesToSend >= ReceiveBufferSize)
+            {
+                Logger.Debug("Exceeded max message size while sending data to a connection.");
+                return;
+            }
+
+            var e = new SocketAsyncEventArgs();
+            e.SetBuffer(buffer);
+            e.Completed += completedCallback;
+
+            bool completedAsync;
+
+            try
+            {
+                completedAsync = _socket.SendAsync(e);
+                // await _socket.SendAsync(buffer, SocketFlags.None);
+            }
+            catch (SocketException ex)
+            {
+                Logger.Info($"Socket not prepared for send! {ex.Message}");
+                return;
+            }
+
+            if (!completedAsync)
+            {
+                completedCallback.Invoke(this, e);
             }
         }
 
@@ -307,12 +353,12 @@ namespace Vision.Core.Networking
                     c.Invoke(TransmitDestinationType, RemoteEndPoint);
                 }
 
-                SocketLog.Info($"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+                Logger.Info($"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
                 BeginReceivingData();
             }
             catch
             {
-                SocketLog.Warning("Remote socket connection attempt failed. Trying again...");
+                Logger.Warning("Remote socket connection attempt failed. Trying again...");
                 Thread.Sleep(3000); // 3 seconds.
                 Connect((IPEndPoint)e.AsyncState);
             }
@@ -330,14 +376,14 @@ namespace Vision.Core.Networking
         /// Gets all messages from the buffer.
         /// </summary>
         /// <param name="buffer">The buffer to get message from.</param>
-        private async Task GetMessagesFromBuffer(byte[] buffer)
+        private void GetMessagesFromBuffer(byte[] buffer)
         {
             if (!IsConnected)
             {
                 return;
             }
 
-            await _receiveStream.WriteAsync(buffer, 0, buffer.Length);
+            _receiveStream.Write(buffer, 0, buffer.Length);
 
             while (TryParseMessage())
             {
@@ -366,7 +412,7 @@ namespace Vision.Core.Networking
             }
 
             Array.Copy(_receiveBuffer, 0, buffer, 0, count);
-            GetMessagesFromBuffer(buffer).RunSynchronously();
+            GetMessagesFromBuffer(buffer);
 
             BeginReceivingData();
         }
@@ -480,7 +526,7 @@ namespace Vision.Core.Networking
                     handler(packet, connection);
                     watch.Stop();
                     var millisString = $"{watch.Elapsed.TotalMilliseconds:N2}";
-                    SocketLog.Debug($"Handler for {packet.Command} took {millisString}ms to complete.");
+                    Logger.Debug($"Handler for {packet.Command} took {millisString}ms to complete.");
                 }
                 else
                 {
@@ -490,11 +536,14 @@ namespace Vision.Core.Networking
             }
             else if (hasHandler) // not this dest
             {
-                SocketLog.Warning($"Got handled command from {connection.TransmitDestinationType} NOT FOR {connection.ReceiveDestinationType} : {packet.Command}");
+                Logger.Warning($"Got handled command from {connection.TransmitDestinationType} NOT FOR {connection.ReceiveDestinationType} : {packet.Command}");
             }
             else
             {
-                SocketLog.Unhandled($"Got unhandled command from {connection.TransmitDestinationType}: {packet.Command}");
+                var commandHex = $"0x{packet.Command:x}";
+                var commandName = Enum.GetName(typeof(NetCommand), packet.Command);
+                if (string.IsNullOrEmpty(commandName)) commandName = "Unknown";
+                Logger.Unhandled($"Got unhandled command from {connection.TransmitDestinationType}: {commandHex} | {commandName}");
             }
         }
     }

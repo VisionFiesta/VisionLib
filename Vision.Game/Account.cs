@@ -8,12 +8,14 @@ namespace Vision.Game
     {
         public ushort AccountID;
 
+        public string AccountName;
+
         public readonly List<Avatar> Avatars = new List<Avatar>();
 
         public Avatar ActiveAvatar { get; private set; }
         public Character ActiveCharacter { get; private set; }
 
-        public void SelectAvatar(uint charNo)
+        private void SelectAvatar(uint charNo)
         {
             ActiveAvatar = Avatars.First(avatar => avatar.CharNo == charNo);
             ActiveAvatar.HasLoggedIn = true;

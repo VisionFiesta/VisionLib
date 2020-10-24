@@ -14,6 +14,8 @@ namespace Vision.Core.IO
 	/// <typeparam name="T">The type of object.</typeparam>
 	public class ObjectCollection<T>
 	{
+		private static readonly EngineLog Logger = new EngineLog(typeof(ObjectCollection<>));
+
 		/// <summary>
 		/// The contained objects.
 		/// </summary>
@@ -102,7 +104,7 @@ namespace Vision.Core.IO
 
 			if (identityProperty == null)
 			{
-				EngineLog.Warning("Definition identity property did not exist");
+				Logger.Warning("Definition identity property did not exist");
 				return;
 			}
 

@@ -11,6 +11,8 @@ namespace Vision.Core.IO.SHN
 {
     public class SimpleSHNLoader
     {
+        private static readonly EngineLog Logger = new EngineLog(typeof(SimpleSHNLoader));
+
         private static readonly Type[] AllFileDefinitions = VisionAssembly.VisionTypes.Where(type => type.GetCustomAttributes(typeof(Definition), true).Length > 0).ToArray();
         private static readonly Type ObjectCollectionType = typeof(ObjectCollection<>);
         private static readonly List<SHNType> Types = new List<SHNType>();
@@ -27,11 +29,11 @@ namespace Vision.Core.IO.SHN
 
             if (AllFileDefinitions.Length <= 0)
             {
-                EngineLog.Error("SimpleSHNLoader->SimpleSHNLoader() : No file definitions were found!");
+                Logger.Error("SimpleSHNLoader->SimpleSHNLoader() : No file definitions were found!");
                 return false;
             }
 
-            EngineLog.Info($"SimpleSHNLoader->Initialize() : Loaded {AllFileDefinitions.Length} SHN definitions");
+            Logger.Info($"SimpleSHNLoader->Initialize() : Loaded {AllFileDefinitions.Length} SHN definitions");
             return true;
         }
 
@@ -82,7 +84,7 @@ namespace Vision.Core.IO.SHN
             var definition = AllFileDefinitions.FirstOrDefault(def => def.Name == type.ToString());
             if (definition == null)
             {
-                EngineLog.Warning($"SimpleSHNLoader->SingleLoad() : No definition for SHN: {type}");
+                Logger.Warning($"SimpleSHNLoader->SingleLoad() : No definition for SHN: {type}");
                 return false;
             }
 

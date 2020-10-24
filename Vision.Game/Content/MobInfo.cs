@@ -1,9 +1,13 @@
-﻿using Vision.Core.IO.SHN;
+﻿using System.Collections.Generic;
+using Vision.Core.Collections;
+using Vision.Core.IO.SHN;
 
 namespace Vision.Game.Content
 {
     public class MobInfo
     {
+        public static readonly Dictionary<ushort, MobInfo> AllMobInfosByID = new FastDictionary<ushort, MobInfo>();
+
         public ushort ID { get; }
         public string Name { get; }
         public byte Level { get; }
@@ -19,5 +23,8 @@ namespace Vision.Game.Content
             IsNPC = shnResult.Read<bool>(i, "IsNPC");
             Size = shnResult.Read<uint>(i, "Size");
         }
+
+        public static bool GetMobInfoById(ushort id, out MobInfo mobInfo) =>
+            AllMobInfosByID.TryGetValue(id, out mobInfo);
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using Vision.Core.Exceptions;
 using Vision.Core.Extensions;
@@ -11,13 +13,16 @@ namespace Vision.Core.IO.SHN
 {
     public class SHNFile
     {
+        private static readonly EngineLog Logger = new EngineLog(typeof(SHNFile));
+
         private string _shnFilePath;
         private readonly ISHNCrypto _shnCrypto;
         private readonly Encoding _shnEncoding;
 
         public readonly SHNType SHNType;
-        public DataTable Table;
         public List<SHNColumn> SHNColumns = new List<SHNColumn>();
+
+        public SHNResult Data { get; private set; }
 
         private byte[] _cryptoHeader;
         private byte[] _data;
@@ -27,6 +32,8 @@ namespace Vision.Core.IO.SHN
         // private uint _defaultRowLength;
         private uint _columnCount;
 
+        public string MD5Hash { get; private set; }
+
         public static SHNFile Create(string shnFolder, SHNType shnType, ISHNCrypto shnCrypto, Encoding shnEncoding)
         {
             try
@@ -35,7 +42,7 @@ namespace Vision.Core.IO.SHN
             }
             catch (EngineException ex)
             {
-                EngineLog.Error("Exception when creating SHNFile: ", ex);
+                Logger.Error("Exception when creating SHNFile", ex);
                 return null;
             }
         }
@@ -69,9 +76,27 @@ namespace Vision.Core.IO.SHN
             _shnFilePath = shnFullPath;
         }
 
+        private static string CalculateMD5Hash(byte[] cryptoHeader, int dataLength, byte[] data)
+        {
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+            using var md5 = MD5.Create();
+
+            // 32 + 4 + data.Length
+            stream.Capacity = 36 + data.Length;
+
+            writer.Write(cryptoHeader); // 32
+            writer.Write(dataLength); // 4
+            writer.Write(data, 0, data.Length);
+            writer.Flush();
+
+            var hash = md5.ComputeHash(stream.GetBuffer());
+            return string.Concat(hash.Select(x => x.ToString("x2")));
+        }
+
         public void Read()
         {
-            Table = new DataTable();
+            Data = new SHNResult();
 
             SHNBinaryReader shnReader;
 
@@ -83,6 +108,8 @@ namespace Vision.Core.IO.SHN
             }
 
             _shnCrypto.Decrypt(_data);
+
+            MD5Hash = CalculateMD5Hash(_cryptoHeader, _dataLength, _data);
 
             shnReader = new SHNBinaryReader(new MemoryStream(_data), _shnEncoding);
 
@@ -123,7 +150,7 @@ namespace Vision.Core.IO.SHN
                     DataType = newSHNColumn.GetType()
                 };
 
-                Table.Columns.Add(newDataColumn);
+                Data.Columns.Add(newDataColumn);
 
                 idCount++;
             }
@@ -226,8 +253,10 @@ namespace Vision.Core.IO.SHN
                     }
                 }
 
-                Table.Rows.Add(values);
+                Data.Rows.Add(values);
             }
+
+            Data.Count = Data.Rows.Count;
         }
 
         public void Write(string writePath)
@@ -243,9 +272,9 @@ namespace Vision.Core.IO.SHN
             var shnWriter = new SHNBinaryWriter(shnStream, _shnEncoding);
 
             shnWriter.Write(_header);
-            shnWriter.Write(Table.Rows.Count);
+            shnWriter.Write(Data.Rows.Count);
             shnWriter.Write(GetColumnLengths());
-            shnWriter.Write(Table.Columns.Count);
+            shnWriter.Write(Data.Columns.Count);
 
             foreach (var column in SHNColumns)
             {
@@ -256,7 +285,7 @@ namespace Vision.Core.IO.SHN
                 shnWriter.Write(column.Length);
             }
 
-            foreach (DataRow row in Table.Rows)
+            foreach (DataRow row in Data.Rows)
             {
                 var position = shnWriter.BaseStream.Position;
 
@@ -434,14 +463,13 @@ namespace Vision.Core.IO.SHN
         {
             uint start = 2;
 
-            // TODO: see if LINQ is slower
             foreach (var column in SHNColumns) { start += (uint)column.Length; }
 
             return start;
         }
 
-        public void DisallowRowChanges() { Table.RowChanged += Table_RowChanged; }
+        public void DisallowRowChanges() { Data.RowChanged += Table_RowChanged; }
 
-        private void Table_RowChanged(object sender, DataRowChangeEventArgs args) { Table.RejectChanges(); }
+        private void Table_RowChanged(object sender, DataRowChangeEventArgs args) { Data.RejectChanges(); }
     }
 }

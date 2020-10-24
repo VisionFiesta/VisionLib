@@ -9,6 +9,12 @@ namespace Vision.Game.Structs.User
         public byte XTrapHashLength { get; private set; }
         public string XTrapVersionHash { get; private set; }
 
+        public NcUserXTrapReq(string xTrapVersionHash)
+        {
+            XTrapHashLength = (byte) xTrapVersionHash.Length;
+            XTrapVersionHash = xTrapVersionHash;
+        }
+
         public NcUserXTrapReq(byte xTrapHashLength, string xTrapVersionHash)
         {
             XTrapHashLength = xTrapHashLength;

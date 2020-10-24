@@ -7,16 +7,10 @@ namespace Vision.Core.Collections
 {
     public class FastList<T> : List<T>
     {
-        private static readonly object _lock = new object();
+        private readonly object _lock = new object();
         public new volatile int Count;
 
-        public int UpperBound
-        {
-            get
-            {
-                return Count - 1;
-            }
-        }
+        public int UpperBound => Count - 1;
 
         public FastList()
         {

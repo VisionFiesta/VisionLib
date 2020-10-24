@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using Colorful;
 using Vision.Core.Extensions;
 
@@ -8,22 +9,18 @@ namespace Vision.Core.Logging.Loggers
 {
     public sealed class ClientLog : ColorfulConsoleLogger
     {
-        private static ClientLog _instance;
-        public static ClientLog Instance => _instance ??= new ClientLog();
+        private const string LoggerPrefix = "ClientLog";
+        private static readonly Color LoggerColor = Color.CornflowerBlue;
 
-        internal ClientLog() : base("ClientLog", Color.CornflowerBlue) { }
+        private static ClientLogLevel _logLevel;
+
+        public ClientLog(MemberInfo ownerClass) : base(LoggerPrefix, ownerClass.Name, LoggerColor) {}
 
         private static List<byte> _preciseLogLevels = new List<byte>(EnumExtensions.GetValuesCasted<ClientLogLevel, byte>());
 
-        public static void SetPreciseLogLevels(params ClientLogLevel[] levels)
-        {
-            _preciseLogLevels = new List<byte>(levels.Cast<byte>());
-        }
+        public static void SetPreciseLogLevels(params ClientLogLevel[] levels) => _preciseLogLevels = new List<byte>(levels.Cast<byte>());
 
-        public static void SetLogLevel(ClientLogLevel level)
-        {
-            Instance.SetLogLevel((byte)level);
-        }
+        public static void SetLogLevel(ClientLogLevel maxLogLevel) => _logLevel = maxLogLevel;
 
         public static bool ShowChat { get; set; } = true;
         public static bool ShowAnnounce { get; set; } = true;
@@ -32,16 +29,16 @@ namespace Vision.Core.Logging.Loggers
 
         public static void SetChatFilter(params ClientLogChatType[] types) => AllowedChatTypes = new List<ClientLogChatType>(types);
 
-        public static void Debug(string message) => WriteLine(ClientLogLevel.CLL_DEBUG, message);
+        public void Debug(string message) => WriteLine(ClientLogLevel.CLL_DEBUG, message);
+        
+        public void Error(string message) => WriteLine(ClientLogLevel.CLL_ERROR, message);
 
-        public static void Error(string message) => WriteLine(ClientLogLevel.CLL_ERROR, message);
+        public void Warning(string message) => WriteLine(ClientLogLevel.CLL_WARNING, message);
 
-        public static void Warning(string message) => WriteLine(ClientLogLevel.CLL_WARNING, message);
-
-        public static void Info(string message) => WriteLine(ClientLogLevel.CLL_INFO, message);
+        public void Info(string message) => WriteLine(ClientLogLevel.CLL_INFO, message);
 
         // TODO: item link?
-        public static void Chat(ClientLogChatType type, string sender, string message, bool isSelf = false)
+        public void Chat(ClientLogChatType type, string sender, string message, bool isSelf = false)
         {
             if (!ShowChat) return;
 
@@ -66,18 +63,18 @@ namespace Vision.Core.Logging.Loggers
                     sender = isSelf ? $"To {sender}" : $"From {sender}";
                 }
 
-                var prefixFormatter = Instance.GetMessagePrefixFormat(prefix, messageColor);
+                var prefixFormatter = GetMessagePrefixFormat(prefix, messageColor);
                 prefixFormatter.Add(new Formatter($"[{sender}]", senderColor));
                 prefixFormatter.Add(new Formatter($" : {message}", messageColor));
 
-                Instance.WriteLineRawFormatted((byte)level, prefixFormatter.ToArray());
+                WriteLineRawFormatted((byte)level, prefixFormatter.ToArray());
             }
             else
             {
-                var prefixFormatter = Instance.GetMessagePrefixFormat(level.ToName(), level.ToColor());
+                var prefixFormatter = GetMessagePrefixFormat(level.ToName(), level.ToColor());
                 prefixFormatter.Add(new Formatter(message, messageColor));
 
-                Instance.WriteLineRawFormatted((byte)level, prefixFormatter.ToArray());
+                WriteLineRawFormatted((byte)level, prefixFormatter.ToArray());
             }
         }
 
@@ -101,15 +98,11 @@ namespace Vision.Core.Logging.Loggers
         //     }
         // }
 
-        private static void WriteLine(ClientLogLevel level, string message)
-        {
-            Instance.WriteLine((byte)level, level.ToName(), message, level.ToColor());
-        }
+        private void WriteLine(ClientLogLevel level, string message) => WriteLine((byte)level, level.ToName(), message, level.ToColor());
 
-        protected internal override bool ShouldLogPrecise(byte messageLogLevel)
-        {
-            return _preciseLogLevels.Contains(messageLogLevel);
-        }
+        protected internal override byte GetLogLevel() => (byte) _logLevel;
+
+        protected internal override bool ShouldLogPrecise(byte messageLogLevel) => _preciseLogLevels.Contains(messageLogLevel);
     }
 
     public enum ClientLogLevel : byte
