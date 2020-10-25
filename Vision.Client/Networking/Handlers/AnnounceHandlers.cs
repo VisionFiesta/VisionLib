@@ -1,5 +1,7 @@
-﻿using Vision.Core.Networking;
+﻿using Vision.Core.Logging.Loggers;
+using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
+using Vision.Game.Enums;
 using Vision.Game.Structs.Announce;
 
 namespace Vision.Client.Networking.Handlers
@@ -12,8 +14,11 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcAnnounceW2CCmd();
             cmd.Read(packet);
 
-            // TODO: Move to ChatService
-            // ClientLog.Announce(cmd.AnnounceType, cmd.Message);
+            var chatType = cmd.AnnounceType == AnnounceType.AT_ROAR
+                ? ClientLogChatType.CLCT_ROAR
+                : ClientLogChatType.CLCT_ANNOUNCE;
+
+            connection.GameClient.ChatService.ReceiveChat(chatType, cmd.Message, cmd.AnnounceType.ToFriendlyName());
         }
     }
 }

@@ -10,8 +10,8 @@ namespace Vision.Client.Services
         protected readonly ClientLog ClientLogger;
         protected readonly EngineLog EngineLogger;
 
-        protected readonly FiestaClient Client;        
-        
+        protected readonly FiestaClient Client;
+
         protected ClientUserData UserData => Client.UserData;
         protected StaticClientData StaticClientData => Client.StaticClientData;
         protected ClientSessionData ClientSessionData => Client.ClientSessionData;
@@ -26,6 +26,7 @@ namespace Vision.Client.Services
 
         protected ChatService ChatService => Client.ChatService;
         protected MapService MapService => Client.MapService;
+        protected MovementService MovementService => Client.MovementService;
 
         protected ClientServiceBase(FiestaClient client)
         {

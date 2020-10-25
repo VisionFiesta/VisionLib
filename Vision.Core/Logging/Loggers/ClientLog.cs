@@ -30,7 +30,7 @@ namespace Vision.Core.Logging.Loggers
         public static void SetChatFilter(params ClientLogChatType[] types) => AllowedChatTypes = new List<ClientLogChatType>(types);
 
         public void Debug(string message) => WriteLine(ClientLogLevel.CLL_DEBUG, message);
-        
+
         public void Error(string message) => WriteLine(ClientLogLevel.CLL_ERROR, message);
 
         public void Warning(string message) => WriteLine(ClientLogLevel.CLL_WARNING, message);
@@ -151,7 +151,8 @@ namespace Vision.Core.Logging.Loggers
         CLCT_PARTY,
         CLCT_ACADEMY,
         CLCT_GUILD,
-        CLCT_ROAR
+        CLCT_ROAR,
+        CLCT_ANNOUNCE
     }
 
     public static class ClientChatTypeExtensions
@@ -167,6 +168,7 @@ namespace Vision.Core.Logging.Loggers
                 ClientLogChatType.CLCT_ACADEMY => FiestaColors.ChatAcademyColor,
                 ClientLogChatType.CLCT_GUILD => FiestaColors.ChatGuildColor,
                 ClientLogChatType.CLCT_ROAR => FiestaColors.ChatRoarColor,
+                ClientLogChatType.CLCT_ANNOUNCE => FiestaColors.ChatGuildColor,
                 _ => Color.White
             };
         }
@@ -182,6 +184,7 @@ namespace Vision.Core.Logging.Loggers
                 ClientLogChatType.CLCT_ACADEMY => "Academy",
                 ClientLogChatType.CLCT_GUILD => "Guild",
                 ClientLogChatType.CLCT_ROAR => "Roar",
+                ClientLogChatType.CLCT_ANNOUNCE => "Announce",
                 _ => "Unk"
             };
         }

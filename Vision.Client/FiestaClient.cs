@@ -36,6 +36,7 @@ namespace Vision.Client
 
         public readonly ChatService ChatService;
         public readonly MapService MapService;
+        public readonly MovementService MovementService;
 
         private readonly SHNManager _shnManager;
         private readonly SHNHashManager _shnHashManager;
@@ -60,7 +61,7 @@ namespace Vision.Client
             {
                 _engineLog.Debug("Generated SHN hash for client.");
                 SHNHash = shnHash;
-            } 
+            }
             else
             {
                 _engineLog.Warning("Failed to generate SHN hash!");
@@ -81,6 +82,7 @@ namespace Vision.Client
             // Interaction services
             ChatService = new ChatService(this);
             MapService = new MapService(this);
+            MovementService = new MovementService(this);
 
             _clientLog.Info("Initialized Client Services");
 
@@ -150,7 +152,7 @@ namespace Vision.Client
         public ShortCutData[] ShortCutDatas;
         public KeyMapData[] KeyMapDatas;
         public GameOptionData[] GameOptionDatas;
-        
+
         public void CleanupLoginData()
         {
             Worlds.Clear();

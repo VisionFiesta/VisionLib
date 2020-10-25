@@ -1,29 +1,18 @@
 ﻿using Colorful;
 
-using Vision.Client.Networking;
 using Vision.Core;
 using Vision.Core.Logging.Loggers;
-using Vision.Core.Networking;
-using Vision.Core.Networking.Packet;
 using Vision.Game.Characters;
 using Vision.Game.Content;
 using Vision.Game.Structs.Act;
 
 namespace Vision.Client.Services
 {
-    public sealed class ChatService
+    public sealed class ChatService : ClientServiceBase
     {
-        private static readonly ClientLog Logger = new ClientLog(typeof(ChatService));
-
-        private readonly FiestaClient _client;
-        private Character ActiveCharacter => _client.ClientSessionData.ClientAccount.ActiveCharacter;
-        private NetClientConnection WorldClient => _client.WorldClient;
-        private NetClientConnection ZoneClient => _client.ZoneClient;
-
-        public ChatService(FiestaClient client)
+        public ChatService(FiestaClient client) : base(client)
         {
-            _client = client;
-            Logger.Info("Initialized");
+            ClientLogger.Info("Initialized");
         }
 
         public void ReceiveChat(ClientLogChatType type, string message, int senderHandle)
@@ -73,11 +62,10 @@ namespace Vision.Client.Services
                     resp = "Heya, Life!";
                     break;
                 case "jump":
-                    // TODO: ClientMovementService
-                    new NetPacket(NetCommand.NC_ACT_JUMP_CMD).Send(ZoneClient);
+                    MovementService.Jump();
                     break;
                 case "follow":
-                    // TODO: ClientMovementService
+                    // TODO: MovementService
                     break;
                 default:
                     resp = "No comprende";
@@ -86,27 +74,28 @@ namespace Vision.Client.Services
 
             if (resp != "") SendChatReq(type, resp, sender);
         }
-        
+
         public void SendChatReq(ClientLogChatType type, string message, string receiver = "")
         {
+            //TODO: split messages longer than 255
             switch (type)
             {
                 case ClientLogChatType.CLCT_NORMAL:
                     var chatReq = new NcActChatReq(message);
-                    chatReq.Send(ZoneClient);
+                    chatReq.Send(ZoneConnection);
                     break;
                 case ClientLogChatType.CLCT_SHOUT:
                     var shoutReq = new NcActShoutCmd(message);
-                    shoutReq.Send(ZoneClient);
+                    shoutReq.Send(ZoneConnection);
                     break;
                 case ClientLogChatType.CLCT_WHISPER:
                     if (string.IsNullOrEmpty(receiver)) return;
-                    var whispReq = new NcActWhisperReq();
-                    whispReq.Send(ZoneClient);
+                    var whispReq = new NcActWhisperReq(receiver, message);
+                    whispReq.Send(ZoneConnection);
                     break;
                 case ClientLogChatType.CLCT_PARTY:
-                    var partyReq = new NcActPartyChatReq();
-                    partyReq.Send(ZoneClient);
+                    var partyReq = new NcActPartyChatReq(message);
+                    partyReq.Send(ZoneConnection);
                     break;
                 case ClientLogChatType.CLCT_ACADEMY:
                     // TODO: GuildService
@@ -125,14 +114,13 @@ namespace Vision.Client.Services
             LogChat(type, message, receiver, true);
         }
 
-        private static void LogChat(ClientLogChatType type, string message, string sender, bool isSelf = false)
+        private void LogChat(ClientLogChatType type, string message, string sender, bool isSelf = false)
         {
             const ClientLogLevel level = ClientLogLevel.CLL_GAME;
 
             var messageColor = type.ToColor();
 
-            var prefixFormatter = Logger.GetMessagePrefixFormat("Chat");
-
+            var prefixFormatter = ClientLogger.GetMessagePrefixFormat("Chat");
 
             if (sender != "")
             {
@@ -154,7 +142,7 @@ namespace Vision.Client.Services
             prefixFormatter.Add(new Formatter($"", messageColor));
             prefixFormatter.Add(new Formatter($" : {message}", messageColor));
 
-            Logger.WriteLineRawFormatted((byte) level, prefixFormatter.ToArray());
+            ClientLogger.WriteLineRawFormatted((byte)level, prefixFormatter.ToArray());
         }
     }
 }
