@@ -1,4 +1,5 @@
-﻿using Vision.Core.Streams;
+﻿using System;
+using Vision.Core.Streams;
 using Vision.Core.Structs;
 
 namespace Vision.Game.Structs.Common
@@ -31,6 +32,13 @@ namespace Vision.Game.Structs.Common
         {
             X = pos.X;
             Y = pos.Y;
+        }
+
+        public double GetDistance(ShineXY otherCoords)
+        {
+            var X2 = otherCoords.X;
+            var Y2 = otherCoords.Y;
+            return Math.Sqrt(((X2 - X) * (X2 - X)) + (Y2 - Y) * (Y2 - Y));
         }
 
         public override int GetSize() => Size;

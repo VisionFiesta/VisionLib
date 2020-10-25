@@ -13,7 +13,7 @@ namespace Vision.Core.Logging
         private static Formatter GetTimeFormat => new Formatter($"[{GetTimePrefix}] ", Color.Aqua);
 
         private const string DefaultFormattingString = "{0}{1}{2}{3}";
-        
+
         public readonly string BasePrefix;
         public readonly string OwnerClassName;
         public readonly Color BaseColor;
@@ -38,7 +38,7 @@ namespace Vision.Core.Logging
             {
                 GetTimeFormat,
                 new Formatter(fullBasePrefix, BaseColor),
-                new Formatter($"[{messagePrefix}] " + ownerClassPrefix, prefixColor.Value)
+                new Formatter($"{ownerClassPrefix}[{messagePrefix}] ", prefixColor.Value)
             };
         }
 

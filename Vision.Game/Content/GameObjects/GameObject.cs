@@ -19,7 +19,7 @@ namespace Vision.Game.Content.GameObjects
         private static readonly HashSet<GameObject> objects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
         public static IReadOnlyCollection<GameObject> Objects => objects;
 
-		public ushort Handle { get; set; }
+		public ushort Handle { get; protected set; }
 
 		public bool IsDead { get; set; }
 		public byte Level { get; set; }
@@ -32,8 +32,7 @@ namespace Vision.Game.Content.GameObjects
 
 		public FastList<GameObject> VisibleObjects { get; set; }
 		public List<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToList();
-		// TODO: distance math in ShineXY
-		// public List<GameObject> TouchingObjects => VisibleObjects.Filter(obj => Vector2.Distance(Position, obj.Position) <= 10.0);
+        public List<GameObject> TouchingObjects => VisibleObjects.Filter(obj => obj.Position.GetDistance(Position) <= 10.0);
 
 		private GameObject _target;
 		public GameObject Target

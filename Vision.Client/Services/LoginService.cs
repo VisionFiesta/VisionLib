@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Timers;
 using Stateless;
 using Vision.Core;
 using Vision.Game.Structs.User;
+using Timer = System.Timers.Timer;
 
 namespace Vision.Client.Services
 {
@@ -135,6 +137,7 @@ namespace Vision.Client.Services
 
         private void OnVerifiedEntry()
         {
+            Thread.Sleep(50);
             ClientLogger.Info("Verified");
             ClientLogger.Debug($"Sending User{Client.UserData.Region.ToPacketShortName()}LoginReq");
 
