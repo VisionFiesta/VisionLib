@@ -29,6 +29,7 @@ namespace Vision.Game.Content.GameObjects
                 case GameObjectType.GOT_MOB: return "Monster";
                 case GameObjectType.GOT_NPC: return "NPC";
                 case GameObjectType.GOT_DOOR: return "Gate";
+                case GameObjectType.GOT_CHARACTER: return "Character";
                 default: return type.ToString();
             }
         }

@@ -1,9 +1,8 @@
 ﻿using Vision.Client.Services;
-using Vision.Core.Extensions;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
-using Vision.Game.Content.GameObjects;
+using Vision.Game.Structs.Map;
 
 namespace Vision.Client.Networking.Handlers
 {
@@ -14,19 +13,17 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_MAP_LOGIN_ACK, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_MAP_LOGIN_ACK(NetPacket packet, NetClientConnection connection)
         {
-            // TODO: move to ClientZoneService
-            Logger.Info("Map Login OK");
+            var cmd = new NcMapLoginAck();
+            cmd.Read(packet);
+            Logger.Debug($"MAP_LOGIN_ACK: {cmd}");
             connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_ZONE_OK);
-            // new NetPacket(NetCommand.NC_MAP_LOGINCOMPLETE_CMD).Send(connection);
         }
 
         [NetPacketHandler(NetCommand.NC_MAP_LOGINFAIL_ACK, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_MAP_LOGINFAIL_ACK(NetPacket packet, NetClientConnection connection)
         {
             Logger.Warning("Map Login Failed");
-            // TODO: zone or world service?
             connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_ZONE_FAIL);
-            // connection.Disconnect();
         }
 
         [NetPacketHandler(NetCommand.NC_MAP_LOGOUT_CMD, NetConnectionDestination.NCD_CLIENT)]

@@ -15,7 +15,7 @@ namespace Vision.Game.Content
             Position = data.Position;
             MobID = data.MobID;
 
-            bool hasInfo = MobInfo.GetMobInfoById(MobID, out var mobInfo);
+            var hasInfo = MobInfo.GetMobInfoById(MobID, out var mobInfo);
             if (hasInfo)
             {
                 var isGate = data.Flags.Flag == MobBriefFlag.MBF_GATE;
@@ -28,13 +28,23 @@ namespace Vision.Game.Content
 
         public override string ToString()
         {
+            string info = $"{Type.ToFriendlyName()} - ";
             switch (Type)
             {
-                case GameObjectType.GOT_DOOR: return $"{Type.ToFriendlyName()} - To: {Name}, Handle: {Handle}";
-                case GameObjectType.GOT_NPC: return $"{Type.ToFriendlyName()} - Name: {Name}, Handle: {Handle}";
-                case GameObjectType.GOT_MOB: return $"{Type.ToFriendlyName()} - Name: {Name}, Level: {Level}, Handle: {Handle}";
-                default: return $"{Type.ToFriendlyName()} - Handle: {Handle}";
+                case GameObjectType.GOT_DOOR:
+                    info += $"To: {Name}, Handle: {Handle}";
+                    break;
+                case GameObjectType.GOT_NPC:
+                    info = $"Name: {Name}";
+                    break;
+                case GameObjectType.GOT_MOB:
+                    info = $"Name: {Name}, Level: {Level}";
+                    break;
             }
+
+            info += $", Handle: {Handle}";
+
+            return info;
         }
     }
 }

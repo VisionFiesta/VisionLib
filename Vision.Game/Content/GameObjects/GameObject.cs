@@ -8,9 +8,16 @@ using Vision.Game.Structs.Common;
 
 namespace Vision.Game.Content.GameObjects
 {
+    internal class GameObjectHandleEqualityComparer : IEqualityComparer<GameObject>
+    {
+        public bool Equals(GameObject x, GameObject y) => x.Handle == y.Handle;
+        public int GetHashCode(GameObject obj) => obj.Handle.GetHashCode();
+    }
+
 	public abstract class GameObject
-	{
-		public static List<GameObject> Objects = new List<GameObject>();
+    {
+        private static readonly HashSet<GameObject> objects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
+        public static IReadOnlyCollection<GameObject> Objects => objects;
 
 		public ushort Handle { get; set; }
 
@@ -85,7 +92,10 @@ namespace Vision.Game.Content.GameObjects
 
 			// Behavior = new DefaultBehavior();
 
-			Objects.Add(this);
+            if (!objects.Add(this))
+            {
+				throw new InvalidOperationException($"GameObject with handle {Handle} already exists!");
+            }
 		}
 	}
 }
