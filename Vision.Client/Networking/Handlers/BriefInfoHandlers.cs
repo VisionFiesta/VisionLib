@@ -1,4 +1,5 @@
-﻿using Vision.Core.Collections;
+﻿using System.Linq;
+using Vision.Core.Collections;
 using Vision.Core.Extensions;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
@@ -17,31 +18,48 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_INFORM_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_INFORM_CMD(NetPacket packet, NetClientConnection connection)
         {
+            var reader = packet.Reader;
+            var nMyHnd = reader.ReadUInt16();
+            var netCommand = reader.ReadUInt16();
+            var hnd = reader.ReadUInt16();
             Logger.Debug("BI_INFORM");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHANGEDECORATE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_CHANGEDECORATE_CMD(NetPacket packet, NetClientConnection connection)
         {
+            var reader = packet.Reader;
+            var handle = reader.ReadUInt16();
+            var item = reader.ReadUInt16();
+            var charSlotNum = reader.ReadByte();
             Logger.Debug("BI_CHANGEDECORATE");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHANGEUPGRADE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_CHANGEUPGRADE_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_CHANGEUPGRADE");
+            var cmd = new NcBriefInfoChangeUpgradeCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_CHANGEUPGRADE: {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_UNEQUIP_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_UNEQUIP_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_UNEQUIP");
+            var cmd = new NcBriefInfoUnequipCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_UNEQUIP: {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHANGEWEAPON_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_CHANGEWEAPON_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_CHANGEWEAPON");
+            var cmd = new NcBriefInfoChangeWeaponCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_CHANGEWEAPON: {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_LOGINCHARACTER_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -132,7 +150,7 @@ namespace Vision.Client.Networking.Handlers
         public static void NC_BRIEFINFO_BRIEFINFODELETE_CMD(NetPacket packet, NetClientConnection connection)
         {
             var handle = packet.Reader.ReadUInt16();
-            var go = GameObject.Objects.First(o => o.Handle == handle);
+            var go = GameObject.Objects.FirstOrDefault(o => o.Handle == handle);
             if (go == null)
             {
                 Logger.Error($"BI_DELETE: GameObject no longer present, Handle: {handle}");
@@ -208,7 +226,7 @@ namespace Vision.Client.Networking.Handlers
              * }
              *
              */
-            Logger.Debug("BI_ABSTATE_CHANGE");
+            // Logger.Debug("BI_ABSTATE_CHANGE");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_LIST_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -220,7 +238,10 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_REGENMOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_REGENMOVER_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_REGENMOVER");
+            var cmd = new NcBriefInfoRegenMoverCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_REGENMOVER: {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
