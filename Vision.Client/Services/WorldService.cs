@@ -33,6 +33,10 @@ namespace Vision.Client.Services
 
             _worldStateMachine.Configure(WorldServiceState.WSS_DISCONNECTING)
                 .OnEntry(OnDisconnectingEntry)
+                .OnEntryFrom(WorldServiceTrigger.WST_CONNECT_FAIL, () => ClientLogger.Error("World Connect FAIL"))
+                .OnEntryFrom(WorldServiceTrigger.WST_LOGIN_FAIL, () => ClientLogger.Error("Map Login FAIL"))
+                .OnEntryFrom(WorldServiceTrigger.WST_CHAR_LOGIN_FAIL, () => ClientLogger.Error("Character Login FAIL"))
+                .OnEntryFrom(WorldServiceTrigger.WST_CONNECT_ZONE_FAIL, () => ClientLogger.Error("Zone Connect FAIL"))
                 .Permit(WorldServiceTrigger.WST_DISCONNECT, WorldServiceState.WSS_DISCONNECTED);
 
             _worldStateMachine.Configure(WorldServiceState.WSS_DISCONNECTED)
