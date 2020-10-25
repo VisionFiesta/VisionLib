@@ -241,6 +241,11 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoRegenMoverCmd();
             cmd.Read(packet);
 
+            if (cmd.Handle != 0)
+            {
+                var mover = new Mover(cmd.Handle, cmd.ID);
+            }
+
             Logger.Debug($"BI_REGENMOVER: {cmd}");
         }
 
