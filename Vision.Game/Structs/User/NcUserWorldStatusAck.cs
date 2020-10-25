@@ -1,4 +1,5 @@
-﻿using Vision.Core;
+﻿using System.Linq;
+using Vision.Core;
 using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
@@ -12,17 +13,14 @@ namespace Vision.Game.Structs.User
         public WorldStatusStruct[] WorldStatuses { get; private set; }
 
         public NcUserWorldStatusAck() { }
-        
+
         public NcUserWorldStatusAck(byte worldCount, WorldStatusStruct[] worldStatuses)
         {
             WorldCount = worldCount;
             WorldStatuses = worldStatuses;
         }
-        
-        public override int GetSize()
-        {
-            return sizeof(byte) * 3 + NameN.Name4Len;
-        }
+
+        public override int GetSize() => WorldCount + 3 + NameN.Name4Len;
 
         public override void Read(ReaderStream reader)
         {
@@ -45,22 +43,14 @@ namespace Vision.Game.Structs.User
             }
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_USER_WORLD_STATUS_ACK;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_USER_WORLD_STATUS_ACK;
 
         public override string ToString()
         {
             if (WorldCount <= 0) return "No Worlds";
 
             var str = $"Count: {WorldCount}";
-            foreach (var w in WorldStatuses)
-            {
-                str += "\n    ";
-                str += $"ID: {w.WorldID}, Name: {w.WorldName}, Status: {w.WorldStatus}";
-            }
-            return str;
+            return WorldStatuses.Aggregate(str, (current, w) => current + $"\tID: {w.WorldID}, Name: {w.WorldName}, Status: {w.WorldStatus}");
         }
 
         public class WorldStatusStruct : AbstractStruct
@@ -78,10 +68,7 @@ namespace Vision.Game.Structs.User
                 WorldStatus = (WorldServerStatus)worldStatus;
             }
 
-            public override int GetSize()
-            {
-                return sizeof(byte) * 2 + NameN.Name4Len;
-            }
+            public override int GetSize() => 2 + NameN.Name4Len;
 
             public override void Read(ReaderStream reader)
             {
@@ -97,6 +84,5 @@ namespace Vision.Game.Structs.User
                 writer.Write((byte)WorldStatus);
             }
         }
-
     }
 }

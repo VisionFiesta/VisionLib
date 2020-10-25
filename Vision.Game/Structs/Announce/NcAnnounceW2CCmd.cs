@@ -10,11 +10,8 @@ namespace Vision.Game.Structs.Announce
         public AnnounceType AnnounceType;
         public byte MessageLength;
         public string Message;
-        
-        public override int GetSize()
-        {
-            return sizeof(byte) * 2 + MessageLength;
-        }
+
+        public override int GetSize() => 2 + MessageLength;
 
         public override void Read(ReaderStream reader)
         {
@@ -30,9 +27,8 @@ namespace Vision.Game.Structs.Announce
             writer.Write(Message, MessageLength);
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_ANNOUNCE_W2C_CMD;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_ANNOUNCE_W2C_CMD;
+
+        public override bool HasMaximumSize() => false;
     }
 }

@@ -44,9 +44,8 @@ namespace Vision.Game.Structs.Act
             writer.Write(Message, Length);
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_ACT_SOMEONECHAT_CMD;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_ACT_SOMEONECHAT_CMD;
+
+        public override bool HasMaximumSize() => false;
     }
 }

@@ -46,5 +46,10 @@ namespace Vision.Game.Structs.Common
             writer.Write(X);
             writer.Write(Y);
         }
+
+        public override string ToString()
+        {
+            return $"XY:[{X}, {Y}]";
+        }
     }
 }

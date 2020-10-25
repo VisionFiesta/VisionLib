@@ -1,7 +1,7 @@
 ﻿using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
-using Vision.Game.Structs.Common;
+using Vision.Game.Structs.Common.Character;
 
 namespace Vision.Game.Structs.Char
 {

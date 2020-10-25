@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Vision.Game.Characters.Shape;
 using Vision.Game.Content.GameObjects;
@@ -56,7 +57,7 @@ namespace Vision.Game.Characters
             Level = data.Level;
             Stats.CurrentHP = data.HP;
             Stats.CurrentSP = data.SP;
-            Stats.CurrentLP = data.LP; 
+            Stats.CurrentLP = data.LP;
             Stats.BonusSTR = data.STRBonus;
             Stats.BonusEND = data.ENDBonus;
             Stats.BonusDEX = data.DEXBonus;

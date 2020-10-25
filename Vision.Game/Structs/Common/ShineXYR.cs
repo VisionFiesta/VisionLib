@@ -21,5 +21,10 @@ namespace Vision.Game.Structs.Common
             base.Write(writer);
             writer.Write(Rotation);
         }
+
+        public override string ToString()
+        {
+            return $"XYR: [{X}, {Y}, {Rotation}]";
+        }
     }
 }
