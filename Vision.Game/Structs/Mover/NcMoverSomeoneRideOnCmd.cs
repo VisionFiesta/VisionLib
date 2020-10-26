@@ -4,7 +4,7 @@ using Vision.Core.Structs;
 
 namespace Vision.Game.Structs.Mover
 {
-    class NcMoverSomeoneRideOnCmd : NetPacketStruct
+    public class NcMoverSomeoneRideOnCmd : NetPacketStruct
     {
         public ushort PlayerHandle;
         public ushort MoverHandle;
@@ -30,5 +30,7 @@ namespace Vision.Game.Structs.Mover
         }
 
         public override NetCommand GetCommand() => NetCommand.NC_MOVER_SOMEONE_RIDE_ON_CMD;
+
+        public override string ToString() => $"{nameof(PlayerHandle)}: {PlayerHandle}, {nameof(MoverHandle)}: {MoverHandle}, {nameof(MoverSlot)}: {MoverSlot}, {nameof(MoverGrade)}: {MoverGrade}";
     }
 }

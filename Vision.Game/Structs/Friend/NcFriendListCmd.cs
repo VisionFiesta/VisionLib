@@ -10,7 +10,11 @@ namespace Vision.Game.Structs.Friend
         public byte FriendNum;
         public FriendInfo[] Friends;
 
-        public override int GetSize() => 1 + Friends.Length * FriendInfo.Size;
+        public override int GetSize()
+        {
+            int len = Friends?.Length ?? 0;
+            return 1 + len * FriendInfo.Size;
+        }
 
         public override void Read(ReaderStream reader)
         {

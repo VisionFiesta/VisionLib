@@ -1,4 +1,5 @@
-﻿using Colorful;
+﻿using System.Linq;
+using Colorful;
 
 using Vision.Core;
 using Vision.Core.Logging.Loggers;

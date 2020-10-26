@@ -16,10 +16,7 @@ namespace Vision.Game.Structs.CharOption
             Data = data;
         }
 
-        public override int GetSize()
-        {
-            return sizeof(ushort) + Count * 7;
-        }
+        public override int GetSize() => 2 + Count * 7;
 
         public override void Read(ReaderStream reader)
         {
@@ -41,9 +38,8 @@ namespace Vision.Game.Structs.CharOption
             }
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD;
+
+        public override bool HasMaximumSize() => false;
     }
 }

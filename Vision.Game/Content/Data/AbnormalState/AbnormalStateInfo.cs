@@ -1,16 +1,20 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Vision.Core.IO.SHN;
+using Vision.Core.Streams;
+using Vision.Core.Structs;
 
 namespace Vision.Game.Content.Data.AbnormalState
 {
-    public class AbnormalStateInfo
+    public class AbnormalStateInfo : AbstractStruct
     {
-        public ushort ID { get; }
+        public const int Size = 12;
+
+        public ushort ID { get; private set; }
         public string Name { get; }
         public AbnormalStateIndex AbnormalStateIndex { get; }
-        public ushort KeepTimeRatio { get; }
-        public ushort KeepTimePower { get; }
+        public ushort KeepTimeRatio { get; private set; }
+        public ushort KeepTimePower { get; private set; }
         public List<AbnormalStateInfo> PartyStates { get; }
         public byte Grade { get; }
         public ushort PartyRange { get; }
@@ -18,6 +22,8 @@ namespace Vision.Game.Content.Data.AbnormalState
         public byte AbstateSaveType { get; }
 
         public AbnormalStateInfo MainAbState { get; set; }
+
+        public AbnormalStateInfo() {}
 
         public AbnormalStateInfo(SHNResult result, int rIndex)
         {
@@ -44,14 +50,27 @@ namespace Vision.Game.Content.Data.AbnormalState
 
             }
 
-
-            
-
             SubAbnormalStates = new ConcurrentDictionary<uint, SubAbnormalStateInfo>();
 
             AbstateSaveType = result.Read<byte>(rIndex, "AbstateSaveType");
-
-
         }
+
+        public override int GetSize() => Size;
+
+        public override void Read(ReaderStream reader)
+        {
+            ID = reader.ReadUInt16();
+            KeepTimeRatio = reader.ReadUInt16();
+            KeepTimePower = reader.ReadUInt16();
+        }
+
+        public override void Write(WriterStream writer)
+        {
+            writer.Write((uint)ID);
+            writer.Write((uint)KeepTimeRatio);
+            writer.Write((uint)KeepTimePower);
+        }
+
+        public override string ToString() => $"{nameof(ID)}: {ID}, {nameof(Name)}: {Name}";
     }
 }

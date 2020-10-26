@@ -15,5 +15,7 @@ namespace Vision.Game.Structs.Mover
         public override void Write(WriterStream writer) => writer.Write(PlayerHandle);
 
         public override NetCommand GetCommand() => NetCommand.NC_ACT_SOMEONERIDE_OFF_CMD;
+
+        public override string ToString() => $"{nameof(PlayerHandle)}: {PlayerHandle}";
     }
 }

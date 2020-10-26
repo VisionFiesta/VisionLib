@@ -23,6 +23,6 @@ namespace Vision.Game.Structs.Friend
 
         public override NetCommand GetCommand() => NetCommand.NC_FRIEND_DEL_CMD;
 
-        public override string ToString() => $"{nameof(CharID)}: {CharID}"; }
+        public override string ToString() => $"{nameof(CharID)}: {CharID}";
     }
 }

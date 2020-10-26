@@ -3,7 +3,7 @@
     /// <summary>
     /// Enum that represents a class, or job, of a character.
     /// </summary>
-    public enum CharacterClass
+    public enum CharacterClass : byte
     {
         CC_NONE = 0,
         CC_FIGHTER = 1,

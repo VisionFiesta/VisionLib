@@ -1,7 +1,7 @@
 ﻿using Vision.Core.Streams;
 using Vision.Core.Structs;
 
-namespace Vision.Game.Structs.Common
+namespace Vision.Game.Structs.Common.Character
 {
     public class CharParamChangeCmd : AbstractStruct
     {
