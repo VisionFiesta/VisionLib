@@ -7,16 +7,15 @@ namespace Vision.Game.Structs.Common
 {
     public class MobFlag : AbstractStruct
     {
+        public const int Size = 1 + AbnormalStateBit.Size;
+
         public MobBriefFlag Flag;
 
         public AbnormalStateBit AbstateBit = new AbnormalStateBit();
 
         public string GateToWhere = "";
 
-        public override int GetSize()
-        {
-            return AbnormalStateBit.Size + 1;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {

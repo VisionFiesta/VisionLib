@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Vision.Core.Collections;
 using Vision.Core.Extensions;
 using Vision.Core.Logging.Loggers;
@@ -18,21 +19,19 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_INFORM_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_INFORM_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var reader = packet.Reader;
-            var nMyHnd = reader.ReadUInt16();
-            var netCommand = reader.ReadUInt16();
-            var hnd = reader.ReadUInt16();
-            Logger.Debug("BI_INFORM");
+            var cmd = new NcBriefInfoInformCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_INFORM {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHANGEDECORATE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_CHANGEDECORATE_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var reader = packet.Reader;
-            var handle = reader.ReadUInt16();
-            var item = reader.ReadUInt16();
-            var charSlotNum = reader.ReadByte();
-            Logger.Debug("BI_CHANGEDECORATE");
+            var cmd = new NcBriefInfoChangeDecorateCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_CHANGEDECORATE {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHANGEUPGRADE_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -71,8 +70,14 @@ namespace Vision.Client.Networking.Handlers
             var chr = new Character(cmd.Handle);
             chr.Initialize(cmd);
 
-            connection.Account.ActiveCharacter.VisibleObjects.Add(chr);
-            Logger.Debug($"BI_LOGINCHARACTER: Added {chr}");
+            if (connection.Account.ActiveCharacter.VisibleObjects.Add(chr))
+            {
+                Logger.Debug($"BI_LOGINCHARACTER: Added {chr}");
+            }
+            else
+            {
+                Logger.Error($"BI_LOGINCHARACTER: Failed to add character - Handle: {chr.Handle}");
+            }
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_CHARACTER_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -81,16 +86,19 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoCharacterCmd();
             cmd.Read(packet);
 
-            var chrList = new FastList<Character>();
             foreach (var chr in cmd.Characters)
             {
                 var newChr = new Character(chr.Handle);
                 newChr.Initialize(chr);
-                chrList.Add(newChr);
-                Logger.Debug($"BI_CHARACTER: Added {newChr}");
+                if (connection.Account.ActiveCharacter.VisibleObjects.Add(newChr))
+                {
+                    Logger.Debug($"BI_CHARACTER: Added {newChr}");
+                }
+                else
+                {
+                    Logger.Error($"BI_CHARACTER: Failed to add character - Handle: {newChr.Handle}");
+                }
             }
-
-            connection.Account.ActiveCharacter.VisibleObjects.AddRange(chrList);
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_REGENMOB_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -101,8 +109,13 @@ namespace Vision.Client.Networking.Handlers
 
             var mob = new Mob(cmd);
 
-            connection.Account.ActiveCharacter.VisibleObjects.Add(mob);
-            Logger.Debug($"BI_REGENMOB: Added {mob}");
+            if (connection.Account.ActiveCharacter.VisibleObjects.Add(mob)) {
+                Logger.Debug($"BI_REGENMOB: Added - {mob}");
+            }
+            else
+            {
+                Logger.Error($"BI_REGENMOB: Failed to add mob - Handle: {mob.Handle} already present");
+            }
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MOB_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -111,47 +124,63 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoMobCmd();
             cmd.Read(packet);
 
-            var mobList = new FastList<Mob>();
             foreach (var mobRaw in cmd.Mobs)
             {
                 var mob = new Mob(mobRaw);
-                mobList.Add(mob);
-                Logger.Debug($"BI_MOB: Added {mob}");
-            }
 
-            connection.Account.ActiveCharacter.VisibleObjects.AddRange(mobList);
+                if (connection.Account.ActiveCharacter.VisibleObjects.Add(mob))
+                {
+                    Logger.Debug($"BI_MOB: Added {mob}");
+                }
+                else
+                {
+                    Logger.Error($"BI_MOB: Failed to add mob - Handle: {mob.Handle}");
+                }
+            }
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_DROPEDITEM_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_DROPEDITEM_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_DROPEDITEM");
+            var cmd = new NcBriefInfoDropedItemCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_DROPEDITEM: {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_ITEMONFIELD_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_ITEMONFIELD_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_ITEMONFIELD");
+            var cmd = new NcBriefInfoItemOnFieldCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_ITEMONFIELD {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MAGICFIELDSPREAD_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MAGICFIELDSPREAD_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_MAGICFIELDSPREAD");
+            var cmd = new NcBriefInfoMagicFieldSpreadCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_MAGICFIELDSPREAD {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MAGICFIELDINFO_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MAGICFIELDINFO_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_MAGICFIELDINFO");
+            var cmd = new NcBriefInfoMagicFieldInfoCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_MAGICFIELDINFO {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_BRIEFINFODELETE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_BRIEFINFODELETE_CMD(NetPacket packet, NetClientConnection connection)
         {
             var handle = packet.Reader.ReadUInt16();
-            var go = GameObject.Objects.FirstOrDefault(o => o.Handle == handle);
-            if (go == null)
+            var gameObjectToRemove = GameObject.GameObjects.FirstOrDefault(o => o.Handle == handle);
+            if (gameObjectToRemove == null)
             {
                 Logger.Error($"BI_DELETE: GameObject no longer present, Handle: {handle}");
                 return;
@@ -159,73 +188,83 @@ namespace Vision.Client.Networking.Handlers
 
             var visibleObjects = connection.Account.ActiveCharacter.VisibleObjects;
 
-            var result = visibleObjects.Remove(go);
-            if (!result) result = visibleObjects.Remove(go);
+            var result = visibleObjects.Remove(gameObjectToRemove);
+            if (!result) result = visibleObjects.RemoveWhere(g => g.Handle == handle) > 0;
 
-            Logger.Debug(result
-                ? $"BI_DELETE: Removed GameObject {go.Type.ToFriendlyName()}, Handle: {go.Handle} "
-                : $"BI_DELETE: Failed to remove GameObject - Handle: {go.Handle}");
+            var toPrint = $"BI_DELETE: {(result ? "Removed" : "Failed to remove")} GameObject {gameObjectToRemove.Type.ToFriendlyName()}, Handle: {gameObjectToRemove.Handle}";
+
+            if (result) Logger.Debug(toPrint);
+            else Logger.Error(toPrint);
+
+            var matchingHandleVOCount = visibleObjects.Count(o => o.Handle == handle);
+            if (matchingHandleVOCount > 0) Logger.Error($"VOs still has {matchingHandleVOCount} GOs with matching handle!");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_BUILDDOOR_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_BUILDDOOR_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_BUILDDOOR");
+            var cmd = new NcBriefInfoBuildDoorCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_BUILDDOOR: {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_DOOR_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_DOOR_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_DOOR");
+            var cmd = new NcBriefInfoDoorCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_DOOR {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_EFFECTBLAST_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_EFFECTBLAST_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_EFFECTBLAST");
+            var cmd = new NcBriefInfoEffectBlastCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_EFFECTBLAST {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_EFFECT_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_EFFECT_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_EFFECT");
+            var cmd = new NcBriefInfoEffectCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_EFFECT {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MINIHOUSEBUILD_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MINIHOUSEBUILD_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_MINIHOUSEBUILD");
+            var cmd = new NcBriefInfoMinihouseBuildCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_MINIHOUSEBUILD {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MINIHOUSE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MINIHOUSE_CMD(NetPacket packet, NetClientConnection connection)
         {
-            Logger.Debug("BI_MINIHOUSE");
+            var cmd = new NcBriefInfoMinihouseCmd();
+            cmd.Read(packet);
+
+            Logger.Debug($"BI_MINIHOUSE {cmd}");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_PLAYER_LIST_INFO_APPEAR_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_PLAYER_LIST_INFO_APPEAR_CMD(NetPacket packet, NetClientConnection connection)
         {
+            // Missing base struct BI_PLAYER_INFO_APPEAR
             Logger.Debug("BI_PLAYER_LIST_INFO_APPEAR");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_ABSTATE_CHANGE_CMD(NetPacket packet, NetClientConnection connection)
         {
-            /*
-             * using(ScriptAPI)
-             * {
-	         *      AddUShort("handle");
-	         *      //ABSTATE_INFORMATION info
-	         *      //->ABSTATEINDEX abstateID (uint)
-	         *      //->uint restKeepTime
-	         *      //->uint strength
-	         *      AddUInt("abstateID");
-	         *      AddUInt("restKeepTime");
-	         *      AddUInt("strength");
-             * }
-             *
-             */
+
             // Logger.Debug("BI_ABSTATE_CHANGE");
         }
 
@@ -244,9 +283,19 @@ namespace Vision.Client.Networking.Handlers
             if (cmd.Handle != 0)
             {
                 var mover = new Mover(cmd.Handle, cmd.ID);
+                if (connection.Account.ActiveCharacter.VisibleObjects.Add(mover))
+                {
+                    Logger.Debug($"BI_REGENMOVER: Added {mover}");
+                }
+                else
+                {
+                    Logger.Error($"BI_REGENMOVER: Failed to add mover - Handle: {mover.Handle}");
+                }
             }
-
-            Logger.Debug($"BI_REGENMOVER: {cmd}");
+            else
+            {
+                Logger.Error("Failed to read REGENMOVER packet!");
+            }
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MOVER_CMD, NetConnectionDestination.NCD_CLIENT)]

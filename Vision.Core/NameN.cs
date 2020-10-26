@@ -20,6 +20,11 @@
         public const int Name5Len = 5 * FloorBytes;
 
         /// <summary>
+        /// Name8, 32 bytes
+        /// </summary>
+        public const int Name8Len = 8 * FloorBytes;
+
+        /// <summary>
         /// Name18Byte, 18 bytes
         /// </summary>
         public const int Name18ByteLen = 18;

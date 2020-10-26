@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Vision.Core.Collections;
 using Vision.Core.Extensions;
@@ -10,29 +11,29 @@ namespace Vision.Game.Content.GameObjects
 {
     internal class GameObjectHandleEqualityComparer : IEqualityComparer<GameObject>
     {
-        public bool Equals(GameObject x, GameObject y) => x.Handle == y.Handle;
+        public bool Equals(GameObject x, GameObject y) => x?.Handle == y?.Handle;
+
         public int GetHashCode(GameObject obj) => obj.Handle.GetHashCode();
     }
 
 	public abstract class GameObject
     {
-        private static readonly HashSet<GameObject> objects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
-        public static IReadOnlyCollection<GameObject> Objects => objects;
+        private static readonly HashSet<GameObject> Objects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
+        public static IReadOnlyCollection<GameObject> GameObjects => Objects;
 
 		public ushort Handle { get; protected set; }
 
-		public bool IsDead { get; set; }
 		public byte Level { get; set; }
 		public GameObjectType Type { get; set; }
 		public GameObjectState State { get; set; } = GameObjectState.GOS_NONBATTLE;
 		public Stats Stats { get; set; }
 		public ShineXYR Position { get; set; }
-		// public MoverInstance Mount { get; set; } TODO
+
 		// public string MapIndx => Position?.Map?.Info.MapName; TODO: Maps
 
-		public FastList<GameObject> VisibleObjects { get; set; }
-		public List<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToList();
-        public List<GameObject> TouchingObjects => VisibleObjects.Filter(obj => obj.Position.GetDistance(Position) <= 10.0);
+		public HashSet<GameObject> VisibleObjects { get; }
+		public IReadOnlyCollection<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToImmutableList();
+        public IReadOnlyCollection<GameObject> TouchingObjects => VisibleObjects.Filter(obj => obj.Position.GetDistance(Position) <= 10.0).ToImmutableList();
 
 		private GameObject _target;
 		public GameObject Target
@@ -68,30 +69,20 @@ namespace Vision.Game.Content.GameObjects
 			}
 		}
 
-		public bool HasUpdatedMountSpeed { get; set; }
-
-		public List<GameObject> SelectedBy { get; set; }
+        public List<GameObject> SelectedBy { get; set; }
 
 		public ushort HPChangeOrder => _hpChangeOrder++;
 
 		private ushort _hpChangeOrder;
 
-		// public Behavior Behavior { get; set; }
-
-		public bool IsWalking { get; set; }
-		public bool IsActive { get; set; }
-		public bool IsMoving { get; set; }
-
-		protected GameObject()
+        protected GameObject()
 		{
 			Stats = new Stats(this);
 			Position = new ShineXYR();
 
-			VisibleObjects = new FastList<GameObject>();
+			VisibleObjects = new HashSet<GameObject>();
 
-			// Behavior = new DefaultBehavior();
-
-            if (!objects.Add(this))
+            if (!Objects.Add(this))
             {
 				throw new InvalidOperationException($"GameObject with handle {Handle} already exists!");
             }

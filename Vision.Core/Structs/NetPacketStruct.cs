@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
@@ -19,7 +20,6 @@ namespace Vision.Core.Structs
             if (packetSizeDiff < 0)
             {
                 Logger.Error($"Packet smaller than expected by {Math.Abs(packetSizeDiff)} bytes for opcode {GetCommand()}");
-                return;
             }
 
             if (packetSizeDiff > 0 && HasMaximumSize())
@@ -27,7 +27,14 @@ namespace Vision.Core.Structs
                 Logger.Warning($"Packet bigger than expected by {packetSizeDiff} bytes for opcode {GetCommand()}");
             }
 
-            Read(packet.Reader);
+            try
+            {
+                Read(packet.Reader);
+            }
+            catch (EndOfStreamException ex)
+            {
+                Logger.Warning("Packet read with invalid byte count, data may not be accurate!");
+            }
         }
 
         public void Send<T>(T connection) where T : NetConnectionBase<T>

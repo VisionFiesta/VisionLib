@@ -208,10 +208,12 @@ namespace Vision.Game.Structs.BriefInfo
 
     public class CharBriefInfoCamp : AbstractStruct
     {
+        public const int Size = 12;
+
         public ushort Minihouse;
         public byte[] Dummy = new byte[10];
 
-        public override int GetSize() => 12;
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
