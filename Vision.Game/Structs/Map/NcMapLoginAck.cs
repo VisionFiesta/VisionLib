@@ -1,6 +1,7 @@
 ﻿using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
+using Vision.Game.Characters;
 using Vision.Game.Structs.Common;
 
 namespace Vision.Game.Structs.Map
@@ -9,17 +10,16 @@ namespace Vision.Game.Structs.Map
     {
 
         public ushort Handle;
-        // public CharParameterData ParameterData = new CharParameterData();
+        public CharParameterData ParameterData = new CharParameterData();
         public ShineXY LoginPosition = new ShineXY();
 
-        public override int GetSize() => 2 + 232 + ShineXY.Size;
+        public override int GetSize() => 2 + CharParameter.Size + ShineXY.Size;
 
         public override void Read(ReaderStream reader)
         {
             Handle = reader.ReadUInt16();
 
-            // ParameterData.Read(reader);
-            reader.ReadBytes(232);
+            ParameterData.Read(reader);
             LoginPosition.Read(reader);
         }
 
@@ -27,7 +27,7 @@ namespace Vision.Game.Structs.Map
         {
             writer.Write(Handle);
 
-            writer.Fill(232, 0);
+            ParameterData.Write(writer);
             LoginPosition.Write(writer);
         }
 

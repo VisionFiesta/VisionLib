@@ -1,4 +1,5 @@
-﻿using Vision.Core.Networking;
+﻿using System.Diagnostics.CodeAnalysis;
+using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
 
@@ -36,9 +37,10 @@ namespace Vision.Game.Structs.BriefInfo
 
         public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_ITEMONFIELD_CMD;
 
+        [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()
         {
-            var itemsString = string.Join(", ", Items.ToString());
+            var itemsString = string.Join(", ", (object[])Items);
             return $"{nameof(ItemNum)}: {ItemNum}, {nameof(Items)}: {itemsString}";
         }
 

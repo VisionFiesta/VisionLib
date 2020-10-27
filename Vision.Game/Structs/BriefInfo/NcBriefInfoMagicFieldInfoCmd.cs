@@ -1,4 +1,5 @@
-﻿using Vision.Core.Networking;
+﻿using System.Diagnostics.CodeAnalysis;
+using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
 
@@ -38,9 +39,10 @@ namespace Vision.Game.Structs.BriefInfo
 
         public override bool HasMaximumSize() => false;
 
+        [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()
         {
-            var fieldsString = string.Join(", ", MagicFields.ToString());
+            var fieldsString = string.Join(", ", (object[])MagicFields);
             return $"{nameof(MagicFieldNum)}: {MagicFieldNum}, {nameof(MagicFields)}: {fieldsString}";
         }
     }

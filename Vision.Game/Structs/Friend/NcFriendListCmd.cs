@@ -1,4 +1,5 @@
-﻿using Vision.Core.Networking;
+﻿using System.Diagnostics.CodeAnalysis;
+using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
 using Vision.Game.Structs.Common;
@@ -44,9 +45,10 @@ namespace Vision.Game.Structs.Friend
 
         public override bool HasMaximumSize() => false;
 
+        [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()
         {
-            var friendsString = string.Join(", ", Friends.ToString());
+            var friendsString = string.Join(", ", (object[])Friends);
             return $"{nameof(FriendNum)}: {FriendNum}, {nameof(Friends)}: {friendsString}";
         }
     }

@@ -5,14 +5,13 @@ namespace Vision.Game.Structs.Common
 {
     public class ShortCutData : AbstractStruct
     {
+        public const int Size = 7;
+
         public byte SlotNo; // +1
         public ushort CodeNo; // +2
         public int Value; // +4
 
-        public override int GetSize()
-        {
-            return 7;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {

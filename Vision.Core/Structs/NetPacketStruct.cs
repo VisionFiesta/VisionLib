@@ -31,7 +31,7 @@ namespace Vision.Core.Structs
             {
                 Read(packet.Reader);
             }
-            catch (EndOfStreamException ex)
+            catch (EndOfStreamException)
             {
                 Logger.Warning("Packet read with invalid byte count, data may not be accurate!");
             }

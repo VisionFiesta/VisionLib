@@ -1,4 +1,5 @@
-﻿using Vision.Core.Networking;
+﻿using System.Diagnostics.CodeAnalysis;
+using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
 
@@ -36,9 +37,10 @@ namespace Vision.Game.Structs.BriefInfo
 
         public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_EFFECT_CMD;
 
+        [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()
         {
-            var minihousesString = string.Join(", ", Minihouses.ToString());
+            var minihousesString = string.Join(", ", (object[])Minihouses);
             return $"{nameof(MinihouseNum)}: {MinihouseNum}, {nameof(Minihouses)}: {minihousesString}";
         }
     }

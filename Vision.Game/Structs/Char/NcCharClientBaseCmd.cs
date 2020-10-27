@@ -23,7 +23,7 @@ namespace Vision.Game.Structs.Char
         public uint Money;
         public byte Unk01;
         public string MapName;
-        public ShineXYR Position;
+        public ShineXYR Position = new ShineXYR();
         public byte STRBonus;
         public byte ENDBonus;
         public byte DEXBonus;
@@ -33,10 +33,7 @@ namespace Vision.Game.Structs.Char
         public uint KillPoints;
         public byte[] Unk03 = new byte[8];
 
-        public override int GetSize()
-        {
-            return 106; // as of 1.02.276, NA server
-        }
+        public override int GetSize() => 106; // as of 1.02.276, NA server
 
         public override void Read(ReaderStream reader)
         {
@@ -55,8 +52,9 @@ namespace Vision.Game.Structs.Char
             Money = reader.ReadUInt32();
             Unk01 = reader.ReadByte();
             MapName = reader.ReadString(NameN.Name3Len);
-            Position = new ShineXYR();
+
             Position.Read(reader);
+
             STRBonus = reader.ReadByte();
             ENDBonus = reader.ReadByte();
             DEXBonus = reader.ReadByte();
@@ -84,7 +82,9 @@ namespace Vision.Game.Structs.Char
             writer.Write(Money);
             writer.Fill(1, 0x00); // Unk01 from NA capture
             writer.Write(MapName);
+
             Position.Write(writer);
+
             writer.Write(STRBonus);
             writer.Write(ENDBonus);
             writer.Write(DEXBonus);
@@ -95,9 +95,6 @@ namespace Vision.Game.Structs.Char
             writer.Fill(8, 0x00); // Unk03 from NA capture
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_CHAR_CLIENT_BASE_CMD;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_BASE_CMD;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Vision.Core.Networking;
+﻿using System.Diagnostics.CodeAnalysis;
+using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
 
@@ -36,9 +37,10 @@ namespace Vision.Game.Structs.BriefInfo
 
         public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_EFFECT_CMD;
 
+        [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()
         {
-            var effectsString = string.Join(", ", Effects.ToString());
+            var effectsString = string.Join(", ", (object[])Effects);
             return $"{nameof(EffectNum)}: {EffectNum}, {nameof(Effects)}: {effectsString}";
         }
     }

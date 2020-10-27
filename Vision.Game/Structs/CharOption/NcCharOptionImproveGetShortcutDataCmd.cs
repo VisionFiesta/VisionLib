@@ -16,7 +16,7 @@ namespace Vision.Game.Structs.CharOption
             Data = data;
         }
 
-        public override int GetSize() => 2 + Count * 7;
+        public override int GetSize() => 2 + Count * ShortCutData.Size;
 
         public override void Read(ReaderStream reader)
         {

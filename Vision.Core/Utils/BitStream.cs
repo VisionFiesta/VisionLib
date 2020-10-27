@@ -38,6 +38,8 @@ using System.Globalization;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 
+#pragma warning disable CS3021 // Type or member does not need a CLSCompliant attribute because the assembly does not have a CLSCompliant attribute
+
 namespace Vision.Core.Utils
 {
 	/// <summary>
@@ -1632,8 +1634,8 @@ namespace Vision.Core.Utils
 		/// </param>
 		/// <seealso cref="UInt32"/>
 		[CLSCompliant(false)]
-		public virtual void Write(uint bits)
-		{
+        public virtual void Write(uint bits)
+        {
 			Write(bits, 0, SizeOfUInt32);
 		}
 		/// <summary>

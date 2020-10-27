@@ -10,6 +10,14 @@ namespace Vision.Game.Structs.Act
         public byte MessageLength;
         public string Message;
 
+        public NcActPartyChatReq() {}
+
+        public NcActPartyChatReq(string message)
+        {
+            MessageLength = (byte) message.Length;
+            Message = message;
+        }
+
         public override int GetSize()
         {
             return 2 * MessageLength;
