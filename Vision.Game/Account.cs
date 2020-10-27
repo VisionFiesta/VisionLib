@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
+using System.Collections.Immutable;
 using Vision.Core.Logging.Loggers;
 using Vision.Game.Characters;
+using Vision.Game.Structs.Char;
+using Vision.Game.Structs.Common;
 
 namespace Vision.Game
 {
@@ -15,37 +17,36 @@ namespace Vision.Game
 
         public string AccountName;
 
-        public readonly List<Avatar> Avatars = new List<Avatar>();
-        private readonly Dictionary<uint, Character> _characters = new Dictionary<uint, Character>();
+        private readonly ConcurrentDictionary<uint, Avatar> _avatarsByCharNo = new ConcurrentDictionary<uint, Avatar>();
+        private readonly ConcurrentDictionary<uint, Character> _charactersByCharNo = new ConcurrentDictionary<uint, Character>();
 
-        public Avatar ActiveAvatar { get; private set; }
+        private readonly Dictionary<string, object> _characterCreateInfos = new Dictionary<string, object>();
+
+        public IReadOnlyCollection<Avatar> Avatars => _avatarsByCharNo.Values.ToImmutableList(); 
+        public IReadOnlyCollection<Character> Characters => _charactersByCharNo.Values.ToImmutableList();
+
+        public Avatar ActiveAvatar => ActiveCharacter != null ? _avatarsByCharNo.GetValueOrDefault(ActiveCharacter.CharNo) : null;
         public Character ActiveCharacter { get; private set; }
 
-        private void SelectAvatar(uint charNo)
+        public bool AddAvatar(Avatar avatar)
         {
-            ActiveAvatar = Avatars.First(avatar => avatar.CharNo == charNo);
-            ActiveAvatar.HasLoggedIn = true;
+            return !_avatarsByCharNo.ContainsKey(avatar.CharNo) && _avatarsByCharNo.TryAdd(avatar.CharNo, avatar);
         }
 
-        public void ChooseCharacter(uint charNo)
+        public bool AddCharacter(ushort handle, NcCharClientBaseCmd data)
         {
-            SelectAvatar(charNo);
+            var newChar = new Character(handle, data);
 
-            if (!_characters.ContainsKey(charNo))
-            {
-                _characters.Add(charNo, Character.FromAvatar(ActiveAvatar));
-            }
+            // TODO: add OptionData, ParameterData
 
-            if (_characters.TryGetValue(charNo, out var character))
-            {
-                ActiveCharacter = character;
-            }
-            else
-            {
-                Logger.Error("Failed to get character!");
-            }
+            return _charactersByCharNo.TryAdd(data.CharNo, newChar);
+        }
 
-
+        public bool SelectCharacter(uint charNo)
+        {
+            if (!_charactersByCharNo.TryGetValue(charNo, out var character)) return false;
+            ActiveCharacter = character;
+            return true;
         }
     }
 }

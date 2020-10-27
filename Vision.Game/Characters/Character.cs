@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Vision.Game.Characters.Shape;
 using Vision.Game.Content.GameObjects;
@@ -14,45 +13,55 @@ namespace Vision.Game.Characters
     {
         public static CharacterCommon Global { get; set; }
 
-        public uint CharNo { get; }
+        public uint CharNo { get; private set; }
         public string Name { get; private set; }
         public CharacterShape Shape { get; private set; }
         public CharacterState CharacterState { get; private set; }
-        public Equipment Equipment { get; private set; }
+        public Equipment Equipment { get; set; }
 
         public CharTitleInfo CurrentTitle;
         public CharTitleInfo[] Titles { get; private set; }
 
-        public CharacterParameters Parameters = new CharacterParameters();
+        public CharParameterData Parameters = new CharParameterData();
 
-        public byte[] WindowPosData { get; set; }
+        // public byte[] WindowPosData { get; private set; }
         public ShortCutData[] ShortcutData { get; set; }
-        public byte[] ShortcutSizeData { get; set; }
-        public byte[] GameOptionData { get; set; }
-        public byte[] KeyMapData { get; set; }
+        // public byte[] ShortcutSizeData { get; private set; }
+        // public byte[] GameOptionData { get; private set; }
+        // public byte[] KeyMapData { get; set; }
 
-        public byte Slot { get; set; }
-        public ulong EXP { get; set; }
-        public ushort HPStones { get; set; }
-        public ushort SPStones { get; set; }
-        public uint Fame { get; set; }
-        public ulong Money { get; set; }
-        public uint KillPoints { get; set; }
+        public byte Slot { get; private set; }
+        public ulong EXP { get; private set; }
+        public ushort HPStones { get; private set; }
+        public ushort SPStones { get; private set; }
+        public uint Fame { get; private set; }
+        public ulong Money { get; private set; }
+        public uint KillPoints { get; private set; }
         // public byte FreeStat_Points { get; set; }
-        // public int FriendPoints { get; set; }
+        public int FriendPoints { get; set; }
+
+        public string MapIndx { get; set; }
 
         public bool QuestsNeedClear { get; private set; }
         public List<PlayerQuestInfo> DoingQuests { get; } = new List<PlayerQuestInfo>();
         public List<PlayerQuestDoneInfo> DoneQuests { get; } = new List<PlayerQuestDoneInfo>();
 
-        public Character(uint charNo)
+        public Character(ushort handle, Avatar avatar) : base(handle, GameObjectType.GOT_CHARACTER)
         {
-            CharNo = charNo;
-            Type = GameObjectType.GOT_CHARACTER;
+            CharNo = avatar.CharNo;
+
+            Equipment = avatar.Equipment;
+            
+            
+            Name = avatar.Name;
+
+
+            Slot = avatar.Slot;
         }
 
         public void Initialize(NcCharClientBaseCmd data)
         {
+            CharNo = data.CharNo;
             Name = data.CharName;
             Level = data.Level;
             Stats.CurrentHP = data.HP;
@@ -75,14 +84,12 @@ namespace Vision.Game.Characters
             Position = data.Position;
         }
 
-        public void Initialize(NcBriefInfoLoginCharacterCmd data)
+        public Character(NcBriefInfoLoginCharacterCmd data) : base(data.Handle, GameObjectType.GOT_CHARACTER)
         {
-            Handle = data.Handle;
             Level = data.Level;
             Name = data.CharID;
             Position = data.Position;
-            Shape = new CharacterShape(data.Shape);
-            Shape.Class = data.Class;
+            Shape = new CharacterShape(data.Shape) { Class = data.Class };
             CharacterState = data.State;
 
             CurrentTitle = new CharTitleInfo
@@ -93,10 +100,7 @@ namespace Vision.Game.Characters
             };
         }
 
-        public void SetShape(CharacterShape shape)
-        {
-            Shape = shape;
-        }
+        public void SetShape(CharacterShape shape) => Shape = shape;
 
         public void UpdateTitles(CharTitleInfo newCurrentTitle, IEnumerable<CharTitleInfo> titles = null)
         {
@@ -113,33 +117,25 @@ namespace Vision.Game.Characters
             DoingQuests.AddRange(quests);
         }
 
-        public void UpdateDoneQuests(IEnumerable<PlayerQuestDoneInfo> quests)
-        {
-            DoneQuests.AddRange(quests);
-        }
+        public void UpdateDoneQuests(IEnumerable<PlayerQuestDoneInfo> quests) => DoneQuests.AddRange(quests);
 
-        // TODO:
-        public void UpdateChargedBuffs()
-        {
 
-        }
-
-        public static Character FromAvatar(Avatar avatar)
-        {
-            var character = new Character(avatar.CharNo)
-            {
-                Name = avatar.Name,
-                Level = avatar.Level,
-                Shape = avatar.Shape,
-                Equipment = avatar.Equipment
-            };
-
-            return character;
-        }
+        // public static Character FromAvatar(Avatar avatar)
+        // {
+        //     var character = new Character(avatar.CharNo)
+        //     {
+        //         Name = avatar.Name,
+        //         Level = avatar.Level,
+        //         Shape = avatar.Shape,
+        //         Equipment = avatar.Equipment
+        //     };
+        //
+        //     return character;
+        // }
 
         public override string ToString()
         {
-            return $"Character - Name: {Name}, Level: {Level}, Class: {Shape.Class}, Gender: {Shape.Gender} Mode: {CharacterState}";
+            return $"Character - Name: {Name}, Level: {Level}, Class: {Shape.Class}, Gender: {Shape.Gender} Mode: {CharacterState}, Handle: {Handle}";
         }
     }
 }

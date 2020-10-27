@@ -40,8 +40,6 @@ namespace Vision.Game
 
         public ProtoTutorialInfo TutorialState { get; set; }
 
-        public bool HasLoggedIn { get; set; }
-
         public Avatar(uint charNo)
         {
             CharNo = charNo;

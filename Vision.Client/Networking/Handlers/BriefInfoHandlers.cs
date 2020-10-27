@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
@@ -64,8 +65,7 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoLoginCharacterCmd();
             cmd.Read(packet);
 
-            var chr = new Character(cmd.Handle);
-            chr.Initialize(cmd);
+            var chr = new Character(cmd);
 
             if (connection.Account.ActiveCharacter.VisibleObjects.Add(chr))
             {
@@ -85,8 +85,7 @@ namespace Vision.Client.Networking.Handlers
 
             foreach (var chr in cmd.Characters)
             {
-                var newChr = new Character(chr.Handle);
-                newChr.Initialize(chr);
+                var newChr = new Character(chr);
                 if (connection.Account.ActiveCharacter.VisibleObjects.Add(newChr))
                 {
                     Logger.Debug($"BI_CHARACTER: Added {newChr}");
@@ -123,7 +122,17 @@ namespace Vision.Client.Networking.Handlers
 
             foreach (var mobRaw in cmd.Mobs)
             {
-                var mob = new Mob(mobRaw);
+                Mob mob = null;
+                try
+                {
+                    mob = new Mob(mobRaw);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Logger.Error($"BI_MOB: Failed to create mob - Already exists in GameObjects with handle {mobRaw.Handle}");
+                    Logger.Error(ex.StackTrace);
+                    return;
+                }
 
                 if (connection.Account.ActiveCharacter.VisibleObjects.Add(mob))
                 {
@@ -131,7 +140,7 @@ namespace Vision.Client.Networking.Handlers
                 }
                 else
                 {
-                    Logger.Error($"BI_MOB: Failed to add mob - Handle: {mob.Handle}");
+                    Logger.Error($"BI_MOB: Failed to add mob to VisibleObjects - Handle: {mobRaw.Handle}");
                 }
             }
         }

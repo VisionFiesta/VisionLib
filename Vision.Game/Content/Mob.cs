@@ -9,26 +9,24 @@ namespace Vision.Game.Content
         public ushort MobID;
         public string Name;
 
-        public Mob(NcBriefInfoRegenMobCmd data)
+        public Mob(NcBriefInfoRegenMobCmd data) : base(data.Handle, GameObjectType.GOT_MOB)
         {
-            Handle = data.Handle;
             Position = data.Position;
             MobID = data.MobID;
 
             var hasInfo = MobInfo.GetMobInfoById(MobID, out var mobInfo);
-            if (hasInfo)
-            {
-                var isGate = data.Flags.Flag == MobBriefFlag.MBF_GATE;
+            if (!hasInfo) return;
 
-                Name = isGate ? data.Flags.GateToWhere : mobInfo.Name;
-                Level = mobInfo.Level;
-                Type = data.Flags.Flag == MobBriefFlag.MBF_GATE ? GameObjectType.GOT_DOOR : mobInfo.IsNPC ? GameObjectType.GOT_NPC : GameObjectType.GOT_MOB;
-            }
+            var isGate = data.Flags.Flag == MobBriefFlag.MBF_GATE;
+
+            Name = isGate ? data.Flags.GateToWhere : mobInfo.Name;
+            Level = mobInfo.Level;
+            Type = data.Flags.Flag == MobBriefFlag.MBF_GATE ? GameObjectType.GOT_DOOR : mobInfo.IsNPC ? GameObjectType.GOT_NPC : GameObjectType.GOT_MOB;
         }
 
         public override string ToString()
         {
-            string info = $"{Type.ToFriendlyName()} - ";
+            var info = $"{Type.ToFriendlyName()} - ";
             switch (Type)
             {
                 case GameObjectType.GOT_DOOR:

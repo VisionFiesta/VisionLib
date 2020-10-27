@@ -24,14 +24,14 @@ namespace Vision.Game.Content.GameObjects
     {
         public static string ToFriendlyName(this GameObjectType type)
         {
-            switch (type)
+            return type switch
             {
-                case GameObjectType.GOT_MOB: return "Monster";
-                case GameObjectType.GOT_NPC: return "NPC";
-                case GameObjectType.GOT_DOOR: return "Gate";
-                case GameObjectType.GOT_CHARACTER: return "Character";
-                default: return type.ToString();
-            }
+                GameObjectType.GOT_MOB => "Monster",
+                GameObjectType.GOT_NPC => "NPC",
+                GameObjectType.GOT_DOOR => "Gate",
+                GameObjectType.GOT_CHARACTER => "Character",
+                _ => type.ToString()
+            };
         }
     }
 }

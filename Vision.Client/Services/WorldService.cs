@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Stateless;
-using Stateless.Graph;
 using Vision.Game.Structs.Char;
 using Vision.Game.Structs.Misc;
 using Vision.Game.Structs.User;
@@ -177,7 +176,7 @@ namespace Vision.Client.Services
             if (matchingAvatar != null)
             {
                 ClientLogger.Info($"Connecting to zone with character {matchingAvatar.Name}");
-                Client.ClientSessionData.ClientAccount.ChooseCharacter(matchingAvatar.CharNo);
+                var selected = Client.ClientSessionData.ClientAccount.SelectCharacter(matchingAvatar.CharNo);
                 new NcCharLoginReq(matchingAvatar.Slot).Send(WorldConnection);
             }
             else

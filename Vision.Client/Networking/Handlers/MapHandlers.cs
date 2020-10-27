@@ -15,6 +15,11 @@ namespace Vision.Client.Networking.Handlers
         {
             var ack = new NcMapLoginAck();
             ack.Read(packet);
+
+            var sessionData = connection.GameClient.ClientSessionData;
+            sessionData.ActiveCharacterHandle = ack.Handle;
+            sessionData.LoginPosition = ack.LoginPosition;
+
             Logger.Debug($"MAP_LOGIN_ACK: {ack}");
             connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_ZONE_OK);
         }

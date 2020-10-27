@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using Stateless;
 using Vision.Core;
@@ -129,10 +130,8 @@ namespace Vision.Client.Services
         private void OnConnectedEntry()
         {
             ClientLogger.Info("Connected");
-            ClientLogger.Debug("Sending VersionCheckReq");
+            ClientLogger.Debug("Sending VersionCheckReq & XTrapReq");
             new NcUserClientVersionCheckReq(StaticClientData.VersionKey).Send(LoginConnection);
-            // It doesn't seem to like this
-            // new NcUserXTrapReq(StaticClientData.XTrapVersionHash).Send(LoginConnection);
         }
 
         private void OnVerifiedEntry()
@@ -145,6 +144,7 @@ namespace Vision.Client.Services
             {
                 case GameRegion.GR_NA:
                     new NcUserUSLoginReq(UserData.Username, UserData.Password).Send(LoginConnection);
+                    new NcUserXTrapReq(StaticClientData.XTrapVersionHash).Send(LoginConnection);
                     break;
                 case GameRegion.GR_DE:
                     new NcUserGERLoginReq(UserData.Username, UserData.Password).Send(LoginConnection);

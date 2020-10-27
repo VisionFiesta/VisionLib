@@ -12,7 +12,7 @@ namespace Vision.Client.Networking.Handlers
             var ack = new NcCharOptionImproveGetShortcutDataCmd();
             ack.Read(packet);
 
-            connection.Account.ActiveCharacter.ShortcutData = ack.Data;
+            connection.GameClient.ClientSessionData.ShortCutDatas = ack.Data;
         }
 
         [NetPacketHandler(NetCommand.NC_CHAR_OPTION_IMPROVE_GET_KEYMAP_CMD, NetConnectionDestination.NCD_CLIENT)]

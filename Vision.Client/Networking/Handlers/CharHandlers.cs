@@ -43,16 +43,17 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcCharClientBaseCmd();
             cmd.Read(packet);
 
-            connection.Account.ChooseCharacter(cmd.CharNo);
-            var character = connection.Account.ActiveCharacter;
+            var account = connection.Account;
 
-            if (character == null)
+            account.AddCharacter(connection.GameClient.ClientSessionData.ActiveCharacterHandle, cmd);
+            account.SelectCharacter(cmd.CharNo);
+
+            if (account.ActiveCharacter == null)
             {
                 Logger.Error("Character choose failed!");
                 return;
             }
 
-            character.Initialize(cmd);
             connection.GameClient.ZoneService.UpdateCharData(CCDT_BASE);
         }
 

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net;
 using Vision.Client.Services;
 using Vision.Core.Logging.Loggers;
@@ -108,11 +107,8 @@ namespace Vision.Client.Networking.Handlers
             var result = new NcUserLoginWorldAck();
             result.Read(packet);
 
-            var avatarStr = "";
-            if (result.AvatarCount > 0)
-            {
-                avatarStr = result.Avatars.Aggregate(avatarStr, (current, avatar) => current + $"\n    {avatar}");
-            }
+            // ReSharper disable once CoVariantArrayConversion
+            var avatarStr = string.Join(", ", (object[])result.Avatars);
 
             connection.Account.AccountID = result.AccountID;
 
@@ -134,11 +130,15 @@ namespace Vision.Client.Networking.Handlers
                     Slot = ava.CharSlot,
                     TutorialState = ava.TutorialInfo
                 };
-                connection.Account.Avatars.Add(trueAva);
+
+                if (!connection.Account.AddAvatar(trueAva))
+                {
+                    Logger.Error("USER_LOGINWORLD_ACK: Failed to add avatar!");
+                }
             }
 
 
-            Logger.Debug( $"Got {result.AvatarCount} avatars." + avatarStr);
+            Logger.Debug( $"USER_LOGINWORLD_ACK: Got {result.AvatarCount} avatars" + avatarStr);
 
             connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_OK);
         }

@@ -21,11 +21,11 @@ namespace Vision.Game.Content.GameObjects
         private static readonly HashSet<GameObject> Objects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
         public static IReadOnlyCollection<GameObject> GameObjects => Objects;
 
-		public ushort Handle { get; protected set; }
+		public ushort Handle { get; }
 
 		public byte Level { get; set; }
-		public GameObjectType Type { get; set; }
-		public GameObjectState State { get; set; } = GameObjectState.GOS_NONBATTLE;
+		public GameObjectType Type { get; protected set; }
+        public GameObjectState State { get; set; } = GameObjectState.GOS_NONBATTLE;
 		public Stats Stats { get; set; }
 		public ShineXYR Position { get; set; }
 
@@ -75,9 +75,14 @@ namespace Vision.Game.Content.GameObjects
 
 		private ushort _hpChangeOrder;
 
-        protected GameObject()
-		{
+        protected GameObject(ushort handle, GameObjectType type)
+        {
+            Handle = handle;
+            Type = type;
+
 			Stats = new Stats(this);
+			Stats.Update();
+
 			Position = new ShineXYR();
 
 			VisibleObjects = new HashSet<GameObject>();

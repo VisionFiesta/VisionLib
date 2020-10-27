@@ -6,9 +6,8 @@ namespace Vision.Game.Content
     {
         public uint ID { get; }
 
-        public Mover(ushort handle, uint id)
+        public Mover(ushort handle, uint id) : base(handle, GameObjectType.GOT_MOVER)
         {
-            Handle = handle;
             ID = id;
         }
 

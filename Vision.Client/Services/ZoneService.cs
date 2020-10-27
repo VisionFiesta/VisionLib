@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Stateless;
 using Vision.Game.Structs.Map;
@@ -66,8 +65,7 @@ namespace Vision.Client.Services
             await _zoneStateMachine.FireAsync(trigger);
             await _zoneStateMachine.ActivateAsync();
         }
-
-
+        
         private void OnDisconnectingEntry()
         {
             ClientLogger.Info("Disconnecting...");
@@ -81,8 +79,8 @@ namespace Vision.Client.Services
         private void OnConnectingEntry()
         {
             ClientLogger.Info("Connecting...");
-            var zoneEP = ClientSessionData.ActiveZoneEndPoint;
-            ZoneConnection.Connect(zoneEP.Address.ToString(), (ushort)zoneEP.Port);
+            var zoneEp = ClientSessionData.ActiveZoneEndPoint;
+            ZoneConnection.Connect(zoneEp.Address.ToString(), (ushort)zoneEp.Port);
         }
 
         private void OnConnectedEntry()
@@ -129,10 +127,23 @@ namespace Vision.Client.Services
             ClientLogger.Debug($"Got UpdateCharData - {type}");
             _charClientDataStatus.Set(type);
 
+            UpdateCharOption();
+
             if (_charClientDataStatus.ReceivedAll)
             {
                 _ = UpdateState(ZoneServiceTrigger.ZST_LOGIN_OK);
             }
+        }
+
+        private void UpdateCharOption()
+        {
+            if (ActiveCharacter == null) return;
+
+            if (ActiveCharacter.ShortcutData == null && ClientSessionData.ShortCutDatas != null)
+            {
+                ActiveCharacter.ShortcutData = ClientSessionData.ShortCutDatas;
+            }
+            // todo: other option data
         }
     }
 

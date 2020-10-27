@@ -18,132 +18,130 @@ namespace Vision.Game.Content.GameObjects
 
 		public uint CurrentHPStones { get; set; }
 		public uint CurrentSPStones { get; set; }
-		// public uint CurrentPwrStones { get; set; }
-		// public uint CurrentGrdStones { get; set; }
 
-		public int CurrentMaxHP => BaseMaxHP + BonusMaxHP;
-		public int CurrentMaxSP => BaseMaxSP + BonusMaxSP;
-		public int CurrentMaxLP => BaseMaxLP + BonusMaxLP;
+		public uint CurrentMaxHP => BaseMaxHP + BonusMaxHP;
+		public uint CurrentMaxSP => BaseMaxSP + BonusMaxSP;
+		public uint CurrentMaxLP => BaseMaxLP + BonusMaxLP;
 
-		public int CurrentMinHP { get; set; }
-		public int CurrentMinSP { get; set; }
+		public uint CurrentMinHP { get; set; }
+		public uint CurrentMinSP { get; set; }
 
-		public int CurrentMaxHPStones => BaseMaxHPStones + BonusMaxHPStones;
-		public int CurrentMaxSPStones => BaseMaxSPStones + BonusMaxSPStones;
+		public uint CurrentMaxHPStones => BaseMaxHPStones + BonusMaxHPStones;
+		public uint CurrentMaxSPStones => BaseMaxSPStones + BonusMaxSPStones;
 
-		public int CurrentHPStoneHealth => BaseHPStoneHealth + BonusHPStoneHealth;
-		public int CurrentSPStoneHealth => BaseSPStoneSpirit + BonusSPStoneSpirit;
+		public uint CurrentHPStoneHealth => BaseHPStoneHealth + BonusHPStoneHealth;
+		public uint CurrentSPStoneHealth => BaseSPStoneSpirit + BonusSPStoneSpirit;
 
-		public int CurrentSTR => BaseSTR + BonusSTR;
-		public int CurrentEND => BaseEND + BonusEND;
-		public int CurrentDEX => BaseDEX + BonusDEX;
-		public int CurrentINT => BaseINT + BonusINT;
-		public int CurrentSPR => BaseSPR + BonusSPR;
+		public uint CurrentSTR => BaseSTR + BonusSTR;
+		public uint CurrentEND => BaseEND + BonusEND;
+		public uint CurrentDEX => BaseDEX + BonusDEX;
+		public uint CurrentINT => BaseINT + BonusINT;
+		public uint CurrentSPR => BaseSPR + BonusSPR;
 
-		public int CurrentMinDmg => BaseMinDmg + BonusMinDmg;
-		public int CurrentMaxDmg => BaseMaxDmg + BonusMaxDmg;
-		public int CurrentMinMDmg => BaseMinMDmg + BonusMinMDmg;
-		public int CurrentMaxMDmg => BaseMaxMDmg + BonusMaxMDmg;
+		public uint CurrentMinDmg => BaseMinDmg + BonusMinDmg;
+		public uint CurrentMaxDmg => BaseMaxDmg + BonusMaxDmg;
+		public uint CurrentMinMDmg => BaseMinMDmg + BonusMinMDmg;
+		public uint CurrentMaxMDmg => BaseMaxMDmg + BonusMaxMDmg;
 
-		public int CurrentDef => BaseDef + BonusDef;
-		public int CurrentMDef => BaseMDef + BonusMDef;
-		public int CurrentAim => BaseAim + BonusAim;
-		public int CurrentEvasion => BaseEvasion + BonusEvasion;
+		public uint CurrentDef => BaseDef + BonusDef;
+		public uint CurrentMDef => BaseMDef + BonusMDef;
+		public uint CurrentAim => BaseAim + BonusAim;
+		public uint CurrentEvasion => BaseEvasion + BonusEvasion;
 
-		public int CurrentIllnessResistance => BaseIllnessResistance + BonusIllnessResistance;
-		public int CurrentDiseaseResistance => BaseDiseaseResistance + BonusDiseaseResistance;
-		public int CurrentCurseResistance => BaseCurseResistance + BonusCurseResistance;
-		public int CurrentStunResistance => BaseStunResistance + BonusStunResistance;
+		public uint CurrentIllnessResistance => BaseIllnessResistance + BonusIllnessResistance;
+		public uint CurrentDiseaseResistance => BaseDiseaseResistance + BonusDiseaseResistance;
+		public uint CurrentCurseResistance => BaseCurseResistance + BonusCurseResistance;
+		public uint CurrentStunResistance => BaseStunResistance + BonusStunResistance;
 
-		public int CurrentWalkSpeed => BaseWalkSpeed + BonusWalkSpeed;
-		public int CurrentRunSpeed => BaseRunSpeed + BonusRunSpeed;
+		public uint CurrentWalkSpeed => BaseWalkSpeed + BonusWalkSpeed;
+		public uint CurrentRunSpeed => BaseRunSpeed + BonusRunSpeed;
 
-		public int CurrentAttackSpeed => BaseAttackSpeed + BonusAttackSpeed;
+		public uint CurrentAttackSpeed => BaseAttackSpeed + BonusAttackSpeed;
 
 		// Base stats
-		public int BaseMaxHP { get; set; }
-		public int BaseMaxSP { get; set; }
-		public int BaseMaxLP { get; set; }
+		public uint BaseMaxHP { get; set; }
+		public uint BaseMaxSP { get; set; }
+		public uint BaseMaxLP { get; set; }
 
-		public int BaseMaxHPStones { get; set; }
-		public int BaseMaxSPStones { get; set; }
+		public uint BaseMaxHPStones { get; set; }
+		public uint BaseMaxSPStones { get; set; }
 
-		public int BaseHPStoneHealth { get; set; }
-		public int BaseSPStoneSpirit { get; set; }
+		public uint BaseHPStoneHealth { get; set; }
+		public uint BaseSPStoneSpirit { get; set; }
 
-		public int BaseSTR { get; set; }
-		public int BaseEND { get; set; }
-		public int BaseDEX { get; set; }
-		public int BaseINT { get; set; }
-		public int BaseSPR { get; set; }
+		public uint BaseSTR { get; set; }
+		public uint BaseEND { get; set; }
+		public uint BaseDEX { get; set; }
+		public uint BaseINT { get; set; }
+		public uint BaseSPR { get; set; }
 
-		public int BaseMinDmg { get; set; }
-		public int BaseMaxDmg { get; set; }
-		public int BaseMinMDmg { get; set; }
-		public int BaseMaxMDmg { get; set; }
-		public int BaseDef { get; set; }
-		public int BaseMDef { get; set; }
-		public int BaseAim { get; set; }
-		public int BaseEvasion { get; set; }
+		public uint BaseMinDmg { get; set; }
+		public uint BaseMaxDmg { get; set; }
+		public uint BaseMinMDmg { get; set; }
+		public uint BaseMaxMDmg { get; set; }
+		public uint BaseDef { get; set; }
+		public uint BaseMDef { get; set; }
+		public uint BaseAim { get; set; }
+		public uint BaseEvasion { get; set; }
 
-		public int BaseIllnessResistance { get; set; }
-		public int BaseDiseaseResistance { get; set; }
-		public int BaseCurseResistance { get; set; }
-		public int BaseStunResistance { get; set; }
+		public uint BaseIllnessResistance { get; set; }
+		public uint BaseDiseaseResistance { get; set; }
+		public uint BaseCurseResistance { get; set; }
+		public uint BaseStunResistance { get; set; }
 
-		public int BaseWalkSpeed { get; set; }
-		public int BaseRunSpeed { get; set; }
+		public uint BaseWalkSpeed { get; set; }
+		public uint BaseRunSpeed { get; set; }
 
-		public int BaseAttackSpeed { get; set; }
+		public uint BaseAttackSpeed { get; set; }
 
 		// Bonus Stats
-		public int BonusMaxHP { get; set; }
-		public int BonusMaxSP { get; set; }
-		public int BonusMaxLP { get; set; }
+		public uint BonusMaxHP { get; set; }
+		public uint BonusMaxSP { get; set; }
+		public uint BonusMaxLP { get; set; }
 
-		public int BonusMaxHPStones { get; set; }
-		public int BonusMaxSPStones { get; set; }
+		public uint BonusMaxHPStones { get; set; }
+		public uint BonusMaxSPStones { get; set; }
 
-		public int BonusHPStoneHealth { get; set; }
-		public int BonusSPStoneSpirit { get; set; }
+		public uint BonusHPStoneHealth { get; set; }
+		public uint BonusSPStoneSpirit { get; set; }
 
-		public int BonusSTR { get; set; }
-		public int BonusEND { get; set; }
-		public int BonusDEX { get; set; }
-		public int BonusINT { get; set; }
-		public int BonusSPR { get; set; }
+		public uint BonusSTR { get; set; }
+		public uint BonusEND { get; set; }
+		public uint BonusDEX { get; set; }
+		public uint BonusINT { get; set; }
+		public uint BonusSPR { get; set; }
 
-		public int BonusMinDmg { get; set; }
-		public int BonusMaxDmg { get; set; }
-		public int BonusMinMDmg { get; set; }
-		public int BonusMaxMDmg { get; set; }
-		public int BonusDef { get; set; }
-		public int BonusMDef { get; set; }
-		public int BonusAim { get; set; }
-		public int BonusEvasion { get; set; }
+		public uint BonusMinDmg { get; set; }
+		public uint BonusMaxDmg { get; set; }
+		public uint BonusMinMDmg { get; set; }
+		public uint BonusMaxMDmg { get; set; }
+		public uint BonusDef { get; set; }
+		public uint BonusMDef { get; set; }
+		public uint BonusAim { get; set; }
+		public uint BonusEvasion { get; set; }
 
 		public double BonusDefRate { get; set; }
 		public double BonusMDefRate { get; set; }
 		public double BonusDmgRate { get; set; }
 		public double BonusMDmgRate { get; set; }
 
-		public int BonusIllnessResistance { get; set; }
-		public int BonusDiseaseResistance { get; set; }
-		public int BonusCurseResistance { get; set; }
-		public int BonusStunResistance { get; set; }
+		public uint BonusIllnessResistance { get; set; }
+		public uint BonusDiseaseResistance { get; set; }
+		public uint BonusCurseResistance { get; set; }
+		public uint BonusStunResistance { get; set; }
 
-		public int BonusWalkSpeed { get; set; }
-		public int BonusRunSpeed { get; set; }
+		public uint BonusWalkSpeed { get; set; }
+		public uint BonusRunSpeed { get; set; }
 
-		public int BonusAttackSpeed { get; set; }
+		public uint BonusAttackSpeed { get; set; }
 
-		public int BonusLPRegenRate { get; set; }
+		public uint BonusLPRegenRate { get; set; }
 
 		// Critical stats
-		public int CriticalMinDmg { get; set; }
-		public int CriticalMaxDmg { get; set; }
-		public int CriticalMinMDmg { get; set; }
-		public int CriticalMaxMDmg { get; set; }
+		public uint CriticalMinDmg { get; set; }
+		public uint CriticalMaxDmg { get; set; }
+		public uint CriticalMinMDmg { get; set; }
+		public uint CriticalMaxMDmg { get; set; }
 
 		public decimal CriticalRate { get; set; }
 		public decimal BlockRate { get; set; }
@@ -154,30 +152,42 @@ namespace Vision.Game.Content.GameObjects
 		}
 
 		public void Update()
-		{
-			if (_object is Character character)
-			{
-				BaseSTR = character.Parameters.STR;
-				BaseEND = character.Parameters.END;
-				BaseDEX = character.Parameters.DEX;
-				BaseINT = character.Parameters.INT;
-				BaseSPR = character.Parameters.SPR;
+        {
+            if (!(_object is Character character)) return;
 
-				BaseHPStoneHealth = character.Parameters.HPStoneHealth;
-				BaseSPStoneSpirit = character.Parameters.SPStoneSpirit;
+            var stats = character.Parameters;
 
-				BaseMaxHPStones = character.Parameters.MaxHPStones;
-				BaseMaxSPStones = character.Parameters.MaxSPStones;
+            BaseSTR = stats.Strength.Base;
+            BaseEND = stats.Constitution.Base;
+            BaseDEX = stats.Dexterity.Base;
+            BaseINT = stats.Intelligence.Base;
+            BaseSPR = stats.Wisdom.Base;
 
-				BaseIllnessResistance = character.Parameters.IllnessResistance;
-				BaseDiseaseResistance = character.Parameters.DiseaseResistance;
-				BaseCurseResistance = character.Parameters.CurseResistance;
-				BaseStunResistance = character.Parameters.StunResistance;
+            BonusSTR = stats.Strength.Bonus;
+            BonusEND = stats.Constitution.Bonus;
+            BonusDEX = stats.Dexterity.Bonus;
+            BonusINT = stats.Intelligence.Bonus;
+            BonusSPR = stats.Wisdom.Bonus;
 
-				BaseMaxHP = character.Parameters.MaxHP;
-				BaseMaxSP = character.Parameters.MaxSP;
-				BaseMaxLP = character.Parameters.MaxLP;
-            }
-		}
+            BaseHPStoneHealth = stats.HPStoneHealth;
+            BaseSPStoneSpirit = stats.SPStoneSpirit;
+			
+            BaseMaxHPStones = stats.MaxHPStones;
+            BaseMaxSPStones = stats.MaxSPStones;
+
+            BaseIllnessResistance = stats.IllnessResistance.Base;
+            BaseDiseaseResistance = stats.DiseaseResistance.Base;
+            BaseCurseResistance = stats.CurseResistance.Base;
+            BaseStunResistance = stats.StunResistance.Base;
+
+            BonusIllnessResistance = stats.IllnessResistance.Bonus;
+            BonusDiseaseResistance = stats.DiseaseResistance.Bonus;
+            BonusCurseResistance = stats.CurseResistance.Bonus;
+            BonusStunResistance = stats.StunResistance.Bonus;
+
+            BaseMaxHP = stats.MaxHP;
+            BaseMaxSP = stats.MaxSP;
+            BaseMaxLP = stats.MaxLP;
+        }
 	}
 }
