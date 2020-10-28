@@ -45,10 +45,12 @@ namespace Vision.Client.Networking.Handlers
 
             var account = connection.Account;
 
-            account.AddCharacter(connection.GameClient.ClientSessionData.ActiveCharacterHandle, cmd);
-            account.SelectCharacter(cmd.CharNo);
-
-            if (account.ActiveCharacter == null)
+            if (account.AddCharacter(connection.GameClient.ClientSessionData.ActiveCharacterHandle, cmd.CharNo))
+            {
+                account.ActiveCharacter.Initialize(cmd);
+                account.SelectCharacter(cmd.CharNo);
+            }
+            else
             {
                 Logger.Error("Character choose failed!");
                 return;
