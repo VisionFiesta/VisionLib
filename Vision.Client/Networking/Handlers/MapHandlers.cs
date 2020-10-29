@@ -1,4 +1,5 @@
-﻿using Vision.Client.Services;
+﻿using System.Diagnostics.CodeAnalysis;
+using Vision.Client.Services;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
@@ -6,6 +7,7 @@ using Vision.Game.Structs.Map;
 
 namespace Vision.Client.Networking.Handlers
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class MapHandlers
     {
         private static readonly ClientLog Logger = new ClientLog(typeof(MapHandlers));
@@ -17,11 +19,19 @@ namespace Vision.Client.Networking.Handlers
             ack.Read(packet);
 
             var sessionData = connection.GameClient.ClientSessionData;
-            sessionData.ActiveCharacterHandle = ack.Handle;
-            sessionData.LoginPosition = ack.LoginPosition;
+            var charNo = sessionData.ClientAccount.ActiveAvatar.CharNo;
 
-            Logger.Debug($"MAP_LOGIN_ACK: {ack}");
-            connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_ZONE_OK);
+            if (sessionData.ClientAccount.AddCharacter(ack.Handle, charNo))
+            {
+                sessionData.ClientAccount.SelectCharacter(charNo);
+                Logger.Info("MAP_LOGIN_ACK: Successfully logged in with character.");
+                Logger.Debug($"MAP_LOGIN_ACK: {ack}");
+                connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_ZONE_OK);
+            }
+            else
+            {
+                Logger.Error("MAP_LOGIN_ACK: Failed to log in with character - Avatar information unavailable");
+            }
         }
 
         [NetPacketHandler(NetCommand.NC_MAP_LOGINFAIL_ACK, NetConnectionDestination.NCD_CLIENT)]

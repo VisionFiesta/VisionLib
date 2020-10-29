@@ -171,12 +171,12 @@ namespace Vision.Client.Services
         {
             var avatars = Client.ClientSessionData.ClientAccount.Avatars;
             var desiredCharacterName = Client.UserData.CharacterName;
-            var matchingAvatar = avatars?.FirstOrDefault(a => a.Name.Equals(desiredCharacterName));
+            var matchingAvatar = avatars?.FirstOrDefault(a => a.CharName.Equals(desiredCharacterName));
 
             if (matchingAvatar != null)
             {
-                ClientLogger.Info($"Connecting to zone with character {matchingAvatar.Name}");
-                var selected = Client.ClientSessionData.ClientAccount.SelectCharacter(matchingAvatar.CharNo);
+                ClientLogger.Info($"Connecting to zone with character {matchingAvatar.CharName}");
+                var selected = Client.ClientSessionData.ClientAccount.SelectAvatar(matchingAvatar.CharNo);
                 new NcCharLoginReq(matchingAvatar.Slot).Send(WorldConnection);
             }
             else

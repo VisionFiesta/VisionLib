@@ -6,6 +6,8 @@ namespace Vision.Game.Structs.Common
 {
     public class PlayerQuestData : AbstractStruct
     {
+        public const int Size = 27;
+
         public long StartTime;
         public long EndTime;
         public uint RepeatCount;
@@ -18,10 +20,7 @@ namespace Vision.Game.Structs.Common
         public byte EndLocation;
         public byte EndScenario;
 
-        public override int GetSize()
-        {
-            return 27;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {

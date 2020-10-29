@@ -8,7 +8,6 @@ namespace Vision.Game.Structs.Map
 {
     public class NcMapLoginAck : NetPacketStruct
     {
-
         public ushort Handle;
         public CharParameterData ParameterData = new CharParameterData();
         public ShineXY LoginPosition = new ShineXY();

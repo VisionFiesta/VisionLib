@@ -2,7 +2,7 @@
 
 namespace Vision.Game.Content.GameObjects
 {
-	public class Stats
+	public class GameObjectStats
 	{
 		private readonly GameObject _object;
 
@@ -146,7 +146,7 @@ namespace Vision.Game.Content.GameObjects
 		public decimal CriticalRate { get; set; }
 		public decimal BlockRate { get; set; }
 
-		public Stats(GameObject obj)
+		public GameObjectStats(GameObject obj)
 		{
 			_object = obj;
 		}

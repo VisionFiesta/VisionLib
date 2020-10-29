@@ -10,32 +10,29 @@ namespace Vision.Game.Structs.User
         private static readonly int Size = sizeof(ushort) + sizeof(byte) + new ProtoAvatarInformation().GetSize();
 
         public ushort AccountID { get; private set; }
-        public byte AvatarCount { get; private set; }
+        public byte CharacterCount { get; private set; }
         public ProtoAvatarInformation[] Avatars { get; private set; }
 
         public NcUserLoginWorldAck() { }
 
-        public NcUserLoginWorldAck(ushort worldManagerHandle, byte avatarCount,
+        public NcUserLoginWorldAck(ushort worldManagerHandle, byte characterCount,
             ProtoAvatarInformation[] avatars)
         {
             AccountID = worldManagerHandle;
-            AvatarCount = avatarCount;
+            CharacterCount = characterCount;
             Avatars = avatars;
         }
 
-        public override int GetSize()
-        {
-            return Size;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
             AccountID = reader.ReadUInt16();
-            AvatarCount = reader.ReadByte();
+            CharacterCount = reader.ReadByte();
 
-            if (AvatarCount <= 0) return;
-            Avatars = new ProtoAvatarInformation[AvatarCount];
-            for (var i = 0; i < AvatarCount; i++)
+            if (CharacterCount <= 0) return;
+            Avatars = new ProtoAvatarInformation[CharacterCount];
+            for (var i = 0; i < CharacterCount; i++)
             {
                 Avatars[i] = new ProtoAvatarInformation();
                 Avatars[i].Read(reader);
@@ -45,12 +42,11 @@ namespace Vision.Game.Structs.User
         public override void Write(WriterStream writer)
         {
             writer.Write(AccountID);
-            writer.Write(AvatarCount);
+            writer.Write(CharacterCount);
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_USER_LOGINWORLD_ACK;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_USER_LOGINWORLD_ACK;
+
+        public override bool HasMaximumSize() => false;
     }
 }

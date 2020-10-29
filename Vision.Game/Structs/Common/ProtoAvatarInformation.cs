@@ -12,6 +12,19 @@ namespace Vision.Game.Structs.Common
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ProtoAvatarInformation : AbstractStruct
     {
+        public const int Size = sizeof(int) * 2
+                                + NameN.Name5Len
+                                + NameN.Name3Len * 2
+                                + sizeof(ushort)
+                                + sizeof(byte)
+                                + ProtoAvatarDeleteInfo.Size
+                                + ProtoAvatarShapeInfo.Size
+                                + ProtoEquipment.Size
+                                + ShineXY.Size
+                                + ShineDatetime.Size
+                                + CharIdChangeData.Size
+                                + ProtoTutorialInfo.Size;
+
         // db byte
         // dw 2byte (uint16/ushort)
         // dd 4byte (uint32/int)
@@ -23,47 +36,19 @@ namespace Vision.Game.Structs.Common
         public ushort Level; // +2
         public byte CharSlot; // +1
         public string LoginMap; // Name3 (3 * 4byte), +12
-        public ProtoAvatarDeleteInfo DeleteInfo; // +5
-        public ProtoAvatarShapeInfo CharShape; // +4
-        public ProtoEquipment Equipment; // +43
+        public ProtoAvatarDeleteInfo DeleteInfo = new ProtoAvatarDeleteInfo(); // +5
+        public ProtoAvatarShapeInfo CharShape = new ProtoAvatarShapeInfo(); // +4
+        public ProtoEquipment Equipment = new ProtoEquipment(); // +43
         public int KQHandle; // +4
         public string KQMapName; // Name3, +12
-        public ShineXY nKQCoord; // +8
-        public ShineDatetime KQDate; // +4
-        public CharIdChangeData CharIDChangeData; // +6
-        public ProtoTutorialInfo TutorialInfo; // +5
+        public ShineXY nKQCoord = new ShineXY(); // +8
+        public ShineDatetime KQDate = new ShineDatetime(); // +4
+        public CharIdChangeData CharIDChangeData = new CharIdChangeData(); // +6
+        public ProtoTutorialInfo TutorialInfo = new ProtoTutorialInfo(); // +5
 
-        public ProtoAvatarInformation()
-        {
-            DeleteInfo = new ProtoAvatarDeleteInfo();
-            CharShape = new ProtoAvatarShapeInfo();
-            Equipment = new ProtoEquipment();
-            nKQCoord = new ShineXY();
-            KQDate = new ShineDatetime();
-            CharIDChangeData = new CharIdChangeData();
-            TutorialInfo = new ProtoTutorialInfo();
-        }
+        public override string ToString() => $"Name: {CharName}, Level:, {Level}, Class: {CharShape.JobGender}, Map:{LoginMap}, CharNo: {CharNo}";
 
-        public override string ToString()
-        {
-            return $"Name: {CharName}, Level:, {Level}, Class: {CharShape.JobGender}, Map:{LoginMap}";
-        }
-
-        public override int GetSize()
-        {
-            return sizeof(int) * 2
-                   + NameN.Name5Len
-                   + NameN.Name3Len * 2
-                   + sizeof(ushort)
-                   + sizeof(byte)
-                   + DeleteInfo.GetSize()
-                   + CharShape.GetSize()
-                   + Equipment.GetSize()
-                   + nKQCoord.GetSize()
-                   + KQDate.GetSize()
-                   + CharIDChangeData.GetSize()
-                   + TutorialInfo.GetSize();
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -100,6 +85,8 @@ namespace Vision.Game.Structs.Common
 
     public class ProtoAvatarDeleteInfo : AbstractStruct
     {
+        public const int Size = 5;
+
         public byte Year;
         public byte Month;
         public byte Day;
@@ -110,10 +97,7 @@ namespace Vision.Game.Structs.Common
 
         public bool IsDeleted;
 
-        public override int GetSize()
-        {
-            return sizeof(byte) * 5;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -147,6 +131,8 @@ namespace Vision.Game.Structs.Common
 
     public class ProtoAvatarShapeInfo : AbstractStruct
     {
+        public const int Size = 4;
+
         public byte JobGender;
         public byte Hair;
         public byte HairColor;
@@ -155,10 +141,7 @@ namespace Vision.Game.Structs.Common
         public CharacterClass Job;
         public CharacterGender Gender;
 
-        public override int GetSize()
-        {
-            return sizeof(byte) * 4;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -200,6 +183,8 @@ namespace Vision.Game.Structs.Common
 
     public class ProtoEquipment : AbstractStruct
     {
+        public const int Size = 43;
+
         // 20 ushort (40 bytes)
         public ushort EquHead;
         public ushort EquMouth;
@@ -225,10 +210,7 @@ namespace Vision.Game.Structs.Common
         // 3 bytes
         public ProtoEquipmentUpgrade Upgrade = new ProtoEquipmentUpgrade();
 
-        public override int GetSize()
-        {
-            return 43;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -285,14 +267,13 @@ namespace Vision.Game.Structs.Common
 
     public class ProtoEquipmentUpgrade : AbstractStruct
     {
+        public const int Size = 3;
+
         public byte Bitfield0;
         public byte Bitfield1;
         public byte Bitfield2;
 
-        public override int GetSize()
-        {
-            return sizeof(byte) * 3;
-        }
+        public override int GetSize() => 3;
 
         public override void Read(ReaderStream reader)
         {
@@ -311,14 +292,13 @@ namespace Vision.Game.Structs.Common
 
     public class CharIdChangeData : AbstractStruct
     {
+        public const int Size = 6;
+
         public bool NeedChangeId;
         public bool Init;
         public int RowNo;
 
-        public override int GetSize()
-        {
-            return sizeof(bool) * 2 + sizeof(int);
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -337,13 +317,12 @@ namespace Vision.Game.Structs.Common
 
     public class ProtoTutorialInfo : AbstractStruct
     {
+        public const int Size = 5;
+
         public int TutorialState; // TODO: enum TUTORIAL_STATE
         public byte TutorialStep;
 
-        public override int GetSize()
-        {
-            return sizeof(int) + sizeof(byte);
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {

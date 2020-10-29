@@ -1,7 +1,9 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Vision.Game.Content.GameObjects
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
     public enum GameObjectType
     {
         GOT_FLAG,
@@ -30,6 +32,7 @@ namespace Vision.Game.Content.GameObjects
                 GameObjectType.GOT_NPC => "NPC",
                 GameObjectType.GOT_DOOR => "Gate",
                 GameObjectType.GOT_CHARACTER => "Character",
+                GameObjectType.GOT_MOVER => "Mover",
                 _ => type.ToString()
             };
         }

@@ -89,6 +89,7 @@ namespace Vision.Core.Utils
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     [SuppressMessage("ReSharper", "CommentTypo")]
     [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
+    [SuppressMessage("ReSharper", "RedundantAssignment")]
     public class BitStream : Stream
 	{
 		#region Constants [20051116]

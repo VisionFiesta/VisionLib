@@ -14,7 +14,7 @@ namespace Vision.Game.Structs.Char
         public ushort Index;
         public PlayerQuestDoneInfo[] QuestDoneArray;
 
-        public override int GetSize() => 12 + DoneQuestCount * 10;
+        public override int GetSize() => 12 + DoneQuestCount * PlayerQuestDoneInfo.Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -49,5 +49,7 @@ namespace Vision.Game.Structs.Char
         }
 
         public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_QUEST_DONE_CMD;
+
+        public override bool HasMaximumSize() => false;
     }
 }

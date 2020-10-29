@@ -13,7 +13,7 @@ namespace Vision.Game.Structs.Char
 
         public PlayerQuestInfo[] QuestDoingArray;
 
-        public override int GetSize() => 6 + DoingQuestCount * 32;
+        public override int GetSize() => 6 + DoingQuestCount * PlayerQuestInfo.Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -36,5 +36,7 @@ namespace Vision.Game.Structs.Char
         }
 
         public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_QUEST_DOING_CMD;
+
+        public override bool HasMaximumSize() => false;
     }
 }

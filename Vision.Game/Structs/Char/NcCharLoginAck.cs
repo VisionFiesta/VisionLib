@@ -8,30 +8,14 @@ namespace Vision.Game.Structs.Char
 {
     public class NcCharLoginAck : NetPacketStruct
     {
-        public const int ZoneIPLen = 16;
+        private const int ZoneIPLen = 16;
+
+        public const int Size = ZoneIPLen + 2;
 
         public string ZoneIP { get; private set; }
         public ushort ZonePort { get; private set; }
 
         public IPEndPoint ZoneEndPoint { get; private set; }
-
-        public NcCharLoginAck() { }
-
-        public NcCharLoginAck(string zoneIp, ushort zonePort)
-        {
-            ZoneIP = zoneIp;
-            ZonePort = zonePort;
-
-            SetEndpoint();
-        }
-
-        public NcCharLoginAck(IPEndPoint zoneEndPoint)
-        {
-            ZoneIP = zoneEndPoint.Address.ToString();
-            ZonePort = (ushort) zoneEndPoint.Port;
-
-            ZoneEndPoint = zoneEndPoint;
-        }
 
         private void SetEndpoint()
         {
@@ -45,10 +29,7 @@ namespace Vision.Game.Structs.Char
             }
         }
 
-        public override int GetSize()
-        {
-            return ZoneIPLen + sizeof(ushort);
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -64,9 +45,6 @@ namespace Vision.Game.Structs.Char
             writer.Write(ZonePort);
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_CHAR_LOGIN_ACK;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_LOGIN_ACK;
     }
 }

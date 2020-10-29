@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
@@ -10,6 +11,9 @@ using Vision.Game.Structs.BriefInfo;
 
 namespace Vision.Client.Networking.Handlers
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public static class BriefInfoHandlers
     {
         private static readonly ClientLog Logger = new ClientLog(typeof(BriefInfoHandlers));
@@ -103,10 +107,20 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoRegenMobCmd();
             cmd.Read(packet);
 
-            var mob = new Mob(cmd);
+            Mob mob;
+            try
+            {
+                mob = new Mob(cmd);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"BI_REGENMOB: Failed to create mob - Already exists in GameObjects with handle {cmd.Handle}");
+                Logger.Error(ex.StackTrace);
+                return;
+            }
 
             if (connection.Account.ActiveCharacter.VisibleObjects.Add(mob)) {
-                Logger.Debug($"BI_REGENMOB: Added - {mob}");
+                Logger.Debug($"BI_REGENMOB: Added {mob}");
             }
             else
             {
@@ -122,12 +136,12 @@ namespace Vision.Client.Networking.Handlers
 
             foreach (var mobRaw in cmd.Mobs)
             {
-                Mob mob = null;
+                Mob mob;
                 try
                 {
                     mob = new Mob(mobRaw);
                 }
-                catch (InvalidOperationException ex)
+                catch (Exception ex)
                 {
                     Logger.Error($"BI_MOB: Failed to create mob - Already exists in GameObjects with handle {mobRaw.Handle}");
                     Logger.Error(ex.StackTrace);
@@ -202,8 +216,8 @@ namespace Vision.Client.Networking.Handlers
             if (result) Logger.Debug(toPrint);
             else Logger.Error(toPrint);
 
-            var matchingHandleVOCount = visibleObjects.Count(o => o.Handle == handle);
-            if (matchingHandleVOCount > 0) Logger.Error($"VOs still has {matchingHandleVOCount} GOs with matching handle!");
+            var matchingHandleVoCount = visibleObjects.Count(o => o.Handle == handle);
+            if (matchingHandleVoCount > 0) Logger.Error($"VOs still has {matchingHandleVoCount} GOs with matching handle!");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_BUILDDOOR_CMD, NetConnectionDestination.NCD_CLIENT)]

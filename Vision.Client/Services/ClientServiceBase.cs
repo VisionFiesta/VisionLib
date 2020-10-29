@@ -15,7 +15,8 @@ namespace Vision.Client.Services
         protected ClientUserData UserData => Client.UserData;
         protected StaticClientData StaticClientData => Client.StaticClientData;
         protected ClientSessionData ClientSessionData => Client.ClientSessionData;
-        protected Character ActiveCharacter => Client.ClientSessionData.ClientAccount.ActiveCharacter;
+        protected WorldCharacter ActiveAvatar => ClientSessionData.ClientAccount.ActiveAvatar;
+        protected Character ActiveCharacter => ClientSessionData.ClientAccount.ActiveCharacter;
 
         protected NetClientConnection LoginConnection => Client.LoginClient;
         protected LoginService LoginService => Client.LoginService;

@@ -4,8 +4,7 @@ using Vision.Client.Services;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
-using Vision.Game;
-using Vision.Game.Characters.Shape;
+using Vision.Game.Characters;
 using Vision.Game.Enums;
 using Vision.Game.Structs.Common;
 using Vision.Game.Structs.User;
@@ -114,31 +113,13 @@ namespace Vision.Client.Networking.Handlers
 
             foreach (var ava in result.Avatars)
             {
-                var trueAva = new Avatar(ava.CharNo)
-                {
-                    DeleteTime = ava.DeleteInfo.Time,
-                    // TODO: Equipment
-                    IsDeleted = ava.DeleteInfo.IsDeleted,
-                    KQDate = ava.KQDate.ToDateTime(),
-                    KQHandle = ava.KQHandle,
-                    KQMapIndx = ava.KQMapName,
-                    KQPosition = ava.nKQCoord,
-                    Level = (byte)ava.Level,
-                    MapIndx = ava.LoginMap,
-                    Name = ava.CharName,
-                    Shape = new CharacterShape(ava.CharShape),
-                    Slot = ava.CharSlot,
-                    TutorialState = ava.TutorialInfo
-                };
-
-                if (!connection.Account.AddAvatar(trueAva))
+                if (!connection.Account.AddAvatar(WorldCharacter.FromAvatarInformation(ava)))
                 {
                     Logger.Error("USER_LOGINWORLD_ACK: Failed to add avatar!");
                 }
             }
 
-
-            Logger.Debug( $"USER_LOGINWORLD_ACK: Got {result.AvatarCount} avatars" + avatarStr);
+            Logger.Debug( $"USER_LOGINWORLD_ACK: Got {result.CharacterCount} avatars" + avatarStr);
 
             connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_OK);
         }

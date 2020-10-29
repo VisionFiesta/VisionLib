@@ -53,5 +53,7 @@ namespace Vision.Game.Structs.Common
             bs.Read(out uint bf0);
             writer.Write(bf0);
         }
+
+        public override string ToString() => $"{(Login ? "Online" : "Offline")} - Last seen date: {Hour}:00, {Day}/{Month}/{Year}";
     }
 }

@@ -5,14 +5,13 @@ namespace Vision.Game.Structs.Common
 {
     public class PlayerQuestInfo : AbstractStruct
     {
+        public const int Size = 5 + PlayerQuestData.Size;
+
         public uint ID;
         public byte Status;
         public PlayerQuestData Data;
 
-        public override int GetSize()
-        {
-            return 32;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {

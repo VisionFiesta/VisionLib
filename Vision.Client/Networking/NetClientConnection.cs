@@ -23,5 +23,8 @@ namespace Vision.Client.Networking
         public void UpdateZoneService(ZoneServiceTrigger trigger) =>
             _ = GameClient.ZoneService.UpdateState(trigger);
 
+        public void UpdateZoneService(ZoneCharacterDataManager.CharClientDataType dataType) =>
+            GameClient.ZoneService.UpdateCharData(dataType);
+
     }
 }

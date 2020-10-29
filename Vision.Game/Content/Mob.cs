@@ -2,6 +2,8 @@
 using Vision.Game.Enums;
 using Vision.Game.Structs.BriefInfo;
 
+#pragma warning disable 8509
+
 namespace Vision.Game.Content
 {
     public class Mob : GameObject
@@ -27,18 +29,13 @@ namespace Vision.Game.Content
         public override string ToString()
         {
             var info = $"{Type.ToFriendlyName()} - ";
-            switch (Type)
+
+            info += Type switch
             {
-                case GameObjectType.GOT_DOOR:
-                    info += $"To: {Name}, Handle: {Handle}";
-                    break;
-                case GameObjectType.GOT_NPC:
-                    info = $"Name: {Name}";
-                    break;
-                case GameObjectType.GOT_MOB:
-                    info = $"Name: {Name}, Level: {Level}";
-                    break;
-            }
+                GameObjectType.GOT_DOOR => $"To: {Name}, Handle: {Handle}",
+                GameObjectType.GOT_NPC => $"Name: {Name}",
+                GameObjectType.GOT_MOB => $"Name: {Name}, Level: {Level}"
+            };
 
             info += $", Handle: {Handle}";
 

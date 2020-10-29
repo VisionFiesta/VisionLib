@@ -5,13 +5,12 @@ namespace Vision.Game.Structs.Common
 {
     public class PlayerQuestDoneInfo : AbstractStruct
     {
+        public const int Size = 10;
+
         public ushort ID;
         public long EndTime;
 
-        public override int GetSize()
-        {
-            return 10;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {

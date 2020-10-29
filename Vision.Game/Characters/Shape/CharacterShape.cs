@@ -31,9 +31,6 @@ namespace Vision.Game.Characters.Shape
             return (byte) bs.ReadByte();
         }
 
-        public override string ToString()
-        {
-            return $"Shape - Class:{Class}, Gender: {Gender}, Hair: {Hair}, HairColor: {HairColor}";
-        }
+        public override string ToString() => $"Shape - Class:{Class}, Gender: {Gender}, Hair: {Hair}, HairColor: {HairColor}";
     }
 }

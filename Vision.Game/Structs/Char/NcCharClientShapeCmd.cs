@@ -8,12 +8,11 @@ namespace Vision.Game.Structs.Char
 {
     public class NcCharClientShapeCmd : NetPacketStruct
     {
+        public const int Size = 4;
+
         public CharacterShape Shape;
 
-        public override int GetSize()
-        {
-            return 4;
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -34,9 +33,6 @@ namespace Vision.Game.Structs.Char
             raw.Write(writer);
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_CHAR_CLIENT_SHAPE_CMD;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_SHAPE_CMD;
     }
 }

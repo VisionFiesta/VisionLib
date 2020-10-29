@@ -147,11 +147,7 @@ namespace Vision.Client
         public byte[] WorldAuthBytes;
 
         public IPEndPoint ActiveZoneEndPoint;
-
-        public string ActiveMapName;
-        public ShineXY LoginPosition;
-        public ushort ActiveCharacterHandle;
-
+        
         // CHAR_OPTION
         public ShortCutData[] ShortCutDatas;
         public KeyMapData[] KeyMapDatas;

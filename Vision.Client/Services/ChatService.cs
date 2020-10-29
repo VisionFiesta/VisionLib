@@ -47,7 +47,7 @@ namespace Vision.Client.Services
 
         public void ReceiveChat(ClientLogChatType type, string message, string sender)
         {
-            LogChat(type, message, sender, sender == ActiveCharacter.Name);
+            LogChat(type, message, sender, sender == ActiveAvatar?.CharName);
             HandleChatCommands(type, message, sender);
         }
 

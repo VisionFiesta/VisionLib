@@ -12,10 +12,7 @@ namespace Vision.Game.Structs.Char
         public ushort TitleCount;
         public CharTitleInfo[] TitleArray;
 
-        public override int GetSize()
-        {
-            return 6 + TitleCount * 2;
-        }
+        public override int GetSize() => CharTitleInfo.Size + 4 + TitleCount * CharTitleInfo.Size;
 
         public override void Read(ReaderStream reader)
         {
@@ -46,9 +43,6 @@ namespace Vision.Game.Structs.Char
             }
         }
 
-        public override NetCommand GetCommand()
-        {
-            return NetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD;
-        }
+        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD;
     }
 }

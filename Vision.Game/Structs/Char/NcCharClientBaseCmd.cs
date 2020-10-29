@@ -8,6 +8,9 @@ namespace Vision.Game.Structs.Char
 {
     public class NcCharClientBaseCmd : NetPacketStruct
     {
+        // as of 1.02.276, NA server
+        public const int Size = 106;
+
         public uint CharNo;
         public string CharName;
         public byte Slot;
@@ -33,7 +36,7 @@ namespace Vision.Game.Structs.Char
         public uint KillPoints;
         public byte[] Unk03 = new byte[8];
 
-        public override int GetSize() => 106; // as of 1.02.276, NA server
+        public override int GetSize() => Size; 
 
         public override void Read(ReaderStream reader)
         {

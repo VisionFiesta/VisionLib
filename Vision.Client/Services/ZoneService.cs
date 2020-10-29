@@ -93,7 +93,7 @@ namespace Vision.Client.Services
             if (Client.SHNHash != null)
             {
                 ClientLogger.Debug("Sending MapLoginReq");
-                new NcMapLoginReq(acct.AccountID, acct.ActiveCharacter.Name, Client.SHNHash).Send(ZoneConnection);
+                new NcMapLoginReq(acct.AccountID, acct.ActiveAvatar.CharName, Client.SHNHash).Send(ZoneConnection);
             }
             else
             {
@@ -201,6 +201,7 @@ namespace Vision.Client.Services
         ZST_CONNECT_FAIL,
         ZST_LOGIN_OK,
         ZST_LOGIN_FAIL,
+        ZST_LOGIN_CHARACTER_FAIL,
         ZST_MAP_LOAD_OK,
     }
 }

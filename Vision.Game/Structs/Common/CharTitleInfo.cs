@@ -6,16 +6,16 @@ namespace Vision.Game.Structs.Common
 {
     public class CharTitleInfo : AbstractStruct
     {
+        public const int Size = 2;
+
         public byte Type;
         public byte ElementNoValue;
 
+        // Derived from ElementNoValue, bitpacked 6 and 2
         public byte ElementNo;
         public byte ElementValue;
 
-        public override int GetSize()
-        {
-            return 2;
-        }
+        public override int GetSize() => 2;
 
         public override void Read(ReaderStream reader)
         {

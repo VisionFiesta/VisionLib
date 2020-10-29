@@ -7,6 +7,8 @@ namespace Vision.Game.Structs.Common
 {
     public class ShineDatetime : AbstractStruct
     {
+        public const int Size = 4;
+
         // struct {
         // 	  unsigned __int32 year : 8;
         // 	  unsigned __int32 month : 5;
@@ -16,11 +18,6 @@ namespace Vision.Game.Structs.Common
         // };
 
         public int Bitfield0;
-
-        public ShineDatetime()
-        {
-            // Bitfield0 = ToBitField(DateTime.MinValue);
-        }
 
         public DateTime ToDateTime() => ToDateTime(Bitfield0);
 
@@ -57,10 +54,7 @@ namespace Vision.Game.Structs.Common
             return bf0;
         }
 
-        public override int GetSize()
-        {
-            return sizeof(int);
-        }
+        public override int GetSize() => Size;
 
         public override void Read(ReaderStream reader)
         {

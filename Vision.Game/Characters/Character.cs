@@ -2,7 +2,6 @@
 using System.Linq;
 using Vision.Game.Characters.Shape;
 using Vision.Game.Content.GameObjects;
-using Vision.Game.Content.Items;
 using Vision.Game.Structs.BriefInfo;
 using Vision.Game.Structs.Char;
 using Vision.Game.Structs.Common;
@@ -15,9 +14,9 @@ namespace Vision.Game.Characters
 
         public uint CharNo { get; private set; }
         public string Name { get; private set; }
-        public CharacterShape Shape { get; private set; }
-        public CharacterState CharacterState { get; private set; }
-        public Equipment Equipment { get; set; }
+        public CharacterShape Shape { get; set; }
+        public CharacterState CharacterState { get; }
+        public ProtoEquipment Equipment { get; set; }
 
         public CharTitleInfo CurrentTitle;
         public CharTitleInfo[] Titles { get; private set; }
@@ -39,49 +38,72 @@ namespace Vision.Game.Characters
         public uint KillPoints { get; private set; }
         // public byte FreeStat_Points { get; set; }
         public int FriendPoints { get; set; }
-
-        public string MapIndx { get; set; }
-
+        
         public bool QuestsNeedClear { get; private set; }
-        public List<PlayerQuestInfo> DoingQuests { get; } = new List<PlayerQuestInfo>();
-        public List<PlayerQuestDoneInfo> DoneQuests { get; } = new List<PlayerQuestDoneInfo>();
+        public List<PlayerQuestInfo> DoingQuests { get; private set; } = new List<PlayerQuestInfo>();
+        public List<PlayerQuestDoneInfo> DoneQuests { get; private set; } = new List<PlayerQuestDoneInfo>();
 
-        public Character(ushort handle, Avatar avatar) : base(handle, GameObjectType.GOT_CHARACTER)
+        // various random stuff that gets sent
+        public ProtoAvatarDeleteInfo DeleteInfo { get; private set; }
+        public int KQHandle { get; private set; }
+        public string KQMapName { get; private set; }
+        public ShineXY KQPosition { get; private set; }
+        public CharIdChangeData CharIdChangeData { get; private set; }
+        public ProtoTutorialInfo TutorialInfo { get; private set; }
+
+        public Character(ushort handle, WorldCharacter avatar) : base(handle, GameObjectType.GOT_CHARACTER)
         {
             CharNo = avatar.CharNo;
-
-            Equipment = avatar.Equipment;
-            
-            
-            Name = avatar.Name;
-
-
+            Name = avatar.CharName;
             Slot = avatar.Slot;
-        }
+            MapName = avatar.MapName;
+            Shape = avatar.Shape;
+            Equipment = avatar.Equipment;
 
-        public void Initialize(NcCharClientBaseCmd data)
-        {
-            CharNo = data.CharNo;
-            Name = data.CharName;
-            Level = data.Level;
-            Stats.CurrentHP = data.HP;
-            Stats.CurrentSP = data.SP;
-            Stats.CurrentLP = data.LP;
-            Stats.BonusSTR = data.STRBonus;
-            Stats.BonusEND = data.ENDBonus;
-            Stats.BonusDEX = data.DEXBonus;
-            Stats.BonusINT = data.INTBonus;
-            Stats.BonusSPR = data.SPRBonus;
+            // the lame stuff
+            DeleteInfo = avatar.DeleteInfo;
+            KQHandle = avatar.KQHandle;
+            KQMapName = avatar.KQMapName;
+            KQPosition = avatar.KQPosition;
+            CharIdChangeData = avatar.CharIdChangeData;
+            TutorialInfo = avatar.TutorialInfo;
 
-            Slot = data.Slot;
-            EXP = data.EXP;
-            HPStones = data.HPStones;
-            SPStones = data.SPStones;
-            Fame = data.Fame;
-            Money = data.Money;
-            KillPoints = data.KillPoints;
+            // Base data
+            var baseData = avatar.BaseData;
+            Stats.CurrentHP = baseData.HP;
+            Stats.CurrentSP = baseData.SP;
+            Stats.CurrentLP = baseData.LP;
+            Stats.BonusSTR = baseData.STRBonus;
+            Stats.BonusEND = baseData.ENDBonus;
+            Stats.BonusDEX = baseData.DEXBonus;
+            Stats.BonusINT = baseData.INTBonus;
+            Stats.BonusSPR = baseData.SPRBonus;
 
-            Position = data.Position;
+            EXP = baseData.EXP;
+            HPStones = baseData.HPStones;
+            SPStones = baseData.SPStones;
+            Fame = baseData.Fame;
+            Money = baseData.Money;
+            KillPoints = baseData.KillPoints;
+
+            Position = baseData.Position;
+
+            // Shape data
+            Shape = avatar.Shape;
+
+            // QuestDoing data
+            var questDoingData = avatar.QuestDoingData;
+            QuestsNeedClear = questDoingData.NeedClear;
+            DoingQuests = new List<PlayerQuestInfo>(questDoingData.QuestDoingArray);
+
+            // QuestDone data
+            var questDoneData = avatar.QuestDoneData;
+            DoneQuests = new List<PlayerQuestDoneInfo>(questDoneData.QuestDoneArray);
+
+            // Title data
+            var titleData = avatar.TitleData;
+            CurrentTitle = titleData.CurrentTitle;
+            Titles = titleData.TitleArray;
         }
 
         public Character(NcBriefInfoLoginCharacterCmd data) : base(data.Handle, GameObjectType.GOT_CHARACTER)
@@ -100,42 +122,6 @@ namespace Vision.Game.Characters
             };
         }
 
-        public void SetShape(CharacterShape shape) => Shape = shape;
-
-        public void UpdateTitles(CharTitleInfo newCurrentTitle, IEnumerable<CharTitleInfo> titles = null)
-        {
-            CurrentTitle = newCurrentTitle;
-            if (titles != null)
-            {
-                Titles = titles.ToArray();
-            }
-        }
-
-        public void UpdateDoingQuests(bool needClear, IEnumerable<PlayerQuestInfo> quests)
-        {
-            QuestsNeedClear = needClear;
-            DoingQuests.AddRange(quests);
-        }
-
-        public void UpdateDoneQuests(IEnumerable<PlayerQuestDoneInfo> quests) => DoneQuests.AddRange(quests);
-
-
-        // public static Character FromAvatar(Avatar avatar)
-        // {
-        //     var character = new Character(avatar.CharNo)
-        //     {
-        //         Name = avatar.Name,
-        //         Level = avatar.Level,
-        //         Shape = avatar.Shape,
-        //         Equipment = avatar.Equipment
-        //     };
-        //
-        //     return character;
-        // }
-
-        public override string ToString()
-        {
-            return $"Character - Name: {Name}, Level: {Level}, Class: {Shape.Class}, Gender: {Shape.Gender} Mode: {CharacterState}, Handle: {Handle}";
-        }
+        public override string ToString() => $"Character - Name: {Name}, Level: {Level}, Class: {Shape.Class}, Gender: {Shape.Gender} Mode: {CharacterState}, Handle: {Handle}";
     }
 }

@@ -22,16 +22,13 @@ namespace Vision.Game.Content.GameObjects
         public static IReadOnlyCollection<GameObject> GameObjects => Objects;
 
 		public ushort Handle { get; }
-
-		public byte Level { get; set; }
+        public byte Level { get; set; }
 		public GameObjectType Type { get; protected set; }
         public GameObjectState State { get; set; } = GameObjectState.GOS_NONBATTLE;
-		public Stats Stats { get; set; }
+		public GameObjectStats Stats { get; set; }
+        public string MapName { get; set; }
 		public ShineXYR Position { get; set; }
-
-		// public string MapIndx => Position?.Map?.Info.MapName; TODO: Maps
-
-		public HashSet<GameObject> VisibleObjects { get; }
+        public HashSet<GameObject> VisibleObjects { get; }
 		public IReadOnlyCollection<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToImmutableList();
         public IReadOnlyCollection<GameObject> TouchingObjects => VisibleObjects.Filter(obj => obj.Position.GetDistance(Position) <= 10.0).ToImmutableList();
 
@@ -70,17 +67,15 @@ namespace Vision.Game.Content.GameObjects
 		}
 
         public List<GameObject> SelectedBy { get; set; }
-
-		public ushort HPChangeOrder => _hpChangeOrder++;
-
-		private ushort _hpChangeOrder;
+        public ushort HPChangeOrder => _hpChangeOrder++;
+        private ushort _hpChangeOrder;
 
         protected GameObject(ushort handle, GameObjectType type)
         {
             Handle = handle;
             Type = type;
 
-			Stats = new Stats(this);
+			Stats = new GameObjectStats(this);
 			Stats.Update();
 
 			Position = new ShineXYR();
@@ -89,7 +84,7 @@ namespace Vision.Game.Content.GameObjects
 
             if (!Objects.Add(this))
             {
-				throw new InvalidOperationException($"GameObject with handle {Handle} already exists!");
+				throw new Exception($"GameObject with handle {Handle} already exists!");
             }
 		}
 	}
