@@ -193,7 +193,7 @@ namespace Vision.Client.Networking.Handlers
             var result = gameObjects.Remove(gameObjectToRemove);
             if (!result) result = gameObjects.RemoveWhere(g => g.Handle == handle) > 0;
 
-            var toPrint = $"BI_DELETE: {(result ? "Removed" : "Failed to remove")} GameObject {gameObjectToRemove.Type.ToFriendlyName()}, Handle: {gameObjectToRemove.Handle}";
+            var toPrint = $"BI_DELETE: {(result ? "Removed" : "Failed to remove")} GameObject {gameObjectToRemove}";
 
             if (result) Logger.Debug(toPrint);
             else Logger.Error(toPrint);

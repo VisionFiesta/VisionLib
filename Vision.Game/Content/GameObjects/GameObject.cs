@@ -79,5 +79,13 @@ namespace Vision.Game.Content.GameObjects
 
 			Position = new ShineXYR();
 		}
-	}
+
+        public override string ToString()
+        {
+            if (this is Character chr) return chr.ToString();
+            if (this is Mob mob) return mob.ToString();
+            if (this is Mover mover) return mover.ToString();
+            return $"Handle: {Handle}";
+        }
+    }
 }
