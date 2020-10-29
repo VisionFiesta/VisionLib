@@ -77,7 +77,7 @@ namespace Vision.Client.Networking.Handlers
             }
             else
             {
-                Logger.Error($"BI_LOGINCHARACTER: Failed to add character - Handle: {chr.Handle}");
+                Logger.Error($"BI_LOGINCHARACTER: Failed to add Character - Handle: {chr.Handle} already present");
             }
         }
 
@@ -90,13 +90,14 @@ namespace Vision.Client.Networking.Handlers
             foreach (var chr in cmd.Characters)
             {
                 var newChr = new Character(chr);
+
                 if (connection.Account.ActiveCharacter.VisibleObjects.Add(newChr))
                 {
                     Logger.Debug($"BI_CHARACTER: Added {newChr}");
                 }
                 else
                 {
-                    Logger.Error($"BI_CHARACTER: Failed to add character - Handle: {newChr.Handle}");
+                    Logger.Error($"BI_CHARACTER: Failed to add Character - Handle: {newChr.Handle} already present");
                 }
             }
         }
@@ -107,24 +108,14 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoRegenMobCmd();
             cmd.Read(packet);
 
-            Mob mob;
-            try
-            {
-                mob = new Mob(cmd);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"BI_REGENMOB: Failed to create mob - Already exists in GameObjects with handle {cmd.Handle}");
-                Logger.Error(ex.StackTrace);
-                return;
-            }
+            var mob = new Mob(cmd);
 
             if (connection.Account.ActiveCharacter.VisibleObjects.Add(mob)) {
                 Logger.Debug($"BI_REGENMOB: Added {mob}");
             }
             else
             {
-                Logger.Error($"BI_REGENMOB: Failed to add mob - Handle: {mob.Handle} already present");
+                Logger.Error($"BI_REGENMOB: Failed to add {mob.Type.ToFriendlyName()} - Handle: {mob.Handle} already present");
             }
         }
 
@@ -136,17 +127,7 @@ namespace Vision.Client.Networking.Handlers
 
             foreach (var mobRaw in cmd.Mobs)
             {
-                Mob mob;
-                try
-                {
-                    mob = new Mob(mobRaw);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error($"BI_MOB: Failed to create mob - Already exists in GameObjects with handle {mobRaw.Handle}");
-                    Logger.Error(ex.StackTrace);
-                    return;
-                }
+                var mob = new Mob(mobRaw);
 
                 if (connection.Account.ActiveCharacter.VisibleObjects.Add(mob))
                 {
@@ -154,7 +135,7 @@ namespace Vision.Client.Networking.Handlers
                 }
                 else
                 {
-                    Logger.Error($"BI_MOB: Failed to add mob to VisibleObjects - Handle: {mobRaw.Handle}");
+                    Logger.Error($"BI_MOB: Failed to add {mob.Type.ToFriendlyName()} - Handle: {mob.Handle} already present");
                 }
             }
         }
@@ -198,26 +179,24 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_BRIEFINFODELETE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_BRIEFINFODELETE_CMD(NetPacket packet, NetClientConnection connection)
         {
+            var gameObjects = connection.Account.ActiveCharacter.VisibleObjects;
+
             var handle = packet.Reader.ReadUInt16();
-            var gameObjectToRemove = GameObject.GameObjects.FirstOrDefault(o => o.Handle == handle);
+
+            var gameObjectToRemove = gameObjects.FirstOrDefault(o => o.Handle == handle);
             if (gameObjectToRemove == null)
             {
                 Logger.Error($"BI_DELETE: GameObject no longer present, Handle: {handle}");
                 return;
             }
 
-            var visibleObjects = connection.Account.ActiveCharacter.VisibleObjects;
-
-            var result = visibleObjects.Remove(gameObjectToRemove);
-            if (!result) result = visibleObjects.RemoveWhere(g => g.Handle == handle) > 0;
+            var result = gameObjects.Remove(gameObjectToRemove);
+            if (!result) result = gameObjects.RemoveWhere(g => g.Handle == handle) > 0;
 
             var toPrint = $"BI_DELETE: {(result ? "Removed" : "Failed to remove")} GameObject {gameObjectToRemove.Type.ToFriendlyName()}, Handle: {gameObjectToRemove.Handle}";
 
             if (result) Logger.Debug(toPrint);
             else Logger.Error(toPrint);
-
-            var matchingHandleVoCount = visibleObjects.Count(o => o.Handle == handle);
-            if (matchingHandleVoCount > 0) Logger.Error($"VOs still has {matchingHandleVoCount} GOs with matching handle!");
         }
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_BUILDDOOR_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -309,7 +288,7 @@ namespace Vision.Client.Networking.Handlers
                 }
                 else
                 {
-                    Logger.Error($"BI_REGENMOVER: Failed to add mover - Handle: {mover.Handle}");
+                    Logger.Error("BI_REGENMOBER: Failed to add Mover - Handle: {mob.Handle} already present");
                 }
             }
             else
@@ -321,6 +300,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MOVER_CMD(NetPacket packet, NetClientConnection connection)
         {
+            // TODO: Struct
             Logger.Debug("BI_MOVER");
         }
 

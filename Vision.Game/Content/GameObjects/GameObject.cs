@@ -18,8 +18,6 @@ namespace Vision.Game.Content.GameObjects
 
 	public abstract class GameObject
     {
-        private static readonly HashSet<GameObject> Objects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
-        public static IReadOnlyCollection<GameObject> GameObjects => Objects;
 
 		public ushort Handle { get; }
         public byte Level { get; set; }
@@ -28,8 +26,9 @@ namespace Vision.Game.Content.GameObjects
 		public GameObjectStats Stats { get; set; }
         public string MapName { get; set; }
 		public ShineXYR Position { get; set; }
-        public HashSet<GameObject> VisibleObjects { get; }
-		public IReadOnlyCollection<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToImmutableList();
+
+        public readonly HashSet<GameObject> VisibleObjects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
+        public IReadOnlyCollection<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToImmutableList();
         public IReadOnlyCollection<GameObject> TouchingObjects => VisibleObjects.Filter(obj => obj.Position.GetDistance(Position) <= 10.0).ToImmutableList();
 
 		private GameObject _target;
@@ -79,13 +78,6 @@ namespace Vision.Game.Content.GameObjects
 			Stats.Update();
 
 			Position = new ShineXYR();
-
-			VisibleObjects = new HashSet<GameObject>();
-
-            if (!Objects.Add(this))
-            {
-				throw new Exception($"GameObject with handle {Handle} already exists!");
-            }
 		}
 	}
 }

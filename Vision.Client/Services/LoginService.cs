@@ -144,7 +144,7 @@ namespace Vision.Client.Services
             {
                 case GameRegion.GR_NA:
                     new NcUserUSLoginReq(UserData.Username, UserData.Password).Send(LoginConnection);
-                    Thread.Sleep(10);
+                    Thread.Sleep(25);
                     new NcUserXTrapReq(StaticClientData.XTrapVersionHash).Send(LoginConnection);
                     break;
                 case GameRegion.GR_DE:
