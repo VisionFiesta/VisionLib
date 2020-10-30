@@ -15,7 +15,7 @@ namespace Vision.Game.Characters
         public uint CharNo { get; private set; }
         public string Name { get; private set; }
         public CharacterShape Shape { get; set; }
-        public CharacterState CharacterState { get; }
+        public CharacterState CharacterState { get; set; }
         public ProtoEquipment Equipment { get; set; }
 
         public CharTitleInfo CurrentTitle;

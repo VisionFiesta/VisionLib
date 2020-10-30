@@ -1,12 +1,19 @@
-﻿using Vision.Core.Logging.Loggers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
+using Vision.Game.Characters;
 using Vision.Game.Structs.Act;
 
 namespace Vision.Client.Networking.Handlers
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
     public static class ActHandlers
     {
+        private static readonly ClientLog Logger = new ClientLog(typeof(ActHandlers));
+
         #region Move-Related
 
         [NetPacketHandler(NetCommand.NC_ACT_SOMEONEMOVEWALK_CMD, NetConnectionDestination.NCD_CLIENT)]
@@ -93,5 +100,24 @@ namespace Vision.Client.Networking.Handlers
         }
 
         #endregion
+
+        [NetPacketHandler(NetCommand.NC_ACT_SOMEONECHANGEMODE_CMD, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_ACT_SOMEONECHANGEMODE_CMD(NetPacket packet, NetClientConnection connection)
+        {
+            var handle = packet.Reader.ReadUInt16();
+            var newState = (CharacterState) packet.Reader.ReadByte();
+
+            var someone = connection.Account.ActiveCharacter.VisibleCharacters.FirstOrDefault(c => c.Handle == handle);
+            if (someone != null)
+            {
+                var oldState = someone.CharacterState;
+                someone.CharacterState = newState;
+                Logger.Debug($"Changed character state of \"{someone.Name}\" from {oldState} to {newState}");
+            }
+            else
+            {
+                Logger.Error($"Failed to get character with handle {handle} to change state!");
+            }
+        }
     }
 }
