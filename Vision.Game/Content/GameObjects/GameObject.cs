@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Vision.Core;
 using Vision.Core.Collections;
 using Vision.Core.Extensions;
 using Vision.Game.Characters;
@@ -16,7 +17,7 @@ namespace Vision.Game.Content.GameObjects
         public int GetHashCode(GameObject obj) => obj.Handle.GetHashCode();
     }
 
-	public abstract class GameObject
+	public abstract class GameObject : VisionObject
     {
 
 		public ushort Handle { get; }
@@ -27,7 +28,7 @@ namespace Vision.Game.Content.GameObjects
         public string MapName { get; set; }
 		public ShineXYR Position { get; set; }
 
-        public readonly HashSet<GameObject> VisibleObjects = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
+        public HashSet<GameObject> VisibleObjects { get; private set; } = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
         public IReadOnlyCollection<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToImmutableList();
         public IReadOnlyCollection<GameObject> TouchingObjects => VisibleObjects.Filter(obj => obj.Position.GetDistance(Position) <= 10.0).ToImmutableList();
 
@@ -65,7 +66,7 @@ namespace Vision.Game.Content.GameObjects
 			}
 		}
 
-        public List<GameObject> SelectedBy { get; set; }
+        public List<GameObject> SelectedBy { get; private set; } = new List<GameObject>();
         public ushort HPChangeOrder => _hpChangeOrder++;
         private ushort _hpChangeOrder;
 
@@ -82,10 +83,23 @@ namespace Vision.Game.Content.GameObjects
 
         public override string ToString()
         {
-            if (this is Character chr) return chr.ToString();
-            if (this is Mob mob) return mob.ToString();
-            if (this is Mover mover) return mover.ToString();
-            return $"Handle: {Handle}";
+            return this switch
+            {
+                Character chr => chr.ToString(),
+                Mob mob => mob.ToString(),
+                Mover mover => mover.ToString(),
+                _ => $"Handle: {Handle}"
+            };
+        }
+
+        protected override void Destroy()
+        {
+            foreach (var go in VisibleObjects) go.Dispose();
+			VisibleObjects.Clear();
+            VisibleObjects = null;
+            foreach (var go in SelectedBy) go.Dispose();
+			SelectedBy.Clear();
+            SelectedBy = null;
         }
     }
 }

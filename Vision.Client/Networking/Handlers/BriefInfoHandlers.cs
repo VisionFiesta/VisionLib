@@ -195,6 +195,8 @@ namespace Vision.Client.Networking.Handlers
 
             var toPrint = $"BI_DELETE: {(result ? "Removed" : "Failed to remove")} GameObject {gameObjectToRemove}";
 
+            if (result) gameObjectToRemove.Dispose();
+
             if (result) Logger.Debug(toPrint);
             else Logger.Error(toPrint);
         }

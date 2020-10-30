@@ -11,6 +11,6 @@ namespace Vision.Game.Content
             ID = id;
         }
 
-        public override string ToString() => $"{nameof(ID)}: {ID}";
+        public override string ToString() => $"Mover - {nameof(ID)}: {ID}, Handle: {Handle}";
     }
 }

@@ -23,12 +23,13 @@ namespace Vision.Game.Structs.BriefInfo
         public ushort Handle; // 2
         public uint ID; // 4
         public uint HP; // 4
-        public ShineXYR Position = new ShineXYR(); // 9
+        public ShineXY Position = new ShineXY(); // 8
         public AbnormalStateBit AbstateBit = new AbnormalStateBit(); // 112
         public byte Grade; // 1
         public ushort[] SlotHandle; // 2 * 10
 
-        public override int GetSize() => 43 + ShineXYR.Size + AbnormalStateBit.Size;
+        // Should be 151. 
+        public override int GetSize() => 2 + 4 + 4 + ShineXY.Size + AbnormalStateBit.Size + 1 + 20;
 
         public override void Read(ReaderStream reader)
         {

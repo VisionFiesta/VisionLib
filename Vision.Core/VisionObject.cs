@@ -122,7 +122,7 @@ namespace Vision.Core
 		}
 
 		/// <summary>
-		/// This method does nothing unless it is overidded by the top-level
+		/// This method does nothing unless it is overidden by the top-level
 		/// implementation of the <see cref="VisionObject"/> class.
 		/// </summary>
 		protected virtual void Destroy()

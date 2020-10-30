@@ -18,14 +18,14 @@ namespace Vision.Client.Services
 
         public void ReceiveChat(ClientLogChatType type, string message, int senderHandle)
         {
-            if (senderHandle == ActiveCharacter.Handle)
+            if (senderHandle == ActiveCharacter?.Handle)
             {
                 ReceiveChat(type, message, ActiveCharacter.Name);
             }
             else
             {
                 var senderName = $"Unknown->Handle:{senderHandle}";
-                var sender = ActiveCharacter.VisibleObjects.First(o => o.Handle == senderHandle);
+                var sender = ActiveCharacter?.VisibleObjects.First(o => o.Handle == senderHandle);
 
                 if (sender != null)
                 {
