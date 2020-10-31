@@ -69,15 +69,16 @@ namespace Vision.Client.Networking.Handlers
             var cmd = new NcBriefInfoLoginCharacterCmd();
             cmd.Read(packet);
 
-            var chr = new Character(cmd);
+            var character = new Character(cmd);
 
-            if (connection.Account.ActiveCharacter.VisibleObjects.Add(chr))
+            var addedCharacter = connection.Account.ActiveCharacter?.VisibleObjects.Add(character);
+            if (addedCharacter.HasValue && addedCharacter.Value)
             {
-                Logger.Debug($"BI_LOGINCHARACTER: Added {chr}");
+                Logger.Debug($"BI_LOGINCHARACTER: Added {character}");
             }
             else
             {
-                Logger.Error($"BI_LOGINCHARACTER: Failed to add Character - Handle: {chr.Handle} already present");
+                Logger.Error($"BI_LOGINCHARACTER: Failed to add Character - Handle: {character.Handle} already present");
             }
         }
 
@@ -179,6 +180,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_BRIEFINFODELETE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_BRIEFINFODELETE_CMD(NetPacket packet, NetClientConnection connection)
         {
+            if (connection.Account.ActiveCharacter == null) return;
             var gameObjects = connection.Account.ActiveCharacter.VisibleObjects;
 
             var handle = packet.Reader.ReadUInt16();
@@ -284,7 +286,9 @@ namespace Vision.Client.Networking.Handlers
             if (cmd.Handle != 0)
             {
                 var mover = new Mover(cmd.Handle, cmd.ID);
-                if (connection.Account.ActiveCharacter.VisibleObjects.Add(mover))
+
+                var addedMover = connection.Account.ActiveCharacter?.VisibleObjects.Add(mover);
+                if (addedMover.HasValue && addedMover.Value)
                 {
                     Logger.Debug($"BI_REGENMOVER: Added {mover}");
                 }

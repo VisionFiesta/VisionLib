@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using Colorful;
+using Vision.Core.Enums;
 using Vision.Core.Extensions;
 
 namespace Vision.Core.Logging.Loggers
@@ -138,53 +139,6 @@ namespace Vision.Core.Logging.Loggers
                 ClientLogLevel.CLL_ERROR => "Error",
                 ClientLogLevel.CLL_WARNING => "Warning",
                 ClientLogLevel.CLL_INFO => "Info",
-                _ => "Unk"
-            };
-        }
-    }
-
-    public enum ClientLogChatType
-    {
-        CLCT_NORMAL,
-        CLCT_SHOUT,
-        CLCT_WHISPER,
-        CLCT_PARTY,
-        CLCT_ACADEMY,
-        CLCT_GUILD,
-        CLCT_ROAR,
-        CLCT_ANNOUNCE
-    }
-
-    public static class ClientChatTypeExtensions
-    {
-        public static Color ToColor(this ClientLogChatType level)
-        {
-            return level switch
-            {
-                ClientLogChatType.CLCT_NORMAL => Color.White,
-                ClientLogChatType.CLCT_SHOUT => FiestaColors.ChatShoutColor,
-                ClientLogChatType.CLCT_WHISPER => FiestaColors.ChatWhisperColor,
-                ClientLogChatType.CLCT_PARTY => FiestaColors.ChatPartyColor,
-                ClientLogChatType.CLCT_ACADEMY => FiestaColors.ChatAcademyColor,
-                ClientLogChatType.CLCT_GUILD => FiestaColors.ChatGuildColor,
-                ClientLogChatType.CLCT_ROAR => FiestaColors.ChatRoarColor,
-                ClientLogChatType.CLCT_ANNOUNCE => FiestaColors.ChatGuildColor,
-                _ => Color.White
-            };
-        }
-
-        public static string ToName(this ClientLogChatType level)
-        {
-            return level switch
-            {
-                ClientLogChatType.CLCT_NORMAL => "Normal",
-                ClientLogChatType.CLCT_SHOUT => "Shout",
-                ClientLogChatType.CLCT_WHISPER => "Whisper",
-                ClientLogChatType.CLCT_PARTY => "Party",
-                ClientLogChatType.CLCT_ACADEMY => "Academy",
-                ClientLogChatType.CLCT_GUILD => "Guild",
-                ClientLogChatType.CLCT_ROAR => "Roar",
-                ClientLogChatType.CLCT_ANNOUNCE => "Announce",
                 _ => "Unk"
             };
         }

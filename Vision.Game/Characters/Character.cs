@@ -13,7 +13,7 @@ namespace Vision.Game.Characters
         public static CharacterCommon Global { get; set; }
 
         public uint CharNo { get; private set; }
-        public string Name { get; private set; }
+        public new string Name { get; private set; }
         public CharacterShape Shape { get; set; }
         public CharacterState CharacterState { get; set; }
         public ProtoEquipment Equipment { get; set; }

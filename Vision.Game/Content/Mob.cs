@@ -9,7 +9,7 @@ namespace Vision.Game.Content
     public class Mob : GameObject
     {
         public ushort MobID;
-        public string Name;
+        public new string Name;
 
         public Mob(NcBriefInfoRegenMobCmd data) : base(data.Handle, GameObjectType.GOT_MOB)
         {

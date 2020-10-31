@@ -1,20 +1,33 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Colorful;
 
 using Vision.Core;
+using Vision.Core.Enums;
 using Vision.Core.Logging.Loggers;
 using Vision.Game.Characters;
 using Vision.Game.Content;
+using Vision.Game.Enums;
 using Vision.Game.Structs.Act;
 
 namespace Vision.Client.Services
 {
+
+    public delegate void ChatSubscriberAction(ClientLogChatType type, string message, string sender, bool self);
+
     public sealed class ChatService : ClientServiceBase
     {
+        private string _lastWhisperCharacterName = "";
+
+        private readonly HashSet<ChatSubscriberAction> _chatSubscribers = new HashSet<ChatSubscriberAction>();
+
         public ChatService(FiestaClient client) : base(client)
         {
             ClientLogger.Info("Initialized");
         }
+
+        public void AddChatSubscriber(ChatSubscriberAction chatSubscriberAction) => _chatSubscribers.Add(chatSubscriberAction);
 
         public void ReceiveChat(ClientLogChatType type, string message, int senderHandle)
         {
@@ -25,7 +38,7 @@ namespace Vision.Client.Services
             else
             {
                 var senderName = $"Unknown->Handle:{senderHandle}";
-                var sender = ActiveCharacter?.VisibleObjects.First(o => o.Handle == senderHandle);
+                var sender = ActiveCharacter?.VisibleObjects.FirstOrDefault(o => o.Handle == senderHandle);
 
                 if (sender != null)
                 {
@@ -45,10 +58,23 @@ namespace Vision.Client.Services
             }
         }
 
-        public void ReceiveChat(ClientLogChatType type, string message, string sender)
+        public void ReceiveChat(ClientLogChatType type, string message, string sender = "", string receiver = "")
         {
-            LogChat(type, message, sender, sender == ActiveAvatar?.CharName);
+            bool self = sender == ActiveAvatar?.CharName;
+            LogChat(type, message, sender, self);
+
+            if (type == ClientLogChatType.CLCT_WHISPER)
+            {
+                _lastWhisperCharacterName = sender;
+            }
+
             HandleChatCommands(type, message, sender);
+
+            foreach (var chatSubscriberAction in _chatSubscribers)
+            {
+                // TODO: async-ify?
+                chatSubscriberAction.Invoke(type, message, sender, self);
+            }
         }
 
         private void HandleChatCommands(ClientLogChatType type, string message, string sender)
@@ -76,6 +102,68 @@ namespace Vision.Client.Services
             if (resp != "") SendChatReq(type, resp, sender);
         }
 
+        public void SendChatFromRawInput(string input)
+        {
+            // TODO: admin commands
+
+
+            if (input.StartsWith("/"))
+            {
+                var commandSplit = input.Split(" ", 2);
+                var commandPrefix = commandSplit[0].Replace("/", "");
+                var possibleCommand = ChatCommandTypeExtensions.GetCommandFromPrefix(commandPrefix);
+
+                if (possibleCommand.HasValue)
+                {
+                    var command = possibleCommand.Value;
+
+                    var message = commandSplit[1];
+
+                    switch (command)
+                    {
+                        case ChatCommandType.CCT_WHISPER_CHAT:
+                            var whisperSplit = message.Split(" ", 2);
+                            var whisperReceiver = whisperSplit[0];
+                            var whisperMessage = whisperSplit[1];
+                            SendChatReq(ClientLogChatType.CLCT_WHISPER, whisperMessage, whisperReceiver);
+                            break;
+                        case ChatCommandType.CCT_WHISPER_REPLY:
+                            SendChatReq(ClientLogChatType.CLCT_WHISPER, message, _lastWhisperCharacterName);
+                            break;
+                        case ChatCommandType.CCT_SHOUT_CHAT:
+                            SendChatReq(ClientLogChatType.CLCT_SHOUT, message);
+                            break;
+                        case ChatCommandType.CCT_PARTY_CHAT:
+                            SendChatReq(ClientLogChatType.CLCT_PARTY, message);
+                            break;
+                        case ChatCommandType.CCT_PARTY_INVITE:
+                            SendChatReq(ClientLogChatType.CLCT_PARTY, message);
+                            break;
+                        case ChatCommandType.CCT_ACADEMY_CHAT:
+                            SendChatReq(ClientLogChatType.CLCT_ACADEMY, message);
+                            break;
+                        case ChatCommandType.CCT_GUILD_CHAT:
+                            SendChatReq(ClientLogChatType.CLCT_GUILD, message);
+                            break;
+                        case ChatCommandType.CCT_EXPEDITION_NOTICE_CHAT:
+                            SendChatReq(ClientLogChatType.CLCT_EXPEDITION, message, "NOTICE");
+                            break;
+                        case ChatCommandType.CCT_EXPEDITION_CHAT:
+                            SendChatReq(ClientLogChatType.CLCT_EXPEDITION, message);
+                            break;
+                    }
+                }
+                else
+                {
+                    ClientLogger.Info("Invalid chat command.");
+                }
+            }
+            else
+            {
+                SendChatReq(ClientLogChatType.CLCT_NORMAL, input);
+            }
+        }
+
         public void SendChatReq(ClientLogChatType type, string message, string receiver = "")
         {
             //TODO: split messages longer than 255
@@ -91,8 +179,9 @@ namespace Vision.Client.Services
                     break;
                 case ClientLogChatType.CLCT_WHISPER:
                     if (string.IsNullOrEmpty(receiver)) return;
-                    var whispReq = new NcActWhisperReq(receiver, message);
-                    whispReq.Send(ZoneConnection);
+                    var whisperReq = new NcActWhisperReq(receiver, message);
+                    whisperReq.Send(ZoneConnection);
+                    _lastWhisperCharacterName = receiver;
                     break;
                 case ClientLogChatType.CLCT_PARTY:
                     var partyReq = new NcActPartyChatReq(message);
@@ -107,12 +196,27 @@ namespace Vision.Client.Services
                 case ClientLogChatType.CLCT_ROAR:
                     // TODO: InventoryService
                     break;
+                case ClientLogChatType.CLCT_EXPEDITION:
+                    if (receiver == "NOTICE")
+                    {
+                        
+                    }
+                    else
+                    {
+
+                    }
+                    // TODO: ExpeditionService
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
 
-        public void SendChatAck(ClientLogChatType type, string message, string receiver = "")
+        public void GetChatAck(ClientLogChatType type, string message, string receiver = "")
         {
-            LogChat(type, message, receiver, true);
+            ReceiveChat(type, message, receiver: receiver);
+            // LogChat(type, message, receiver, true);
+            
         }
 
         private void LogChat(ClientLogChatType type, string message, string sender, bool isSelf = false)
