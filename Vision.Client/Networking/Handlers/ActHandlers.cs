@@ -54,7 +54,7 @@ namespace Vision.Client.Networking.Handlers
         {
             var cmd = new NcActSomeoneChatCmd();
             cmd.Read(packet);
-            
+
             connection.GameClient.ChatService.ReceiveChat(ClientLogChatType.CLCT_NORMAL, cmd.Message, cmd.Handle);
         }
 
@@ -82,7 +82,7 @@ namespace Vision.Client.Networking.Handlers
             var ack = new NcActWhisperSuccessAck();
             ack.Read(packet);
 
-            connection.GameClient.ChatService.SendChatAck(ClientLogChatType.CLCT_WHISPER, ack.Message, ack.ReceiverName);
+            connection.GameClient.ChatService.GetWhisperSuccessAck(ClientLogChatType.CLCT_WHISPER, ack.Message, ack.ReceiverName);
         }
 
         [NetPacketHandler(NetCommand.NC_ACT_PARTYCHAT_CMD, NetConnectionDestination.NCD_CLIENT)]

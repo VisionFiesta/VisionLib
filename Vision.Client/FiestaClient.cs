@@ -134,6 +134,13 @@ namespace Vision.Client
 
             #endregion
         }
+
+        public void Logout()
+        {
+            var logoutPacket = new NetPacket(NetCommand.NC_USER_NORMALLOGOUT_CMD);
+            logoutPacket.Send(WorldClient);
+            logoutPacket.Send(ZoneClient);
+        }
     }
 
     public class ClientSessionData
@@ -147,7 +154,7 @@ namespace Vision.Client
         public byte[] WorldAuthBytes;
 
         public IPEndPoint ActiveZoneEndPoint;
-        
+
         // CHAR_OPTION
         public ShortCutData[] ShortCutDatas;
         public KeyMapData[] KeyMapDatas;

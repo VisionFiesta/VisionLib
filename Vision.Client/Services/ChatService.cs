@@ -60,12 +60,12 @@ namespace Vision.Client.Services
 
         public void ReceiveChat(ClientLogChatType type, string message, string sender = "", string receiver = "")
         {
-            bool self = sender == ActiveAvatar?.CharName;
+            var self = sender == ActiveAvatar?.CharName;
             LogChat(type, message, sender, self);
 
-            if (type == ClientLogChatType.CLCT_WHISPER)
+            if (type == ClientLogChatType.CLCT_WHISPER && receiver != "")
             {
-                _lastWhisperCharacterName = sender;
+                _lastWhisperCharacterName = receiver;
             }
 
             HandleChatCommands(type, message, sender);
@@ -102,12 +102,12 @@ namespace Vision.Client.Services
             if (resp != "") SendChatReq(type, resp, sender);
         }
 
-        public void SendChatFromRawInput(string input)
+        public void SendChatFromRawInput(ClientLogChatType type, string input)
         {
             // TODO: admin commands
 
 
-            if (input.StartsWith("/"))
+            if (input.StartsWith("/") && type == ClientLogChatType.CLCT_NORMAL)
             {
                 var commandSplit = input.Split(" ", 2);
                 var commandPrefix = commandSplit[0].Replace("/", "");
@@ -155,7 +155,7 @@ namespace Vision.Client.Services
                 }
                 else
                 {
-                    ClientLogger.Info("Invalid chat command.");
+                    ClientLogger.Info("Invalid command.");
                 }
             }
             else
@@ -199,7 +199,7 @@ namespace Vision.Client.Services
                 case ClientLogChatType.CLCT_EXPEDITION:
                     if (receiver == "NOTICE")
                     {
-                        
+
                     }
                     else
                     {
@@ -212,12 +212,8 @@ namespace Vision.Client.Services
             }
         }
 
-        public void GetChatAck(ClientLogChatType type, string message, string receiver = "")
-        {
-            ReceiveChat(type, message, receiver: receiver);
-            // LogChat(type, message, receiver, true);
-            
-        }
+        public void GetWhisperSuccessAck(ClientLogChatType type, string message, string receiver = "") =>
+            ReceiveChat(type, message, ActiveAvatar?.CharName, receiver);
 
         private void LogChat(ClientLogChatType type, string message, string sender, bool isSelf = false)
         {
