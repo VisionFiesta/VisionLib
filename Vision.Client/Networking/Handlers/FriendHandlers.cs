@@ -21,15 +21,18 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_FRIEND_SET_CONFIRM_REQ, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_FRIEND_SET_CONFIRM_REQ(NetPacket packet, NetClientConnection connection)
         {
-            var receiver = packet.Reader.ReadString(20); // me
-            var sender = packet.Reader.ReadString(20); // person adding
-            var pkt = new NetPacket(NetCommand.NC_FRIEND_SET_CONFIRM_ACK);
-            pkt.Writer.Write(receiver, 20); // me
-            pkt.Writer.Write(sender, 20); // person adding
-            pkt.Writer.Write(1); // 1 = yes, 0 = no
-            pkt.Send(connection);
+            var req = new NcFriendSetConfirmReq();
+            req.Read(packet);
 
-            Logger.Info($"FRIEND_SET_CONFIRM_REQ: Adding {sender} as friend!");
+            var ack = new NcFriendSetConfirmAck()
+            {
+                RequesterCharID = req.RequesterCharID,
+                ReceiverCharID = req.ReceiverCharID,
+                Accept = true
+            };
+            ack.Send(connection);
+
+            Logger.Info($"FRIEND_SET_CONFIRM_REQ: Adding {req.RequesterCharID} as friend!");
         }
 
         [NetPacketHandler(NetCommand.NC_FRIEND_DEL_ACK, NetConnectionDestination.NCD_CLIENT)]
