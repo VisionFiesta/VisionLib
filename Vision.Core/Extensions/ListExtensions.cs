@@ -12,7 +12,7 @@ namespace Vision.Core.Extensions
 		/// <summary>
 		/// The object to lock for list access.
 		/// </summary>
-		private static readonly object LockObject = new object();
+		private static readonly object LockObject = new();
 
 		/// <summary>
 		/// Adds an object to the list in a thread-safe, exception-safe

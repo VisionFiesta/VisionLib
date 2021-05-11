@@ -28,7 +28,7 @@ namespace Vision.Game.Content.GameObjects
         public string MapName { get; set; }
 		public ShineXYR Position { get; set; }
 
-        public HashSet<GameObject> VisibleObjects { get; private set; } = new HashSet<GameObject>(new GameObjectHandleEqualityComparer());
+        public HashSet<GameObject> VisibleObjects { get; private set; } = new(new GameObjectHandleEqualityComparer());
         public IReadOnlyCollection<Character> VisibleCharacters => VisibleObjects.OfType<Character>().ToImmutableList();
         public IReadOnlyCollection<GameObject> TouchingObjects => VisibleObjects.Filter(obj => obj.Position.GetDistance(Position) <= 10.0).ToImmutableList();
 
@@ -66,7 +66,7 @@ namespace Vision.Game.Content.GameObjects
 			}
 		}
 
-        public List<GameObject> SelectedBy { get; private set; } = new List<GameObject>();
+        public List<GameObject> SelectedBy { get; private set; } = new();
         public ushort HPChangeOrder => _hpChangeOrder++;
         private ushort _hpChangeOrder;
 

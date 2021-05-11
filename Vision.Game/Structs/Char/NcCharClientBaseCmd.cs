@@ -26,7 +26,7 @@ namespace Vision.Game.Structs.Char
         public uint Money;
         public byte Unk01;
         public string MapName;
-        public ShineXYR Position = new ShineXYR();
+        public ShineXYR Position = new();
         public byte STRBonus;
         public byte ENDBonus;
         public byte DEXBonus;

@@ -11,12 +11,12 @@ namespace Vision.Core.IO.SHN
 {
     public class SimpleSHNLoader
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(SimpleSHNLoader));
+        private static readonly EngineLog Logger = new(typeof(SimpleSHNLoader));
 
         private static readonly Type[] AllFileDefinitions = VisionAssembly.VisionTypes.Where(type => type.GetCustomAttributes(typeof(Definition), true).Length > 0).ToArray();
         private static readonly Type ObjectCollectionType = typeof(ObjectCollection<>);
-        private static readonly List<SHNType> Types = new List<SHNType>();
-        private static readonly Dictionary<SHNType, dynamic> FileObjects = new Dictionary<SHNType, dynamic>();
+        private static readonly List<SHNType> Types = new();
+        private static readonly Dictionary<SHNType, dynamic> FileObjects = new();
 
         private static string _shnFolder;
         private static ISHNCrypto _crypto;

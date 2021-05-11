@@ -10,7 +10,7 @@ namespace Vision.Core.Logging
     public abstract class ColorfulConsoleLogger
     {
         private static string GetTimePrefix => DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff");
-        private static Formatter GetTimeFormat => new Formatter($"[{GetTimePrefix}] ", Color.Aqua);
+        private static Formatter GetTimeFormat => new($"[{GetTimePrefix}] ", Color.Aqua);
 
         private const string DefaultFormattingString = "{0}{1}{2}{3}";
 
@@ -18,7 +18,7 @@ namespace Vision.Core.Logging
         public readonly string OwnerClassName;
         public readonly Color BaseColor;
 
-        private readonly object _ioLocker = new object();
+        private readonly object _ioLocker = new();
 
         protected internal ColorfulConsoleLogger(string basePrefix, string className, Color baseColor)
         {
@@ -37,8 +37,8 @@ namespace Vision.Core.Logging
             return new List<Formatter>
             {
                 GetTimeFormat,
-                new Formatter(fullBasePrefix, BaseColor),
-                new Formatter($"{ownerClassPrefix}[{messagePrefix}] ", prefixColor.Value)
+                new(fullBasePrefix, BaseColor),
+                new($"{ownerClassPrefix}[{messagePrefix}] ", prefixColor.Value)
             };
         }
 

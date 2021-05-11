@@ -47,26 +47,26 @@ namespace Vision.Game.Characters
         public ulong PrevExp { get; set; }
         public ulong NextExp { get; set; }
 
-        public CharParameter Strength { get; } = new CharParameter();
-        public CharParameter Constitution { get; } = new CharParameter();
-        public CharParameter Dexterity { get; } = new CharParameter();
-        public CharParameter Intelligence { get; } = new CharParameter();
-        public CharParameter Wisdom { get; } = new CharParameter();
-        public CharParameter MentalPower { get; } = new CharParameter();
+        public CharParameter Strength { get; } = new();
+        public CharParameter Constitution { get; } = new();
+        public CharParameter Dexterity { get; } = new();
+        public CharParameter Intelligence { get; } = new();
+        public CharParameter Wisdom { get; } = new();
+        public CharParameter MentalPower { get; } = new();
 
-        public CharParameter WcLow { get; } = new CharParameter();
-        public CharParameter WcHigh { get; } = new CharParameter();
+        public CharParameter WcLow { get; } = new();
+        public CharParameter WcHigh { get; } = new();
 
-        public CharParameter Ac { get; } = new CharParameter();
-        public CharParameter Th { get; } = new CharParameter();
-        public CharParameter Tb { get; } = new CharParameter();
+        public CharParameter Ac { get; } = new();
+        public CharParameter Th { get; } = new();
+        public CharParameter Tb { get; } = new();
 
-        public CharParameter MaLow { get; } = new CharParameter();
-        public CharParameter MaHigh { get; } = new CharParameter();
+        public CharParameter MaLow { get; } = new();
+        public CharParameter MaHigh { get; } = new();
 
-        public CharParameter Mr { get; } = new CharParameter();
-        public CharParameter Mh { get; } = new CharParameter();
-        public CharParameter Mb { get; } = new CharParameter();
+        public CharParameter Mr { get; } = new();
+        public CharParameter Mh { get; } = new();
+        public CharParameter Mb { get; } = new();
 
         public uint HPStoneHealth { get; set; }
         public uint SPStoneSpirit { get; set; }
@@ -80,10 +80,10 @@ namespace Vision.Game.Characters
 
         public uint HPStonePrice { get; set; }
         public uint SPStonePrice { get; set; }
-        public CharParameter IllnessResistance { get; } = new CharParameter();
-        public CharParameter DiseaseResistance { get; } = new CharParameter();
-        public CharParameter CurseResistance { get; } = new CharParameter();
-        public CharParameter StunResistance { get; } = new CharParameter();
+        public CharParameter IllnessResistance { get; } = new();
+        public CharParameter DiseaseResistance { get; } = new();
+        public CharParameter CurseResistance { get; } = new();
+        public CharParameter StunResistance { get; } = new();
         public uint MaxHP { get; set; }
         public uint MaxSP { get; set; }
         public uint MaxLP { get; set; } = 100;

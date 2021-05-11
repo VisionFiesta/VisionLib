@@ -24,7 +24,7 @@ namespace Vision.Game.Structs.Common
 
          */
 
-        public FriendDate LoginInfo = new FriendDate();
+        public FriendDate LoginInfo = new();
         public string CharID;
         public CharacterClass Class;
         public byte Level;

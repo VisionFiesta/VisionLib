@@ -9,7 +9,7 @@ namespace Vision.Core.Structs
 {
     public abstract class NetPacketStruct : AbstractStruct
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(NetPacketStruct));
+        private static readonly EngineLog Logger = new(typeof(NetPacketStruct));
 
         public abstract NetCommand GetCommand();
 
@@ -17,14 +17,14 @@ namespace Vision.Core.Structs
         {
             var packetSizeDiff = packet.Reader.RemainingBytes - GetSize();
 
-            if (packetSizeDiff < 0)
+            switch (packetSizeDiff)
             {
-                Logger.Error($"Packet smaller than expected by {Math.Abs(packetSizeDiff)} bytes for opcode {GetCommand()}");
-            }
-
-            if (packetSizeDiff > 0 && HasMaximumSize())
-            {
-                Logger.Warning($"Packet bigger than expected by {packetSizeDiff} bytes for opcode {GetCommand()}");
+                case < 0:
+                    Logger.Error($"Packet smaller than expected by {Math.Abs(packetSizeDiff)} bytes for opcode {GetCommand()}");
+                    break;
+                case > 0 when HasMaximumSize():
+                    Logger.Warning($"Packet bigger than expected by {packetSizeDiff} bytes for opcode {GetCommand()}");
+                    break;
             }
 
             try

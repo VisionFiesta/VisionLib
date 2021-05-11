@@ -8,7 +8,7 @@ namespace Vision.Game.Structs.BriefInfo
     public class NcBriefInfoAbstateChangeCmd : NetPacketStruct
     {
         public ushort Handle;
-        public AbnormalStateInfo Info = new AbnormalStateInfo();
+        public AbnormalStateInfo Info = new();
 
         public override int GetSize() => 2 + AbnormalStateInfo.Size;
 

@@ -12,7 +12,7 @@ namespace Vision.Game.Structs.BriefInfo
 
         public ushort Handle;
         public ushort MobID;
-        public ShineXYR Coordinates = new ShineXYR();
+        public ShineXYR Coordinates = new();
         public byte DoorState;
         public string BlockIndex;
         public ushort Scale;

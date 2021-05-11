@@ -37,15 +37,15 @@ namespace Vision.Game.Structs.BriefInfo
 
         public ushort Handle;
         public string CharID; // Name5
-        public ShineXYR Position = new ShineXYR();
+        public ShineXYR Position = new();
         public CharacterState State;
         public CharacterClass Class;
-        public ProtoAvatarShapeInfo Shape = new ProtoAvatarShapeInfo();
+        public ProtoAvatarShapeInfo Shape = new();
         public ProtoAvatarShapeData ShapeData;
         public ushort Polymorph;
-        public StopEmoticonDescript Emoticon = new StopEmoticonDescript();
-        public CharTitleBriefInfo CharTitle = new CharTitleBriefInfo();
-        public AbnormalStateBit AbstateBit = new AbnormalStateBit();
+        public StopEmoticonDescript Emoticon = new();
+        public CharTitleBriefInfo CharTitle = new();
+        public AbnormalStateBit AbstateBit = new();
         public uint MyGuild;
         public byte Type;
         public bool IsGuildAcademyMember;
@@ -120,7 +120,7 @@ namespace Vision.Game.Structs.BriefInfo
     {
         private readonly CharacterState _state;
 
-        public ProtoEquipment Equipment = new ProtoEquipment();
+        public ProtoEquipment Equipment = new();
         public CharBriefInfoRideRideInfo RideInfo;
         public CharBriefInfoCamp Camp;
         public CharBriefInfoBooth Booth;

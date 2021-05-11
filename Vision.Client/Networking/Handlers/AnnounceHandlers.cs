@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Vision.Core.Enums;
-using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
 using Vision.Game.Enums;
@@ -21,13 +19,13 @@ namespace Vision.Client.Networking.Handlers
                 ? ClientLogChatType.CLCT_ROAR
                 : ClientLogChatType.CLCT_ANNOUNCE;
 
-            string sender = "";
-            string message = "";
+            string sender;
+            string message;
             if (chatType == ClientLogChatType.CLCT_ROAR)
             {
                 var split = cmd.Message.Split(":").ToList();
                 sender = split[0];
-                message = split.GetRange(1, split.Count - 1).Aggregate((s, s1) => s += s1);
+                message = split.GetRange(1, split.Count - 1).Aggregate((s, s1) => s + s1);
             }
             else
             {

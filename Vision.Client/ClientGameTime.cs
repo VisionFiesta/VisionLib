@@ -6,7 +6,7 @@ namespace Vision.Client
     public class ClientGameTime
     {
         public DateTime StartTime { get; private set; }
-        private readonly Stopwatch _watch = new Stopwatch();
+        private readonly Stopwatch _watch = new();
 
         public ClientGameTime() => Set(DateTime.Now);
 

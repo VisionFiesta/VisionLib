@@ -17,9 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vision.Client", "Vision.Cli
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BF423067-1D4E-497C-9C16-0DE778E3B2B0}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisionConsoleTesting", "VisionConsoleTesting\VisionConsoleTesting.csproj", "{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -50,6 +47,10 @@ Global
 		{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{132E0BD6-AFE0-4C8A-A6FA-4D1C79489B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1F975EA-EF2E-4E9A-9DD6-D946ABBC5EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1F975EA-EF2E-4E9A-9DD6-D946ABBC5EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1F975EA-EF2E-4E9A-9DD6-D946ABBC5EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1F975EA-EF2E-4E9A-9DD6-D946ABBC5EF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

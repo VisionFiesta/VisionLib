@@ -10,10 +10,10 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class MiscHandlers
     {
-        private static readonly ClientLog ClientLogger = new ClientLog(typeof(MiscHandlers));
-        private static readonly SocketLog SocketLogger = new SocketLog(typeof(MiscHandlers));
+        private static readonly ClientLog ClientLogger = new(typeof(MiscHandlers));
+        private static readonly SocketLog SocketLogger = new(typeof(MiscHandlers));
 
-        private static readonly NetPacket HeartbeatAck = new NetPacket(NetCommand.NC_MISC_HEARTBEAT_ACK);
+        private static readonly NetPacket HeartbeatAck = new(NetCommand.NC_MISC_HEARTBEAT_ACK);
 
         [NetPacketHandler(NetCommand.NC_MISC_HEARTBEAT_REQ, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_MISC_HEARTBEAT_REQ(NetPacket packet, NetClientConnection connection)

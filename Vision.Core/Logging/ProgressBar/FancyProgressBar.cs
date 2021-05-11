@@ -15,7 +15,7 @@ namespace Vision.Core.Logging.ProgressBar
         private bool _hasWrittenOnce;
         private int FullLen => _prePercentLen + _lastPercent.Digits();
 
-        public FancyProgressBar(List<Formatter> prefix, byte logLevel, ColorfulConsoleLogger loggerInstance, Color? color = null) : base(logLevel, loggerInstance)
+        public FancyProgressBar(List<Formatter> prefix, byte logLevel, ColorfulConsoleLogger loggerInstance) : base(logLevel, loggerInstance)
         {
             _prefix = prefix.ToArray();
             _prePercentLen = prefix.Length() + 5 + BarSize;
@@ -23,7 +23,6 @@ namespace Vision.Core.Logging.ProgressBar
 
         public override void Complete(string message, Color color)
         {
-            // MoveCursor(FullLen - _prefixLength - 1);
             Update(100);
             Write(" -> " + message, color);
             WriteLine();

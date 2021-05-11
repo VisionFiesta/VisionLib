@@ -14,7 +14,7 @@ namespace Vision.Client.Networking.Handlers
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class UserHandlers
     {
-        private static readonly ClientLog Logger = new ClientLog(typeof(UserHandlers));
+        private static readonly ClientLog Logger = new(typeof(UserHandlers));
 
         #region LoginPackets
 

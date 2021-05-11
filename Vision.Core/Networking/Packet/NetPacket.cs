@@ -13,7 +13,7 @@ namespace Vision.Core.Networking.Packet
 	/// </summary>
     public class NetPacket : VisionObject
     {
-        private static readonly SocketLog Logger = new SocketLog(typeof(NetPacket));
+        private static readonly SocketLog Logger = new(typeof(NetPacket));
 
         public static readonly NetCommand[] DebugSkipCommands =
         {

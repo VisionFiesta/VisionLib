@@ -12,7 +12,7 @@ namespace Vision.Game.Structs.BriefInfo
 
         public ushort Handle;
         public string EffectName;
-        public ShineXYR Coordinates = new ShineXYR();
+        public ShineXYR Coordinates = new();
         public ushort Detach;
         public ushort Scale;
         // $0A1B13CF6BC9B89EA378BE620EA3CE70 flag;

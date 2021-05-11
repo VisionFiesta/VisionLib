@@ -10,7 +10,7 @@ namespace Vision.Client.Networking.Handlers
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class MapHandlers
     {
-        private static readonly ClientLog Logger = new ClientLog(typeof(MapHandlers));
+        private static readonly ClientLog Logger = new(typeof(MapHandlers));
 
         [NetPacketHandler(NetCommand.NC_MAP_LOGIN_ACK, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_MAP_LOGIN_ACK(NetPacket packet, NetClientConnection connection)

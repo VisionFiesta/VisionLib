@@ -8,7 +8,7 @@ namespace Vision.Client.Services
         public MovementService(FiestaClient client) : base(client) { }
 
 
-        private static readonly NetPacket JumpPacket = new NetPacket(NetCommand.NC_ACT_JUMP_CMD);
+        private static readonly NetPacket JumpPacket = new(NetCommand.NC_ACT_JUMP_CMD);
 
         public void Jump()
         {

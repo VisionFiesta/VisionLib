@@ -21,7 +21,7 @@ namespace Vision.Game.Characters
         public CharTitleInfo CurrentTitle;
         public CharTitleInfo[] Titles { get; private set; }
 
-        public CharParameterData Parameters = new CharParameterData();
+        public CharParameterData Parameters = new();
 
         // public byte[] WindowPosData { get; private set; }
         public ShortCutData[] ShortcutData { get; set; }
@@ -40,8 +40,8 @@ namespace Vision.Game.Characters
         public int FriendPoints { get; set; }
         
         public bool QuestsNeedClear { get; private set; }
-        public List<PlayerQuestInfo> DoingQuests { get; private set; } = new List<PlayerQuestInfo>();
-        public List<PlayerQuestDoneInfo> DoneQuests { get; private set; } = new List<PlayerQuestDoneInfo>();
+        public List<PlayerQuestInfo> DoingQuests { get; private set; } = new();
+        public List<PlayerQuestDoneInfo> DoneQuests { get; private set; } = new();
 
         // various random stuff that gets sent
         public ProtoAvatarDeleteInfo DeleteInfo { get; private set; }

@@ -23,8 +23,8 @@ namespace Vision.Game.Structs.BriefInfo
         public ushort Handle; // 2
         public uint ID; // 4
         public uint HP; // 4
-        public ShineXY Position = new ShineXY(); // 8
-        public AbnormalStateBit AbstateBit = new AbnormalStateBit(); // 112
+        public ShineXY Position = new(); // 8
+        public AbnormalStateBit AbstateBit = new(); // 112
         public byte Grade; // 1
         public ushort[] SlotHandle; // 2 * 10
 

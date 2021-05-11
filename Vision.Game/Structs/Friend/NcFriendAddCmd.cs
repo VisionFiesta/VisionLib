@@ -7,7 +7,7 @@ namespace Vision.Game.Structs.Friend
 {
     public class NcFriendAddCmd : NetPacketStruct
     {
-        public FriendInfo FriendInfo = new FriendInfo();
+        public FriendInfo FriendInfo = new();
 
         public override int GetSize() => FriendInfo.Size;
 

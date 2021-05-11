@@ -10,7 +10,7 @@ namespace Vision.Core.IO.SHN
 {
     public class SHNManager
     {
-        private readonly EngineLog Logger = new EngineLog(typeof(SHNManager));
+        private readonly EngineLog Logger = new(typeof(SHNManager));
 
         private readonly string _shnFolder;
         private readonly ISHNCrypto _crypto;
@@ -36,7 +36,7 @@ namespace Vision.Core.IO.SHN
             return true;
         }
 
-        public SHNLoader GetSHNLoader(SHNType type) => new SHNLoader(_shnFolder, type, _crypto);
+        public SHNLoader GetSHNLoader(SHNType type) => new(_shnFolder, type, _crypto);
 
         public List<SHNFile> LoadSHNFiles(params SHNType[] types)
         {

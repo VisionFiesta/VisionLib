@@ -28,8 +28,8 @@ namespace Vision.Game.Structs.BriefInfo
         public ushort Handle;
         public byte Mode;
         public ushort MobID;
-        public ShineXYR Position = new ShineXYR();
-        public MobFlag Flags = new MobFlag();
+        public ShineXYR Position = new();
+        public MobFlag Flags = new();
         public string Animation; //Name32Byte
         public byte AnimationLevel;
         public KQTeamType KQTeam;

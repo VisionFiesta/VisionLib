@@ -10,7 +10,7 @@ namespace Vision.Core.IO.SHN
 {
     public class SimpleSHNFile : IDisposable
     {
-		private static readonly EngineLog Logger = new EngineLog(typeof(SimpleSHNFile));
+		private static readonly EngineLog Logger = new(typeof(SimpleSHNFile));
 
         private readonly string _filename;
         private readonly ISHNCrypto _crypto;

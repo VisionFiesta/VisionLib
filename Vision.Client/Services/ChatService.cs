@@ -20,7 +20,7 @@ namespace Vision.Client.Services
     {
         private string _lastWhisperCharacterName = "";
 
-        private readonly HashSet<ChatSubscriberAction> _chatSubscribers = new HashSet<ChatSubscriberAction>();
+        private readonly HashSet<ChatSubscriberAction> _chatSubscribers = new();
 
         public ChatService(FiestaClient client) : base(client)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Vision.Core.IO.SHN;
 using Vision.Core.Logging.Loggers;
 
@@ -8,21 +9,23 @@ namespace Vision.Game.Content.Data.AbnormalState
 {
     public class AbnormalStateDataProvider
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(AbnormalStateDataProvider));
+        private static readonly EngineLog Logger = new(typeof(AbnormalStateDataProvider));
 
         public const ushort RestEXPID = 8817;
 
         private readonly SHNManager _shnManager;
+        private readonly SHNHashManager _shnHashManager;
         public AbnormalStateInfo RestEXP { get; private set; }
 
-        private readonly ConcurrentDictionary<ushort, SubAbnormalStateInfo> _subAbnormalStatesDataByID = new ConcurrentDictionary<ushort, SubAbnormalStateInfo>();
-        private readonly ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>> _subAbnormalStatesByID = new ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>>();
-        private readonly ConcurrentDictionary<ushort, AbnormalStateInfo> _abnormalStatesByID = new ConcurrentDictionary<ushort, AbnormalStateInfo>();
-        private readonly ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo> _abnormalStatesByAbnormalStateIndex = new ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo>();
+        private readonly ConcurrentDictionary<ushort, SubAbnormalStateInfo> _subAbnormalStatesDataByID = new();
+        private readonly ConcurrentDictionary<ushort, List<SubAbnormalStateInfo>> _subAbnormalStatesByID = new();
+        private readonly ConcurrentDictionary<ushort, AbnormalStateInfo> _abnormalStatesByID = new();
+        private readonly ConcurrentDictionary<AbnormalStateIndex, AbnormalStateInfo> _abnormalStatesByAbnormalStateIndex = new();
 
-        public AbnormalStateDataProvider(SHNManager shnManager)
+        public AbnormalStateDataProvider(SHNManager shnManager, SHNHashManager shnHashManager)
         {
             _shnManager = shnManager;
+            _shnHashManager = shnHashManager;
         }
 
         public bool TryGetAbnormalState(ushort id, out AbnormalStateInfo info) =>
@@ -58,6 +61,7 @@ namespace Vision.Game.Content.Data.AbnormalState
 
                 list.Add(info);
             });
+            _shnHashManager.AddHash(SHNType.SubAbState, subabstateShnLoader.MD5Hash);
 
             return true;
         }
@@ -79,6 +83,7 @@ namespace Vision.Game.Content.Data.AbnormalState
                     abstateShnLoader.QueueMessage(EngineLogLevel.ELL_WARNING, $"AbnormalStateDataProvider->LoadAbnormalStates() : Duplicate AbnormalStateIndex found: {info.AbnormalStateIndex}");
                 }
             });
+            _shnHashManager.AddHash(SHNType.AbState, abstateShnLoader.MD5Hash);
 
             return true;
         }

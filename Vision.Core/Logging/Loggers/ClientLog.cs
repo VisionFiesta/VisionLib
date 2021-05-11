@@ -17,7 +17,7 @@ namespace Vision.Core.Logging.Loggers
 
         public ClientLog(MemberInfo ownerClass) : base(LoggerPrefix, ownerClass.Name, LoggerColor) {}
 
-        private static List<byte> _preciseLogLevels = new List<byte>(EnumExtensions.GetValuesCasted<ClientLogLevel, byte>());
+        private static List<byte> _preciseLogLevels = new(EnumExtensions.GetValuesCasted<ClientLogLevel, byte>());
 
         public static void SetPreciseLogLevels(params ClientLogLevel[] levels) => _preciseLogLevels = new List<byte>(levels.Cast<byte>());
 
@@ -26,7 +26,7 @@ namespace Vision.Core.Logging.Loggers
         public static bool ShowChat { get; set; } = true;
         public static bool ShowAnnounce { get; set; } = true;
 
-        public static List<ClientLogChatType> AllowedChatTypes = new List<ClientLogChatType>(EnumExtensions.GetValues<ClientLogChatType>());
+        public static List<ClientLogChatType> AllowedChatTypes = new(EnumExtensions.GetValues<ClientLogChatType>());
 
         public static void SetChatFilter(params ClientLogChatType[] types) => AllowedChatTypes = new List<ClientLogChatType>(types);
 

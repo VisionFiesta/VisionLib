@@ -8,9 +8,9 @@ namespace Vision.Client.Services
     public class ZoneService : ClientServiceBase
     {
         private readonly StateMachine<ZoneServiceState, ZoneServiceTrigger> _zoneStateMachine =
-            new StateMachine<ZoneServiceState, ZoneServiceTrigger>(ZoneServiceState.ZSS_DISCONNECTED, FiringMode.Queued);
+            new(ZoneServiceState.ZSS_DISCONNECTED, FiringMode.Queued);
 
-        private readonly ZoneCharacterDataManager.CharClientDataStatus _charClientDataStatus = new ZoneCharacterDataManager.CharClientDataStatus();
+        private readonly ZoneCharacterDataManager.CharClientDataStatus _charClientDataStatus = new();
 
         public ZoneService(FiestaClient client) : base(client)
         {

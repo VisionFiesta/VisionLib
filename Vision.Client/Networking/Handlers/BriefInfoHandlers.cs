@@ -15,7 +15,7 @@ namespace Vision.Client.Networking.Handlers
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public static class BriefInfoHandlers
     {
-        private static readonly ClientLog Logger = new ClientLog(typeof(BriefInfoHandlers));
+        private static readonly ClientLog Logger = new(typeof(BriefInfoHandlers));
 
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_INFORM_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_INFORM_CMD(NetPacket packet, NetClientConnection connection)
@@ -143,7 +143,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_DROPEDITEM_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_DROPEDITEM_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoDropedItemCmd();
+            NcBriefInfoDropedItemCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_DROPEDITEM: {cmd}");
@@ -152,7 +152,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_ITEMONFIELD_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_ITEMONFIELD_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoItemOnFieldCmd();
+            NcBriefInfoItemOnFieldCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_ITEMONFIELD {cmd}");
@@ -161,7 +161,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MAGICFIELDSPREAD_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MAGICFIELDSPREAD_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoMagicFieldSpreadCmd();
+            NcBriefInfoMagicFieldSpreadCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_MAGICFIELDSPREAD {cmd}");
@@ -170,7 +170,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MAGICFIELDINFO_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MAGICFIELDINFO_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoMagicFieldInfoCmd();
+            NcBriefInfoMagicFieldInfoCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_MAGICFIELDINFO {cmd}");
@@ -205,7 +205,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_BUILDDOOR_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_BUILDDOOR_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoBuildDoorCmd();
+            NcBriefInfoBuildDoorCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_BUILDDOOR: {cmd}");
@@ -214,7 +214,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_DOOR_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_DOOR_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoDoorCmd();
+            NcBriefInfoDoorCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_DOOR {cmd}");
@@ -223,7 +223,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_EFFECTBLAST_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_EFFECTBLAST_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoEffectBlastCmd();
+            NcBriefInfoEffectBlastCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_EFFECTBLAST {cmd}");
@@ -232,7 +232,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_EFFECT_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_EFFECT_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoEffectCmd();
+            NcBriefInfoEffectCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_EFFECT {cmd}");
@@ -241,7 +241,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MINIHOUSEBUILD_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MINIHOUSEBUILD_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoMinihouseBuildCmd();
+            NcBriefInfoMinihouseBuildCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_MINIHOUSEBUILD {cmd}");
@@ -250,7 +250,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_MINIHOUSE_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_MINIHOUSE_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoMinihouseCmd();
+            NcBriefInfoMinihouseCmd cmd = new();
             cmd.Read(packet);
 
             Logger.Debug($"BI_MINIHOUSE {cmd}");
@@ -279,7 +279,7 @@ namespace Vision.Client.Networking.Handlers
         [NetPacketHandler(NetCommand.NC_BRIEFINFO_REGENMOVER_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_BRIEFINFO_REGENMOVER_CMD(NetPacket packet, NetClientConnection connection)
         {
-            var cmd = new NcBriefInfoRegenMoverCmd();
+            NcBriefInfoRegenMoverCmd cmd = new();
             cmd.Read(packet);
 
             if (cmd.Handle != 0)

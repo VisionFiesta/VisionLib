@@ -16,12 +16,12 @@ namespace Vision.Core
 		/// <summary>
 		/// Keeps track of the number of all object types.
 		/// </summary>
-		private static readonly Dictionary<Type, long> TypeCounts = new Dictionary<Type, long>();
+		private static readonly Dictionary<Type, long> TypeCounts = new();
 
 		/// <summary>
 		/// An object to lock for TypeCounts access.
 		/// </summary>
-		private static readonly object TypeCountsLock = new object();
+		private static readonly object TypeCountsLock = new();
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="VisionObject"/> class.

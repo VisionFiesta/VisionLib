@@ -7,7 +7,7 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class FriendHandlers
     {
-        private static readonly ClientLog Logger = new ClientLog(typeof(FriendHandlers));
+        private static readonly ClientLog Logger = new(typeof(FriendHandlers));
 
         [NetPacketHandler(NetCommand.NC_FRIEND_SET_ACK, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_FRIEND_SET_ACK(NetPacket packet, NetClientConnection connection)

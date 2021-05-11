@@ -17,7 +17,7 @@ namespace Vision.Core.Logging.Loggers
 
         public EngineLog(MemberInfo ownerClass) : base(LoggerPrefix, ownerClass.Name, LoggerColor) {}
 
-        private static List<byte> _preciseLogLevels = new List<byte>(EnumExtensions.GetValuesCasted<EngineLogLevel, byte>());
+        private static List<byte> _preciseLogLevels = new(EnumExtensions.GetValuesCasted<EngineLogLevel, byte>());
 
         public static void SetPreciseLogLevels(params EngineLogLevel[] levels) => _preciseLogLevels = new List<byte>(levels.Cast<byte>());
 

@@ -1,14 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Vision.Client\Vision.Client.csproj" />
-    <ProjectReference Include="..\Vision.Core\Vision.Core.csproj" />
-    <ProjectReference Include="..\Vision.Game\Vision.Game.csproj" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE;DEBUG</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Vision.Client\Vision.Client.csproj" />
+		<ProjectReference Include="..\Vision.Core\Vision.Core.csproj" />
+		<ProjectReference Include="..\Vision.Game\Vision.Game.csproj" />
+	</ItemGroup>
 
 </Project>

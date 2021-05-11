@@ -7,7 +7,7 @@ namespace Vision.Core.Collections
 {
     public class FastList<T> : List<T>
     {
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
         public new volatile int Count;
 
         public int UpperBound => Count - 1;
@@ -138,7 +138,7 @@ namespace Vision.Core.Collections
 
         public FastList<T> Take(int count)
         {
-            return new FastList<T>(this.Take<T>(count));
+            return new(this.Take<T>(count));
         }
 
         public void Copy(out FastList<T> destination)

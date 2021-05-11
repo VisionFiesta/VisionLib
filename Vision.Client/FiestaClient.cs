@@ -20,8 +20,8 @@ namespace Vision.Client
 {
     public class FiestaClient
     {
-        private readonly EngineLog _engineLog = new EngineLog(typeof(FiestaClient));
-        private readonly ClientLog _clientLog = new ClientLog(typeof(FiestaClient));
+        private readonly EngineLog _engineLog = new(typeof(FiestaClient));
+        private readonly ClientLog _clientLog = new(typeof(FiestaClient));
 
         public readonly StaticClientData StaticClientData;
         public readonly ClientUserData UserData;
@@ -146,11 +146,11 @@ namespace Vision.Client
     public class ClientSessionData
     {
         // Post-Login Global
-        public readonly List<NcUserWorldStatusAck.WorldStatusStruct> Worlds = new List<NcUserWorldStatusAck.WorldStatusStruct>();
+        public readonly List<NcUserWorldStatusAck.WorldStatusStruct> Worlds = new();
         public IPEndPoint SelectedWorldEndPoint;
 
-        public ClientGameTime GameTime = new ClientGameTime();
-        public Account ClientAccount = new Account();
+        public ClientGameTime GameTime = new();
+        public Account ClientAccount = new();
         public byte[] WorldAuthBytes;
 
         public IPEndPoint ActiveZoneEndPoint;

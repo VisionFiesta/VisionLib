@@ -11,7 +11,7 @@ namespace Vision.Game.Structs.BriefInfo
 
         public ushort Handle;
         public ushort Item;
-        public ShineXY Position = new ShineXY();
+        public ShineXY Position = new();
         public ushort DropMobHandle;
         // $2B3919EF3E87878EEF5310356B483899 attr; // unk size
 

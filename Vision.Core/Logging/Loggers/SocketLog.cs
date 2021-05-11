@@ -16,7 +16,7 @@ namespace Vision.Core.Logging.Loggers
 
         public SocketLog(MemberInfo ownerClass) : base(LoggerName, ownerClass.Name, LoggerColor) {}
 
-        private static List<byte> _preciseLogLevels = new List<byte>(EnumExtensions.GetValuesCasted<SocketLogLevel, byte>());
+        private static List<byte> _preciseLogLevels = new(EnumExtensions.GetValuesCasted<SocketLogLevel, byte>());
 
         public static void SetPreciseLogLevels(params SocketLogLevel[] levels) => _preciseLogLevels = new List<byte>(levels.Cast<byte>());
 

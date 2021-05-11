@@ -10,7 +10,7 @@ namespace Vision.Client.Services
     public class WorldService : ClientServiceBase
     {
         private readonly StateMachine<WorldServiceState, WorldServiceTrigger> _worldStateMachine =
-            new StateMachine<WorldServiceState, WorldServiceTrigger>(WorldServiceState.WSS_DISCONNECTED, FiringMode.Queued);
+            new(WorldServiceState.WSS_DISCONNECTED, FiringMode.Queued);
 
         public WorldService(FiestaClient client) : base(client)
         {

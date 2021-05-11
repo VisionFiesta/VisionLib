@@ -13,7 +13,7 @@ namespace Vision.Client.Networking.Handlers
     [SuppressMessage("ReSharper", "IdentifierTypo")]
     public static class ActHandlers
     {
-        private static readonly ClientLog Logger = new ClientLog(typeof(ActHandlers));
+        private static readonly ClientLog Logger = new(typeof(ActHandlers));
 
         #region Move-Related
 

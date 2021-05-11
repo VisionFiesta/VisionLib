@@ -9,14 +9,14 @@ namespace Vision.Game
 {
     public class Account
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(Account));
+        private static readonly EngineLog Logger = new(typeof(Account));
 
         public ushort AccountID;
 
         public string AccountName;
 
-        private readonly Dictionary<uint, WorldCharacter> _avatarsByCharNo = new Dictionary<uint, WorldCharacter>();
-        private readonly ConcurrentDictionary<uint, Character> _charactersByCharNo = new ConcurrentDictionary<uint, Character>();
+        private readonly Dictionary<uint, WorldCharacter> _avatarsByCharNo = new();
+        private readonly ConcurrentDictionary<uint, Character> _charactersByCharNo = new();
 
         public IReadOnlyCollection<WorldCharacter> Avatars => _avatarsByCharNo.Values.ToImmutableList();
         public IReadOnlyCollection<Character> Characters => _charactersByCharNo.Values.ToImmutableList();

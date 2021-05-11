@@ -13,21 +13,21 @@ namespace Vision.Client.Services
     public class LoginService : ClientServiceBase
     {
         private readonly StateMachine<LoginServiceState, LoginServiceTrigger> _loginStateMachine =
-            new StateMachine<LoginServiceState, LoginServiceTrigger>(LoginServiceState.LSS_DISCONNECTED, FiringMode.Queued);
+            new(LoginServiceState.LSS_DISCONNECTED, FiringMode.Queued);
 
-        private readonly Timer _worldListUpdateTimer = new Timer(ClientTimings.WorldListUpdatePeriod.TotalMilliseconds);
 
+        private readonly Timer _worldListUpdateTimer = new(ClientTimings.WorldListUpdatePeriod.TotalMilliseconds);
+        
         public LoginService(FiestaClient client) : base(client)
         {
 
             #region State machine setup
             _loginStateMachine.OnTransitioned(transition =>
             {
-                if (transition.Source != transition.Destination)
-                {
-                    ClientLogger.Debug(
-                        $"State Change - From {transition.Source} to {transition.Destination} because {transition.Trigger}");
-                }
+                if (transition.Source == transition.Destination) return;
+                lastTrigger = transition.Trigger;
+                ClientLogger.Debug(
+                    $"State Change - From {transition.Source} to {transition.Destination} because {transition.Trigger}");
             });
 
             _loginStateMachine.OnUnhandledTrigger((state, trigger) =>
@@ -226,11 +226,9 @@ namespace Vision.Client.Services
 
         private void OnWorldsUpdateTick(object sender, ElapsedEventArgs e)
         {
-            if (LoginConnection.IsConnected)
-            {
-                ClientLogger.Debug("Sending WorldStatusReq");
-                new NcUserWorldStatusReq().Send(LoginConnection);
-            }
+            if (!LoginConnection.IsConnected) return;
+            ClientLogger.Debug("Sending WorldStatusReq");
+            new NcUserWorldStatusReq().Send(LoginConnection);
         }
     }
 

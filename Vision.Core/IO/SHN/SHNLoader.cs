@@ -10,7 +10,7 @@ namespace Vision.Core.IO.SHN
 {
     public class SHNLoader
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(SHNLoader));
+        private static readonly EngineLog Logger = new(typeof(SHNLoader));
 
         private readonly string _shnFolder;
         private readonly SHNType _type;
@@ -27,7 +27,7 @@ namespace Vision.Core.IO.SHN
 
         public delegate void SHNProcessor(SHNResult result, int index);
 
-        private readonly Queue<Tuple<EngineLogLevel, string>> _messageQueue = new Queue<Tuple<EngineLogLevel, string>>();
+        private readonly Queue<Tuple<EngineLogLevel, string>> _messageQueue = new();
 
         public void QueueMessage(EngineLogLevel level, string message) => _messageQueue.Enqueue(new Tuple<EngineLogLevel, string>(level, message));
 

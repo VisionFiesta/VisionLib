@@ -14,7 +14,7 @@ namespace Vision.Core.IO
 	/// <typeparam name="T">The type of object.</typeparam>
 	public class ObjectCollection<T>
 	{
-		private static readonly EngineLog Logger = new EngineLog(typeof(ObjectCollection<>));
+		private static readonly EngineLog Logger = new(typeof(ObjectCollection<>));
 
 		/// <summary>
 		/// The contained objects.
@@ -52,7 +52,7 @@ namespace Vision.Core.IO
 		/// Returns a list of the objects values.
 		/// </summary>
 		/// <returns>The values.</returns>
-		public List<T> Values => new List<T>(_objects.Values);
+		public List<T> Values => new(_objects.Values);
 
 		/// <summary>
 		/// Adds an item to the collection if it's not already there.

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Vision.Game.Enums
 {
@@ -23,6 +25,8 @@ namespace Vision.Game.Enums
     {
         public static string ToFriendlyName(this AnnounceType type)
         {
+            
+
             return type switch
             {
                 AnnounceType.AT_ENHANCE => "Enhancement",

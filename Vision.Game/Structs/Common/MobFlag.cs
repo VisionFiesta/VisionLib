@@ -11,7 +11,7 @@ namespace Vision.Game.Structs.Common
 
         public MobBriefFlag Flag;
 
-        public AbnormalStateBit AbstateBit = new AbnormalStateBit();
+        public AbnormalStateBit AbstateBit = new();
 
         public string GateToWhere = "";
 

@@ -203,8 +203,8 @@ namespace Vision.Core.Networking
         public delegate void OnConnectCallback(NetConnectionDestination dest, IPEndPoint endPoint);
         public delegate void OnDisconnectCallback(NetConnectionDestination dest, IPEndPoint endPoint);
 
-        private readonly FastList<OnConnectCallback> _connectCallbacks = new FastList<OnConnectCallback>();
-        private readonly FastList<OnDisconnectCallback> _disconnectCallbacks = new FastList<OnDisconnectCallback>();
+        private readonly FastList<OnConnectCallback> _connectCallbacks = new();
+        private readonly FastList<OnDisconnectCallback> _disconnectCallbacks = new();
 
         public void AddConnectCallback(OnConnectCallback callback) => _connectCallbacks.Add(callback);
 

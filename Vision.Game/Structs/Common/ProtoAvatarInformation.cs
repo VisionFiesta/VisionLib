@@ -36,15 +36,15 @@ namespace Vision.Game.Structs.Common
         public ushort Level; // +2
         public byte CharSlot; // +1
         public string LoginMap; // Name3 (3 * 4byte), +12
-        public ProtoAvatarDeleteInfo DeleteInfo = new ProtoAvatarDeleteInfo(); // +5
-        public ProtoAvatarShapeInfo CharShape = new ProtoAvatarShapeInfo(); // +4
-        public ProtoEquipment Equipment = new ProtoEquipment(); // +43
+        public ProtoAvatarDeleteInfo DeleteInfo = new(); // +5
+        public ProtoAvatarShapeInfo CharShape = new(); // +4
+        public ProtoEquipment Equipment = new(); // +43
         public int KQHandle; // +4
         public string KQMapName; // Name3, +12
-        public ShineXY nKQCoord = new ShineXY(); // +8
-        public ShineDatetime KQDate = new ShineDatetime(); // +4
-        public CharIdChangeData CharIDChangeData = new CharIdChangeData(); // +6
-        public ProtoTutorialInfo TutorialInfo = new ProtoTutorialInfo(); // +5
+        public ShineXY nKQCoord = new(); // +8
+        public ShineDatetime KQDate = new(); // +4
+        public CharIdChangeData CharIDChangeData = new(); // +6
+        public ProtoTutorialInfo TutorialInfo = new(); // +5
 
         public override string ToString() => $"Name: {CharName}, Level:, {Level}, Class: {CharShape.JobGender}, Map:{LoginMap}, CharNo: {CharNo}";
 
@@ -208,7 +208,7 @@ namespace Vision.Game.Structs.Common
         public ushort EquAccShield;
 
         // 3 bytes
-        public ProtoEquipmentUpgrade Upgrade = new ProtoEquipmentUpgrade();
+        public ProtoEquipmentUpgrade Upgrade = new();
 
         public override int GetSize() => Size;
 

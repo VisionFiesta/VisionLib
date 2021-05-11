@@ -7,7 +7,7 @@ namespace Vision.Client.Networking.Handlers
 {
     public static class MoverHandlers
     {
-        private static readonly ClientLog Logger = new ClientLog(typeof(MoverHandlers));
+        private static readonly ClientLog Logger = new(typeof(MoverHandlers));
 
         [NetPacketHandler(NetCommand.NC_MOVER_SOMEONE_RIDE_ON_CMD, NetConnectionDestination.NCD_CLIENT)]
         public static void NC_MOVER_SOMEONE_RIDE_ON_CMD(NetPacket packet, NetClientConnection connection)

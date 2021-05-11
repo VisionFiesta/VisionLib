@@ -13,14 +13,14 @@ namespace Vision.Core.IO.SHN
 {
     public class SHNFile
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(SHNFile));
+        private static readonly EngineLog Logger = new(typeof(SHNFile));
 
         private string _shnFilePath;
         private readonly ISHNCrypto _shnCrypto;
         private readonly Encoding _shnEncoding;
 
         public readonly SHNType SHNType;
-        public List<SHNColumn> SHNColumns = new List<SHNColumn>();
+        public List<SHNColumn> SHNColumns = new();
 
         public SHNResult Data { get; private set; }
 

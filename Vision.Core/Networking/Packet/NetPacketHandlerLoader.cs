@@ -9,9 +9,9 @@ namespace Vision.Core.Networking.Packet
 {
     public static class NetPacketHandlerLoader<T> where T : NetConnectionBase<T>
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(NetPacketHandlerLoader<T>));
+        private static readonly EngineLog Logger = new(typeof(NetPacketHandlerLoader<T>));
 
-        private static readonly Dictionary<NetCommand, Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>> Handlers = new Dictionary<NetCommand, Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>>();
+        private static readonly Dictionary<NetCommand, Tuple<NetConnectionDestination[], NetPacketHandlerDelegate<T>>> Handlers = new();
         // public static readonly FastDictionary<FiestaNetCommand, TypeInfo> Structs = new FastDictionary<FiestaNetCommand, TypeInfo>();
 
         public static void LoadHandlers()

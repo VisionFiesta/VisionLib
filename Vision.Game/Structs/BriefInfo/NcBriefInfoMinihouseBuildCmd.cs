@@ -11,9 +11,9 @@ namespace Vision.Game.Structs.BriefInfo
         public const int Size = 2 + CharBriefInfoCamp.Size + NameN.Name5Len + ShineXYR.Size + 21;
 
         public ushort Handle;
-        public CharBriefInfoCamp Camp = new CharBriefInfoCamp();
+        public CharBriefInfoCamp Camp = new();
         public string CharID;
-        public ShineXYR Coordinates = new ShineXYR();
+        public ShineXYR Coordinates = new();
         public byte[] Title; // 21
 
         public override int GetSize() => Size;

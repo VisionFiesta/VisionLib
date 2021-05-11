@@ -7,7 +7,7 @@ namespace Vision.Game.Structs.BriefInfo
     public class NcBriefInfoChangeWeaponCmd : NetPacketStruct
     {
 
-        public NcBriefInfoChangeUpgradeCmd UpgradeInfo = new NcBriefInfoChangeUpgradeCmd();
+        public NcBriefInfoChangeUpgradeCmd UpgradeInfo = new();
         public ushort CurrentMobID;
         public byte CurrentKillLevel;
 

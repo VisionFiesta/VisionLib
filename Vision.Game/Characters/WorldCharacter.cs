@@ -44,7 +44,7 @@ namespace Vision.Game.Characters
 
         public static WorldCharacter FromAvatarInformation(ProtoAvatarInformation avatar)
         {
-            return new WorldCharacter()
+            return new()
             {
                 CharNo = avatar.CharNo,
                 CharName = avatar.CharName,

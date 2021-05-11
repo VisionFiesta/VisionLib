@@ -8,8 +8,8 @@ namespace Vision.Game.Structs.Act
     public class NcActSomeoneMoveRunCmd : NetPacketStruct
     {
         public ushort Handle;
-        public ShineXY FromPosition = new ShineXY();
-        public ShineXY ToPosition = new ShineXY();
+        public ShineXY FromPosition = new();
+        public ShineXY ToPosition = new();
         public ushort Speed;
         public ushort MoveAttributes;
 

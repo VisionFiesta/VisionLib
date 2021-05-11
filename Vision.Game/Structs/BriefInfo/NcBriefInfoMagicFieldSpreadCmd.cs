@@ -12,7 +12,7 @@ namespace Vision.Game.Structs.BriefInfo
         public ushort Handle;
         public ushort Caster;
         public ushort SkillID;
-        public ShineXY Position = new ShineXY();
+        public ShineXY Position = new();
         public ushort Radius;
 
         public override int GetSize() => Size;

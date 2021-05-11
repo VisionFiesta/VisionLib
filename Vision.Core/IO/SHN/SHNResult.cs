@@ -7,7 +7,7 @@ namespace Vision.Core.IO.SHN
 {
     public class SHNResult : DataTable
     {
-        private static readonly EngineLog Logger = new EngineLog(typeof(SHNResult));
+        private static readonly EngineLog Logger = new(typeof(SHNResult));
 
         public int Count { get; protected internal set; }
 
