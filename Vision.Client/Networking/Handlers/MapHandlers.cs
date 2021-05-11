@@ -3,6 +3,7 @@ using Vision.Client.Services;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
+using Vision.Game.Structs.Common;
 using Vision.Game.Structs.Map;
 
 namespace Vision.Client.Networking.Handlers
@@ -39,7 +40,8 @@ namespace Vision.Client.Networking.Handlers
         {
             var ack = new NcMapLoginFailAck();
             ack.Read(packet);
-            Logger.Debug($"MAP_LOGINFAIL_ACK: {ack}");
+
+            Logger.Debug($"MAP_LOGINFAIL_ACK: error: {ack}");
             connection.UpdateWorldService(WorldServiceTrigger.WST_LOGIN_ZONE_FAIL);
         }
 

@@ -102,20 +102,19 @@ namespace Vision.Client
             _engineLog.Error($"Unhandled Exception in context {sender?.GetType().Name}", (Exception) e.ExceptionObject);
         }
 
-        private void LoadSHN(string shnPath)
+        private void LoadSHN()
         {
-            var shnManager = new SHNManager(shnPath, new SHNCrypto());
 
             #region AbnormalState
 
-            var abstateDataProvider = new AbnormalStateDataProvider(_shnManager);
+            var abstateDataProvider = new AbnormalStateDataProvider(_shnManager, _shnHashManager);
             abstateDataProvider.Initialize();
 
             #endregion
 
             #region FaceInfo
 
-            var faceInfoLoader = shnManager.GetSHNLoader(SHNType.FaceInfo);
+            var faceInfoLoader = _shnManager.GetSHNLoader(SHNType.FaceInfo);
             faceInfoLoader.Load((shnResult, index) =>
             {
                 var face = new CharacterFace(shnResult, index);
@@ -127,7 +126,7 @@ namespace Vision.Client
 
             #region MobInfo
 
-            var mobInfoLoader = shnManager.GetSHNLoader(SHNType.MobInfo);
+            var mobInfoLoader = _shnManager.GetSHNLoader(SHNType.MobInfo);
             mobInfoLoader.Load((shnResult, index) =>
              {
                  var mi = new MobInfo(shnResult, index);

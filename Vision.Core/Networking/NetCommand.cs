@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System.Diagnostics.CodeAnalysis;
+// ReSharper disable IdentifierTypo
 
 namespace Vision.Core.Networking
 {
@@ -307,12 +308,34 @@ namespace Vision.Core.Networking
         NC_MISC_ITEMSHOP_URL_ACK = 0x086F,
         NC_MISC_ITEMSHOP_URL_DB_REQ = 0x0870,
         NC_MISC_ITEMSHOP_URL_DB_ACK = 0x0871,
+        
+        NC_MISC_UNK00_REQ = 0x0878,
 
         #endregion
 
         #region NC_USER
 
+
         NC_USER_NULL = 0x0C00,
+#if PKT2021
+        NC_USER_XTRAP_REQ = 0x0C01,
+        NC_USER_XTRAP_ACK = 0x0C02,
+        NC_USER_LOGIN_REQ = 0x0C03,
+        //NC_USER_PASSWORD_CHECK_REQ = 0x0C04, // unsure this is correct
+        //NC_USER_PASSWORD_CHECK_ACK = 0x0C05, // unsure this is correct
+        NC_USER_LOGINFAIL_ACK = 0x0C09,
+        NC_USER_LOGIN_ACK = 0x0C08,
+        NC_USER_WORLDSELECT_REQ = 0x0C0C,
+        NC_USER_WORLDSELECT_ACK = 0x0C0D,
+        //NC_USER_WILLLOGIN_REQ = 0x0C0E, // unsure
+        //NC_USER_WILLLOGIN_ACK = 0x0C0F, // unsure
+        NC_USER_LOGINWORLD_REQ = 0x0C10,
+        //NC_USER_LOGIN_DB = 0x0C11, // unsure
+        //NC_USER_LOGOUT_DB = 0x0C12, // unsure
+        // NC_USER_AVATARINFO_REQ = 0x0C12,
+        // NC_USER_AVATARINFO_ACK = 0x0C13,
+        NC_USER_LOGINWORLD_ACK = 0x0C11,
+#else
         NC_USER_XTRAP_REQ = 0x0C04,
         NC_USER_XTRAP_ACK = 0x0C05,
         NC_USER_LOGIN_REQ = 0x0C06,
@@ -330,6 +353,7 @@ namespace Vision.Core.Networking
         NC_USER_AVATARINFO_REQ = 0x0C12,
         NC_USER_AVATARINFO_ACK = 0x0C13,
         NC_USER_LOGINWORLD_ACK = 0x0C14,
+#endif
         NC_USER_LOGINWORLDFAIL_ACK = 0x0C15,
         NC_USER_KICKOFFFROMWORLD_CMD = 0x0C16,
         NC_USER_CONNECTCUT_CMD = 0x0C17,
@@ -378,7 +402,11 @@ namespace Vision.Core.Networking
         NC_USER_CH_PASSWORD_CHECK_ACK = 0x0C54,
         NC_USER_CH_IS_IP_BLOCK_REQ = 0x0C55,
         NC_USER_CH_IS_IP_BLOCK_ACK = 0x0C56,
+#if PKT2021
+        NC_USER_US_LOGIN_REQ = 0x0C03,
+#else
         NC_USER_US_LOGIN_REQ = 0x0C5A,
+#endif
         NC_USER_US_PASSWORD_CHECK_REQ = 0x0C5B,
         NC_USER_US_PASSWORD_CHECK_ACK = 0x0C5C,
         NC_USER_US_IS_IP_BLOCK_REQ = 0x0C5D,
@@ -389,9 +417,15 @@ namespace Vision.Core.Networking
         NC_USER_LOGOUT_LAST_DAY_REQ = 0x0C62,
         NC_USER_LOGOUT_LAST_DAY_ACK = 0x0C63,
         NC_USER_SET_RETURN_CMD = 0x0C64,
+#if PKT2021
+        NC_USER_CLIENT_VERSION_CHECK_REQ = 0x0C30,
+        NC_USER_CLIENT_WRONGVERSION_CHECK_ACK = 0x0C31,
+        NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK = 0x0C32,
+#else
         NC_USER_CLIENT_VERSION_CHECK_REQ = 0x0C65,
         NC_USER_CLIENT_WRONGVERSION_CHECK_ACK = 0x0C66,
         NC_USER_CLIENT_RIGHTVERSION_CHECK_ACK = 0x0C67,
+#endif
 
         #endregion
 
@@ -645,11 +679,11 @@ namespace Vision.Core.Networking
         NC_GAMIGO_NEW_TUTORIAL_STORE_STEP_REQ = 0x1142,
         NC_CHAR_ANI_FILE_CHECK_CMD = 0x1143,
 
-        #endregion
+#endregion
 
         NC_UNK00 = 0x114B,
 
-        #region NC_AVATAR
+#region NC_AVATAR
 
         NC_AVATAR_NULL = 0x1400,
         NC_AVATAR_CREATE_REQ = 0x1401,
@@ -675,9 +709,9 @@ namespace Vision.Core.Networking
         NC_AVATAR_GUILD_MEMBER_DATA_REQ = 0x1415,
         NC_AVATAR_GUILD_MEMBER_DATA_ACK = 0x1416,
 
-        #endregion
+#endregion
 
-        #region NC_MAP
+#region NC_MAP
 
         NC_MAP_NULL = 0x1800,
         NC_MAP_LOGIN_REQ = 0x1801,
@@ -719,9 +753,9 @@ namespace Vision.Core.Networking
         NC_MAP_CAN_USE_REVIVEITEM_CMD = 0x182B,
         NC_MAP_INDUN_LEVEL_VIEW_CMD = 0x182C,
 
-        #endregion
+#endregion
 
-        #region NC_BRIEFINFO
+#region NC_BRIEFINFO
 
         NC_BRIEFINFO_NULL = 0x1C00,
         NC_BRIEFINFO_INFORM_CMD = 0x1C01,
@@ -753,9 +787,9 @@ namespace Vision.Core.Networking
         NC_BRIEFINFO_PET_CMD = 0x1C1D,
         NC_BRIEFINFO_UNK00_CMD = 0x1C1E,
 
-        #endregion
+#endregion
 
-        #region NC_ACT
+#region NC_ACT
 
         NC_ACT_NULL = 0x2000,
         NC_ACT_CHAT_REQ = 0x2001,
@@ -874,9 +908,9 @@ namespace Vision.Core.Networking
         NC_ACT_SHOW_CINEMATIC = 0x2082,
         NC_ACT_END_CINEMATIC = 0x2083,
 
-        #endregion
+#endregion
 
-        #region NC_BAT
+#region NC_BAT
 
         NC_BAT_NULL = 0x2400,
         NC_BAT_TARGETTING_REQ = 0x2401,
@@ -976,9 +1010,9 @@ namespace Vision.Core.Networking
         NC_BAT_SKILLBLAST_LIGHTNINGWAVE_CMD = 0x245E,
         NC_BAT_LPCHANGE_CMD = 0x245F,
 
-        #endregion
+#endregion
 
-        #region NC_OPTOOL
+#region NC_OPTOOL
 
         NC_OPTOOL_NULL = 0x2800,
         NC_OPTOOL_S2SCONNECT_LIST_REQ = 0x2801,
@@ -1026,9 +1060,9 @@ namespace Vision.Core.Networking
         NC_OPTOOL_GUILD_DISMISS_CANCEL_REQ = 0x282B,
         NC_OPTOOL_GUILD_DISMISS_CANCEL_ACK = 0x282C,
 
-        #endregion
+#endregion
 
-        #region NC_PATCH
+#region NC_PATCH
 
         NC_PATCH_NULL = 0x2C00,
         NC_PATCH_LAUNCHER_VERSION_REQ = 0x2C01,
@@ -1168,9 +1202,9 @@ namespace Vision.Core.Networking
         NC_ITEM_BRACELET_UPGRADE_REQ = 0x306F,
         NC_ITEM_BRACELET_UPGRADE_ACK = 0x3070,
 
-        #endregion
+#endregion
 
-        #region NC_ITEMDB
+#region NC_ITEMDB
 
         NC_ITEMDB_NULL = 0x3400,
         NC_ITEMDB_ADMINCREATE_REQ = 0x3401,
@@ -1380,9 +1414,9 @@ namespace Vision.Core.Networking
         NC_ITEMDB_BRACELET_UPGRADE_REQ = 0x34D3,
         NC_ITEMDB_BRACELET_UPGRADE_ACK = 0x34D4,
 
-        #endregion
+#endregion
 
-        #region NC_PARTY
+#region NC_PARTY
 
         NC_PARTY_NULL = 0x3800,
         NC_PARTY_FUNDAMENTAL_CMD = 0x3801,
@@ -1435,9 +1469,9 @@ namespace Vision.Core.Networking
         NC_PARTY_ZONE_JOIN_CMD = 0x3860,
         NC_PARTY_ZONE_LEAVE_CMD = 0x3861,
 
-        #endregion
+#endregion
 
-        #region NC_MENU
+#region NC_MENU
 
         NC_MENU_NULL = 0x3C00,
         NC_MENU_SERVERMENU_REQ = 0x3C01,
@@ -1456,9 +1490,9 @@ namespace Vision.Core.Networking
         NC_MENU_SERVERMENU_CLOSE_CMD = 0x3C0F,
         NC_MENU_INDUNRANK_CMD = 0x3C10,
 
-        #endregion
+#endregion
 
-        #region NC_CHARSAVE
+#region NC_CHARSAVE
 
         NC_CHARSAVE_NULL = 0x4000,
         NC_CHARSAVE_ALL_REQ = 0x4001,
@@ -1510,9 +1544,9 @@ namespace Vision.Core.Networking
         NC_CHARSAVE_USEITEM_MINIMON_INFO_WORLD_CMD = 0x4036,
         NC_CHARSAVE_SELL_ITEM_INFO_CMD = 0x4037,
 
-        #endregion
+#endregion
 
-        #region NC_QUEST
+#region NC_QUEST
 
         NC_QUEST_NULL = 0x4400,
         NC_QUEST_SCRIPT_CMD_REQ = 0x4401,
@@ -1548,9 +1582,9 @@ namespace Vision.Core.Networking
         NC_QUEST_JOBDUNGEON_FIND_RNG = 0x441F,
         NC_QUEST_JOBDUNGEON_LINK_FAIL_CMD = 0x4420,
 
-        #endregion
+#endregion
 
-        #region NC_SKILL
+#region NC_SKILL
 
         NC_SKILL_NULL = 0x4800,
         NC_SKILL_SKILLTEACH_REQ = 0x4801,
@@ -1591,9 +1625,9 @@ namespace Vision.Core.Networking
         NC_SKILL_ITEMACTIONCOOLTIME_CMD = 0x482C,
         NC_SKILL_JUMP_CMD = 0x482D,
 
-        #endregion
+#endregion
 
-        #region NC_TRADE
+#region NC_TRADE
 
         NC_TRADE_NULL = 0x4C00,
         NC_TRADE_PROPOSE_REQ = 0x4C01,
@@ -1633,9 +1667,9 @@ namespace Vision.Core.Networking
         NC_TRADE_TRADEFAIL_CMD = 0x4C23,
         NC_TRADE_TRADECOMPLETE_CMD = 0x4C24,
 
-        #endregion
+#endregion
 
-        #region NC_SOULSTONE
+#region NC_SOULSTONE
 
         NC_SOULSTONE_NULL = 0x5000,
         NC_SOULSTONE_HP_BUY_REQ = 0x5001,
@@ -1651,9 +1685,9 @@ namespace Vision.Core.Networking
         NC_SOULSTONE_HP_SOMEONEUSE_CMD = 0x500B,
         NC_SOULSTONE_SP_SOMEONEUSE_CMD = 0x500C,
 
-        #endregion
+#endregion
 
-        #region NC_FRIEND
+#region NC_FRIEND
 
         NC_FRIEND_NULL = 0x5400,
         NC_FRIEND_SET_REQ = 0x5401,
@@ -1689,9 +1723,9 @@ namespace Vision.Core.Networking
         NC_FRIEND_SOMEONE_GET_SPECIALITEM_WORLD_CMD = 0x5424,
         NC_FRIEND_GET_DIFF_FRIEND_POINT_CMD = 0x5425,
 
-        #endregion
+#endregion
 
-        #region NC_KQ
+#region NC_KQ
 
         NC_KQ_NULL = 0x5800,
         NC_KQ_LIST_REQ = 0x5801,
@@ -1755,9 +1789,9 @@ namespace Vision.Core.Networking
         NC_KQ_SCORE_BOARD_INFO_CMD = 0x583C,
         NC_KQ_WINTER_EVENT_2014_SCORE_CMD = 0x583D,
 
-        #endregion
+#endregion
 
-        #region NC_WT
+#region NC_WT
 
         NC_WT_NULL = 0x5C00,
         NC_WT_LICENSE_REQ = 0x5C01,
@@ -1774,9 +1808,9 @@ namespace Vision.Core.Networking
         NC_WT_TITLE_SET_ACK = 0x5C0C,
         NC_WT_MOBINC_CMD = 0x5C0D,
 
-        #endregion
+#endregion
 
-        #region NC_CT
+#region NC_CT
 
         NC_CT_NULL = 0x6000,
         NC_CT_SET_CURRENT_REQ = 0x6001,
@@ -1790,17 +1824,17 @@ namespace Vision.Core.Networking
         NC_CT_LUASCRIPT_SET_WORLD_CMD = 0x6009,
         NC_CT_LUASCRIPT_SET_ZONE_CMD = 0x600A,
 
-        #endregion
+#endregion
 
-        #region NC_ANNOUNCE
+#region NC_ANNOUNCE
 
         NC_ANNOUNCE_NULL = 0x6400,
         NC_ANNOUNCE_Z2W_CMD = 0x6401,
         NC_ANNOUNCE_W2C_CMD = 0x6402,
 
-        #endregion
+#endregion
 
-        #region NC_BOOTH
+#region NC_BOOTH
 
         NC_BOOTH_NULL = 0x6800,
         NC_BOOTH_OPEN_REQ = 0x6801,
@@ -1828,9 +1862,9 @@ namespace Vision.Core.Networking
         NC_BOOTH_SEARCH_BOOTH_CLOSED_CMD = 0x6817,
         NC_BOOTH_UNK00_REQ = 0x6818,
 
-        #endregion
+#endregion
 
-        #region NC_SCENARIO
+#region NC_SCENARIO
 
         NC_SCENARIO_NULL = 0x6C00,
         NC_SCENARIO_RUNEFFECT_CMD = 0x6C01,
@@ -1867,9 +1901,9 @@ namespace Vision.Core.Networking
         NC_SCENARIO_TIMER_START_CMD = 0x6C21,
         NC_SCENARIO_TIMER_END_CMD = 0x6C22,
 
-        #endregion
+#endregion
 
-        #region NC_CHAR_OPTION
+#region NC_CHAR_OPTION
 
         NC_CHAR_OPTION_NULL = 0x7000,
         NC_CHAR_OPTION_GET_ALL_REQ = 0x7001,
@@ -1969,9 +2003,9 @@ namespace Vision.Core.Networking
         NC_CHAR_OPTION_LOGIN_BLOCKDATA_ERR = 0x705F,
         NC_CHAR_OPTION_LOGIN_BLOCKDATA_ERR_REQ = 0x7060,
 
-        #endregion
+#endregion
 
-        #region NC_GUILD
+#region NC_GUILD
 
         NC_GUILD_NULL = 0x7400,
         NC_GUILD_INFO_REQ = 0x7401,
@@ -2243,9 +2277,9 @@ namespace Vision.Core.Networking
         NC_GUILD_EMBLEM_STATE_DB_REQ = 0x750D,
         NC_GUILD_EMBLEM_STATE_DB_ACK = 0x750E,
 
-        #endregion
+#endregion
 
-        #region NC_PRISON
+#region NC_PRISON
 
         NC_PRISON_NULL = 0x7C00,
         NC_PRISON_ADD_GM_REQ = 0x7C01,
@@ -2273,9 +2307,9 @@ namespace Vision.Core.Networking
         NC_PRISON_ADD_REQ = 0x7C17,
         NC_PRISON_ADD_ACK = 0x7C18,
 
-        #endregion
+#endregion
 
-        #region NC_REPORT
+#region NC_REPORT
 
         NC_REPORT_NULL = 0x8000,
         NC_REPORT_ADD_REQ = 0x8001,
@@ -2291,9 +2325,9 @@ namespace Vision.Core.Networking
         NC_DATA_REPORT_GET_REQ = 0x800B,
         NC_DATA_REPORT_GET_ACK = 0x800C,
 
-        #endregion
+#endregion
 
-        #region NC_MINIHOUSE
+#region NC_MINIHOUSE
 
         NC_MINIHOUSE_NULL = 0x8C00,
         NC_MINIHOUSE_ACTIV_REQ = 0x8C01,
@@ -2394,9 +2428,9 @@ namespace Vision.Core.Networking
         NC_MINIHOUSE_FURNITURE_EMOTION_CANCEL_ACK = 0x8C66,
         NC_MINIHOUSE_FURNITURE_EMOTION_CANCEL_CMD = 0x8C67,
 
-        #endregion
+#endregion
 
-        #region NC_CHARGED
+#region NC_CHARGED
 
         NC_CHARGED_NULL = 0x9000,
         NC_CHARGED_SETBUFF_CMD = 0x9001,
@@ -2416,9 +2450,9 @@ namespace Vision.Core.Networking
         NC_CHARGED_SKILLEMPOW_INITIALIZE_FAIL_CMD = 0x900F,
         NC_CHARGED_BOOTHSLOTSIZE_CMD = 0x9010,
 
-        #endregion
+#endregion
 
-        #region NC_HOLY_PROMISE
+#region NC_HOLY_PROMISE
 
         NC_HOLY_PROMISE_NULL = 0x9400,
         NC_HOLY_PROMISE_SET_UP_REQ = 0x9401,
@@ -2470,9 +2504,9 @@ namespace Vision.Core.Networking
         NC_HOLY_PROMISE_DB_GET_REMAIN_MONEY_CMD = 0x9444,
         NC_HOLY_PROMISE_CLIENT_GET_REMAIN_MONEY_CMD = 0x9445,
 
-        #endregion
+#endregion
 
-        #region NC_GUILD_ACADEMY
+#region NC_GUILD_ACADEMY
 
         NC_GUILD_ACADEMY_NULL = 0x9800,
         NC_GUILD_ACADEMY_START_DB_ALL_REQ = 0x9801,
@@ -2622,9 +2656,9 @@ namespace Vision.Core.Networking
         NC_GUILD_ACADEMY_HISTORY_DB_LIST_REQ = 0x9891,
         NC_GUILD_ACADEMY_HISTORY_DB_LIST_ACK = 0x9892,
 
-        #endregion
+#endregion
 
-        #region NC_PROMOTION
+#region NC_PROMOTION
 
         NC_PROMOTION_NULL = 0xA000,
         NC_PROMOTION_USER_REQ = 0xA001,
@@ -2634,9 +2668,9 @@ namespace Vision.Core.Networking
         NC_PROMOTION_DB_REWARD_ACK = 0xA005,
         NC_PROMOTION_REWARD_ITEM_CMD = 0xA006,
 
-        #endregion
+#endregion
 
-        #region NC_INSTANCE
+#region NC_INSTANCE
 
         NC_INSTANCE_DUNGEON_NULL = 0xA400,
         NC_INSTANCE_DUNGEON_EMPTY_DUNGEON_CMD = 0xA401,
@@ -2674,9 +2708,9 @@ namespace Vision.Core.Networking
         NC_INSTANCE_DUNGEON_RANK_TAB_MYRANK_ACK = 0xA424,
         NC_INSTANCE_DUNGEON_RANK_NEW_RANK_MSG = 0xA425,
 
-        #endregion
+#endregion
 
-        #region NC_CHAT
+#region NC_CHAT
 
         NC_CHAT_RESTRICT_NULL = 0xA800,
         NC_CHAT_RESTRICT_DB_LIST_CMD = 0xA801,
@@ -2694,9 +2728,9 @@ namespace Vision.Core.Networking
         NC_CHAT_RESTRICT_DB_DEL_ALL_ACK = 0xA80D,
         NC_CHAT_RESTRICT_DEL_ALL_ACK = 0xA80E,
 
-        #endregion
+#endregion
 
-        #region NC_DICE
+#region NC_DICE
 
         NC_DICE_TAISAI_NULL = 0xAC00,
         NC_DICE_TAISAI_GAME_JOIN_REQ = 0xAC01,
@@ -2746,9 +2780,9 @@ namespace Vision.Core.Networking
         NC_DICE_TAISAI_DB_ITEM_ID_CHANGE_REQ = 0xAC2C,
         NC_DICE_TAISAI_DB_ITEM_ID_CHANGE_ACK = 0xAC2D,
 
-        #endregion
+#endregion
 
-        #region NC_RAID
+#region NC_RAID
 
         NC_RAID_NULL = 0xB000,
         NC_RAID_MAKE_REQ = 0xB001,
@@ -2820,9 +2854,9 @@ namespace Vision.Core.Networking
         NC_RAID_WARNING_ACK = 0xB043,
         NC_RAID_WARNING_BROAD_CMD = 0xB044,
 
-        #endregion
+#endregion
 
-        #region NC_USER_CONNECTION
+#region NC_USER_CONNECTION
 
         NC_USER_CONNECTION_NULL = 0xB400,
         NC_USER_CONNECTION_SET_ACCLOG_UP_CMD = 0xB401,
@@ -2843,9 +2877,9 @@ namespace Vision.Core.Networking
         NC_USER_CONNECTION_DB_CHANGE_CHAR_ID_ITEM_USE_ACK = 0xB412,
         NC_USER_CONNECTION_CHANGE_CHAR_ID_ITEM_USE_ACK = 0xB413,
 
-        #endregion
+#endregion
 
-        #region NC_AUCTION
+#region NC_AUCTION
 
         NC_AUCTION_NOTIFY_STORAGE_BOX_EXIST_ITEM_CMD = 0xB801,
         NC_AUCTION_EXPIRATION_TIME_REQ = 0xB802,
@@ -2888,9 +2922,9 @@ namespace Vision.Core.Networking
         NC_AUCTION_DB_STORAGE_BOX_WITHDRAW_ACK = 0xB827,
         NC_AUCTION_STORAGE_BOX_WITHDRAW_ACK = 0xB828,
 
-        #endregion
+#endregion
 
-        #region NC_GAMBLE
+#region NC_GAMBLE
 
         NC_GAMBLE_NULL = 0xBC00,
         NC_GAMBLE_ZONE_PREVMAPNAME_CMD = 0xBC01,
@@ -2974,15 +3008,17 @@ namespace Vision.Core.Networking
         NC_GAMBLE_SLOTMACHINE_WINRANKING_ACK = 0xBCDC,
         NC_GAMBLE_SLOTMACHINE_SOMEONE_GET_JACKPOT_CMD = 0xBCDD,
 
-        #endregion
+#endregion
 
-        #region NC_COMMAND_INSTANCE
+#region NC_COMMAND_INSTANCE
 
         NC_COMMAND_MATCH_INSTANCE_DUNGEON_dummy = 0xC000,
         NC_MATCH_INSTANCE_DUNGEON_UNK00_REQ = 0xC001,
         NC_MATCH_INSTANCE_DUNGEON_UNK00_ACK = 0xC002,
-        NC_MATCH_INSTANCE_DUNGEON_UNK01_REQ = 0xC010,
-        NC_MATCH_INSTANCE_DUNGEON_UNK01_ACK = 0xC011,
+        NC_MATCH_INSTANCE_DUNGEON_UNK01_REQ = 0xC008,
+        NC_MATCH_INSTANCE_DUNGEON_UNK01_ACK = 0xC009,
+        NC_MATCH_INSTANCE_DUNGEON_UNK02_REQ = 0xC010,
+        NC_MATCH_INSTANCE_DUNGEON_UNK02_ACK = 0xC011,
 
         #endregion
 
@@ -3010,9 +3046,9 @@ namespace Vision.Core.Networking
         NC_COLLECT_REWARD_ACK = 0xC413,
         NC_COLLECT_CHARACTERDB_UP_GET_CARDCOUNT_CMD = 0xC414,
 
-        #endregion
+#endregion
 
-        #region NC_SYSLOG
+#region NC_SYSLOG
 
         NC_SYSLOG_NULL = 0xC800,
         NC_SYSLOG_ACCOUNT_LOGIN_SUCCESS = 0xC801,
@@ -3035,15 +3071,15 @@ namespace Vision.Core.Networking
         NC_SYSLOG_CHAR_ITEMMONEY_BUY = 0xC814,
         NC_SYSLOG_CHAR_ITEM_REBUY = 0xC815,
 
-        #endregion
+#endregion
 
-        #region NC_GAMIGO
+#region NC_GAMIGO
 
         NC_GAMIGO_NEW_TUTORIAL_STORE_STEP = 0xC817,
 
-        #endregion
+#endregion
 
-        #region NC_MOVER
+#region NC_MOVER
 
         NC_MOVER_NULL = 0xCC00,
         NC_MOVER_RIDE_ON_REQ = 0xCC01,
@@ -3062,9 +3098,9 @@ namespace Vision.Core.Networking
         NC_MOVER_SKILLBASH_OBJ_CAST_REQ = 0xCC0E,
         NC_MOVER_SKILLBASH_FLD_CAST_REQ = 0xCC0F,
 
-        #endregion
+#endregion
 
-        #region NC_EVENT
+#region NC_EVENT
 
         NC_EVENT_NULL = 0xD000,
         NC_EVENT_GET_ALL_EVENT_INFO_REQ = 0xD001,
@@ -3080,9 +3116,9 @@ namespace Vision.Core.Networking
         NC_EVENT_ADD_UPDATE_EVENT_CMD = 0xD00B,
         NC_EVENT_DEL_EVENT_CMD = 0xD00C,
 
-        #endregion
+#endregion
 
-        #region NC_PET
+#region NC_PET
 
         NC_PET_NULL = 0xD400,
         NC_PET_SET_TENDENCY_DB_REQ = 0xD401,
@@ -3104,9 +3140,9 @@ namespace Vision.Core.Networking
         NC_PET_LINK_RESUMMON_CMD = 0xD412,
         NC_PET_SET_NAME_CMD = 0xD413,
 
-        #endregion
+#endregion
 
-        #region NC_LOCAL
+#region NC_LOCAL
 
         NC_LOCAL_REGISTERWORLD_REQ = 0xD801,
         NC_LOCAL_REGISTERWORLD_ACK = 0xD802,
@@ -3143,10 +3179,10 @@ namespace Vision.Core.Networking
         NC_LOCAL_MOB_KILL_ANNOUNCE_CMD = 0xD821,
         NC_LOCAL_LINKING_MOUNT_CMD = 0xD822,
 
-        #endregion
+#endregion
 
-        #region NC_OTHER
+#region NC_OTHER
 
-        #endregion
+#endregion
     }
 }

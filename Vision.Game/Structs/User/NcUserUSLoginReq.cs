@@ -7,8 +7,10 @@ namespace Vision.Game.Structs.User
 {
     public class NcUserUSLoginReq : NetPacketStruct
     {
+        internal const int BeginningFillerLen = 32;
         internal const int UsernameLen = 260;
-        internal const int PasswordMD5Len = 36;
+        internal const int PasswordMD5Len = 32;
+        internal const int SecondFillerLen = 5;
         internal const int StartupAppLen = 20;
 
         public string Username { get; private set; }
@@ -24,20 +26,24 @@ namespace Vision.Game.Structs.User
 
         public override int GetSize()
         {
-            return UsernameLen + PasswordMD5Len + StartupAppLen;
+            return BeginningFillerLen + UsernameLen + PasswordMD5Len + SecondFillerLen + StartupAppLen;
         }
 
         public override void Read(ReaderStream reader)
         {
+            reader.ReadBytes(BeginningFillerLen); // filler
             Username = reader.ReadString(UsernameLen);
             PasswordMD5 = reader.ReadString(PasswordMD5Len);
+            reader.ReadBytes(SecondFillerLen); // filler
             SpawnApp = reader.ReadString(StartupAppLen);
         }
 
         public override void Write(WriterStream writer)
         {
+            writer.Fill(BeginningFillerLen, 0);
             writer.Write(Username, UsernameLen);
             writer.Write(PasswordMD5, PasswordMD5Len);
+            writer.Fill(SecondFillerLen, 0); // wacky filler
             writer.Write(SpawnApp, StartupAppLen);
         }
 

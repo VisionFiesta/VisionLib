@@ -18,15 +18,17 @@ namespace Vision.Core.IO.SHN
         private string PReadString(uint bytes)
         {
             var returnString = string.Empty;
+            int countOffset = 0;
 
             if (bytes > 0x100)
             {
                 returnString = ReadString(bytes - 0x100);
+                countOffset = 256;
             }
-            Read(_buffer, 0, (int)bytes);
+            Read(_buffer, 0, (int)bytes - countOffset);
 
 
-            return returnString + _shnEncoding.GetString(_buffer, 0, (int)bytes);
+            return returnString + _shnEncoding.GetString(_buffer, 0, (int)bytes - countOffset);
         }
 
         public override string ReadString()
