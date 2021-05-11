@@ -14,6 +14,7 @@ namespace Vision.Client.Services
 
         public ZoneService(FiestaClient client) : base(client)
         {
+            #region State machine setup
             _zoneStateMachine.OnTransitioned(transition =>
             {
                 if (transition.Source != transition.Destination)
@@ -57,7 +58,10 @@ namespace Vision.Client.Services
             _zoneStateMachine.Configure(ZoneServiceState.ZSS_LOGGED_IN_MAP)
                 .SubstateOf(ZoneServiceState.ZSS_LOGGED_IN)
                 .OnEntryAsync(OnLoggedInMapEntry);
+            #endregion
         }
+
+        public ZoneServiceState GetState => _zoneStateMachine.State;
 
         public async Task UpdateState(ZoneServiceTrigger trigger)
         {

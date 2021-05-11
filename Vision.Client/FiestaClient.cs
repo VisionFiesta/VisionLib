@@ -43,10 +43,11 @@ namespace Vision.Client
 
         public readonly string SHNHash;
 
-        public ClientSessionData ClientSessionData = new ClientSessionData();
+        public readonly ClientSessionData ClientSessionData = new();
 
         public FiestaClient(ClientUserData userData)
         {
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             UserData = userData;
@@ -55,17 +56,19 @@ namespace Vision.Client
             _shnManager = new SHNManager(StaticClientData.ShinePath, new SHNCrypto());
             _shnHashManager = new SHNHashManager(_shnManager, UserData.Region == GameRegion.GR_NA);
 
-            LoadSHN(StaticClientData.ShinePath);
-            _shnHashManager.LoadRemainingHashes();
-            if (_shnHashManager.GetFullHash(out var shnHash))
-            {
-                _engineLog.Debug("Generated SHN hash for client.");
-                SHNHash = shnHash;
-            }
-            else
-            {
-                _engineLog.Warning("Failed to generate SHN hash!");
-            }
+            LoadSHN();
+
+            _engineLog.Debug("Loaded SHN hash for client.");
+            SHNHash = StaticClientData.SHNHash;
+            // _shnHashManager.LoadRemainingHashes();
+            // if (_shnHashManager.GetFullHash(out SHNHash))
+            // {
+            //     _engineLog.Debug("Generated SHN hash for client.");
+            // }
+            // else
+            // {
+            //     _engineLog.Warning("Failed to generate SHN hash!");
+            // }
 
             NetPacketHandlerLoader<NetClientConnection>.LoadHandlers();
 

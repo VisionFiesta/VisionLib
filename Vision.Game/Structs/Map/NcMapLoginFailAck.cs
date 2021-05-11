@@ -1,6 +1,7 @@
 ﻿using Vision.Core.Networking;
 using Vision.Core.Streams;
 using Vision.Core.Structs;
+using Vision.Game.Structs.Common;
 
 namespace Vision.Game.Structs.Map
 {
@@ -25,6 +26,6 @@ namespace Vision.Game.Structs.Map
 
         public override NetCommand GetCommand() => NetCommand.NC_MAP_LOGINFAIL_ACK;
 
-        public override string ToString() => $"{nameof(Error)}: {Error}, {nameof(WrongDataFileIndex)}: {WrongDataFileIndex}";
+        public override string ToString() => $"{nameof(Error)}: {(ProtoErrorcode.PROTO_ERRORCODE)Error}, {nameof(WrongDataFileIndex)}: {WrongDataFileIndex}";
     }
 }

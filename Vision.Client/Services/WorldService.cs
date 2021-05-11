@@ -96,6 +96,8 @@ namespace Vision.Client.Services
             ClientLogger.Info("Initialized");
         }
 
+        public WorldServiceState GetState => _worldStateMachine.State;
+
         public void UpdateState(WorldServiceTrigger trigger)
         {
             _worldStateMachine.Deactivate();

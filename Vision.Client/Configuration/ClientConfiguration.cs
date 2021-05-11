@@ -3,8 +3,8 @@ using Vision.Core.Configuration;
 
 namespace Vision.Client.Configuration
 {
-    public class ClientConfiguration : Configuration<ClientConfiguration>
+    public class ClientConfiguration : Configuration<StaticClientData>
     {
-        public StaticClientData Data = new StaticClientData();
+        public ClientConfiguration(string configFolderPath = "") : base(configFolderPath) {}
     }
 }

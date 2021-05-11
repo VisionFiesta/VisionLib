@@ -5,64 +5,64 @@ using Vision.Core.Logging.Loggers;
 
 namespace Vision.Core.Configuration
 {
-    public class Configuration<T> where T:Configuration<T>
+    public class Configuration<T>
     {
-        private const string ConfigFolder = "Config";
+        // private const string ConfigFolder = "Config";
 
-        private static readonly EngineLog Logger = new EngineLog(typeof(Configuration<>));
+        protected static readonly EngineLog Logger = new(typeof(Configuration<T>));
 
-        public static T Instance { get; set; }
+        public T ConfigurationData { get; private set; }
+        private readonly string configFolderPath;
 
-        public static bool Load(out string message)
+        public Configuration(string configFolderPath)
         {
-            Instance = Initialize(out message);
+            this.configFolderPath = configFolderPath;
+        }
+
+        protected bool Load(out string message)
+        {
+            ConfigurationData = Initialize(out message);
             return message == string.Empty;
         }
 
-        private static void CreateDefaultFolder()
+        private bool WriteJson(string configName = null)
         {
-            if (!Directory.Exists(ConfigFolder))
-            {
-                Directory.CreateDirectory(ConfigFolder);
-            }
-        }
+            if (!Directory.Exists(configFolderPath)) return false;
 
-        private void WriteJson(string configName = null)
-        {
-            CreateDefaultFolder();
-            var path = Path.Combine(ConfigFolder, $"{configName ?? typeof(T).Name}.json");
+            var path = Path.Combine(configFolderPath, $"{configName ?? typeof(T).Name}.json");
 
             var writer = new JsonSerializer();
-            var file = new StreamWriter(path);
+            using var file = new StreamWriter(path);
             writer.Formatting = Formatting.Indented;
-            writer.Serialize(file, this);
-            file.Close();
+            writer.Serialize(file, ConfigurationData);
+
+            return true;
         }
 
-        private static async System.Threading.Tasks.Task<T> ReadJsonAsync(string configName = null)
+        private T ReadJson(string configName = null)
         {
             var settings = new JsonSerializerSettings
             {
                 ContractResolver = new PrivateSetterContractResolver()
             };
 
-            var path = Path.Combine(ConfigFolder, $"{configName ?? typeof(T).Name}.json");
+            var path = Path.Combine(configFolderPath, $"{configName ?? typeof(T).Name}.json");
             if (!File.Exists(path)) return default;
 
             using var file = File.OpenText(path);
-            var text = await file.ReadToEndAsync();
+            var text = file.ReadToEnd();
             var obj = JsonConvert.DeserializeObject<T>(text, settings);
             return obj;
         }
 
-        private static T Initialize(out string message)
+        private T Initialize(out string message)
         {
-            var fullTypeName = typeof(T).FullName?.Replace("Vision.Client.Configuration.", "");
+            var fullTypeName = typeof(T).FullName?.Replace("Vision.Core.Configuration.", "");
             var shortTypeName = fullTypeName?.Replace("Configuration", "");
 
             try
             {
-                var instance = ReadJsonAsync().Result;
+                var instance = ReadJson(shortTypeName);
                 if (instance != null)
                 {
                     Logger.Info($"Successfully read {shortTypeName} config.");
@@ -70,12 +70,11 @@ namespace Vision.Core.Configuration
                     return instance;
                 }
 
-                if (!Create(out var pConfig))
+                if (!WriteJson())
                 {
-                    message = $"Failed to create default {fullTypeName}.";
+                    message= $"Failed to write to JSON file: {shortTypeName}.json - Ensure destination directory exists";
                     return default;
                 }
-                pConfig.WriteJson();
 
                 Logger.Info($"Successfully generated {shortTypeName} config.");
                 message = $"No {fullTypeName} found! Please edit generated config.";
@@ -86,20 +85,6 @@ namespace Vision.Core.Configuration
                 Logger.Error($"Failed to load {shortTypeName} config:\n {0}", ex);
                 message = $"Failed to load {fullTypeName}:\n {ex.StackTrace}";
                 return default;
-            }
-        }
-
-        private static bool Create(out T pConfig)
-        {
-            pConfig = default;
-            try
-            {
-                pConfig = (T)Activator.CreateInstance(typeof(T));
-                return true;
-            }
-            catch
-            {
-                return false;
             }
         }
     }

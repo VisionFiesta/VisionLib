@@ -15,6 +15,7 @@ namespace Vision.Client.Services
         private readonly StateMachine<LoginServiceState, LoginServiceTrigger> _loginStateMachine =
             new(LoginServiceState.LSS_DISCONNECTED, FiringMode.Queued);
 
+        private LoginServiceTrigger lastTrigger;
 
         private readonly Timer _worldListUpdateTimer = new(ClientTimings.WorldListUpdatePeriod.TotalMilliseconds);
         
@@ -100,6 +101,8 @@ namespace Vision.Client.Services
             ClientLogger.Info("Initialized");
         }
 
+        public LoginServiceState GetState => _loginStateMachine.State;
+
         #region State machine methods
 
         public void UpdateState(LoginServiceTrigger trigger)
@@ -143,8 +146,8 @@ namespace Vision.Client.Services
             switch (Client.UserData.Region)
             {
                 case GameRegion.GR_NA:
+                    // offi client sends both simultaneously
                     new NcUserUSLoginReq(UserData.Username, UserData.Password).Send(LoginConnection);
-                    Thread.Sleep(25);
                     new NcUserXTrapReq(StaticClientData.XTrapVersionHash).Send(LoginConnection);
                     break;
                 case GameRegion.GR_DE:

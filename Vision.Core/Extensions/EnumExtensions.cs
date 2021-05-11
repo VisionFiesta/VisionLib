@@ -52,5 +52,8 @@ namespace Vision.Core.Extensions
 
             return @default;
         }
+
+        public static List<TEnum> GetEnumList<TEnum>() where TEnum : Enum
+            => ((TEnum[])Enum.GetValues(typeof(TEnum))).ToList();
     }
 }

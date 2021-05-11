@@ -4,13 +4,21 @@ using Vision.Core.Configuration;
 
 namespace Vision.Client.Configuration
 {
-    public class UserConfiguration : Configuration<UserConfiguration>
+    public class UserConfiguration : Configuration<List<ClientUserData>>
     {
-        public UserConfiguration()
-        {
-            Data.Add(new ClientUserData());
-        }
+        public UserConfiguration(string configFolderPath) : base(configFolderPath) {}
 
-        public List<ClientUserData> Data { get; protected set; } = new List<ClientUserData>();
+        public void Load()
+        {
+            if (Load(out var message))
+            {
+                Logger.Info(message);
+            }
+            else
+            {
+                Logger.Warning(message);
+                ConfigurationData.Add(new ClientUserData());
+            }
+        }
     }
 }
