@@ -24,7 +24,7 @@ namespace Vision.Game.Structs.Map
             writer.Write(WrongDataFileIndex);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_MAP_LOGINFAIL_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_MAP_LOGINFAIL_ACK;
 
         public override string ToString() => $"{nameof(Error)}: {(ProtoErrorcode.PROTO_ERRORCODE)Error}, {nameof(WrongDataFileIndex)}: {WrongDataFileIndex}";
     }

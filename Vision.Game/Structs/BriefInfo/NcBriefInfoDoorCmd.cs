@@ -35,7 +35,7 @@ namespace Vision.Game.Structs.BriefInfo
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_DOOR_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_DOOR_CMD;
 
         [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()

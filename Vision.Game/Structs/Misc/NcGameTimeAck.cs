@@ -52,7 +52,7 @@ namespace Vision.Game.Structs.Misc
             return new DateTime(now.Year, now.Month, now.Day, gameTime.Hour, gameTime.Minute, gameTime.Second);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_MISC_GAMETIME_ACK;
         }

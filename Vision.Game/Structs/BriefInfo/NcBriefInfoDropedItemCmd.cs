@@ -37,7 +37,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(DropMobHandle);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_DROPEDITEM_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_DROPEDITEM_CMD;
 
         public override string ToString() => $"{nameof(Handle)}: {Handle}, {nameof(Item)}: {Item}, {nameof(Position)}: {Position}, {nameof(DropMobHandle)}: {DropMobHandle}";
     }

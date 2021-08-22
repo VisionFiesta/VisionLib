@@ -43,6 +43,6 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(Scale);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_BUILDDOOR_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_BUILDDOOR_CMD;
     }
 }

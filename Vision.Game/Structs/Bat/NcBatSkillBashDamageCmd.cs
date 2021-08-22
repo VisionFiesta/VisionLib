@@ -48,7 +48,7 @@ namespace Vision.Game.Structs.Bat
             }
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_BAT_SKILLBASH_HIT_DAMAGE_CMD;
         }

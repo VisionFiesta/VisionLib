@@ -43,6 +43,6 @@ namespace Vision.Game.Structs.Char
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_CHARTITLE_CMD;
     }
 }

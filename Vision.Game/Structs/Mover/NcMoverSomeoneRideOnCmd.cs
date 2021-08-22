@@ -29,7 +29,7 @@ namespace Vision.Game.Structs.Mover
             writer.Write(MoverGrade);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_MOVER_SOMEONE_RIDE_ON_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_MOVER_SOMEONE_RIDE_ON_CMD;
 
         public override string ToString() => $"{nameof(PlayerHandle)}: {PlayerHandle}, {nameof(MoverHandle)}: {MoverHandle}, {nameof(MoverSlot)}: {MoverSlot}, {nameof(MoverGrade)}: {MoverGrade}";
     }

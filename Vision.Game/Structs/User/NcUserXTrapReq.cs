@@ -29,6 +29,6 @@ namespace Vision.Game.Structs.User
             writer.Write(XTrapVersionHash, XTrapHashLength);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_USER_XTRAP_REQ;
+        protected override NetCommand GetCommand() => NetCommand.NC_USER_XTRAP_REQ;
     }
 }

@@ -17,15 +17,16 @@ namespace Vision.Client.Data
 
         public bool IsBot { get; protected set; } = true;
 
-        public ClientUserData() { }
-
-        public ClientUserData(string username, string password, string loginServerIP, ushort loginServerPort, GameRegion region)
+        public static ClientUserData Create(string username, string password, string loginServerIP, ushort loginServerPort, GameRegion region)
         {
-            Username = username;
-            Password = password;
-            LoginServerIP = loginServerIP;
-            LoginServerPort = loginServerPort;
-            Region = region;
+            return new ClientUserData
+            {
+                Username = username,
+                Password = password,
+                LoginServerIP = loginServerIP,
+                LoginServerPort = loginServerPort,
+                Region = region
+            };
         }
     }
 }

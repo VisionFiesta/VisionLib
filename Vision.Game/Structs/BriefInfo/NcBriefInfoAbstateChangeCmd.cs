@@ -26,7 +26,7 @@ namespace Vision.Game.Structs.BriefInfo
             Info.Write(writer);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_ABSTATE_CHANGE_CMD;
 
         public override string ToString() => $"{nameof(Handle)}: {Handle}, {nameof(Info)}: {Info}";
     }

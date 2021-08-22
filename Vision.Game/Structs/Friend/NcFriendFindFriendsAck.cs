@@ -40,9 +40,9 @@ namespace Vision.Game.Structs.Friend
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_FIND_FRIENDS_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_FIND_FRIENDS_ACK;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
 
         [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()

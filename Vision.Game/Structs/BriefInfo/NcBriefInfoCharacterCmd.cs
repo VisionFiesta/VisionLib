@@ -33,6 +33,6 @@ namespace Vision.Game.Structs.BriefInfo
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHARACTER_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHARACTER_CMD;
     }
 }

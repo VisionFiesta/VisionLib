@@ -15,7 +15,7 @@ namespace Vision.Game.Structs.Friend
 
         public override void Write(WriterStream writer) => FriendInfo.Write(writer);
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_ADD_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_ADD_CMD;
 
         public override string ToString() => $"{nameof(FriendInfo)}: {FriendInfo}";
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Colorful;
 
@@ -10,6 +11,7 @@ using Vision.Game.Characters;
 using Vision.Game.Content;
 using Vision.Game.Enums;
 using Vision.Game.Structs.Act;
+// ReSharper disable StringLiteralTypo
 
 namespace Vision.Client.Services
 {
@@ -24,7 +26,11 @@ namespace Vision.Client.Services
 
         public ChatService(FiestaClient client) : base(client)
         {
-            ClientLogger.Info("Initialized");
+            var watch = Stopwatch.StartNew();
+            ClientLogger.Debug("Initializing...");
+
+            watch.Stop();
+            ClientLogger.Info($"Initialized in {watch.Elapsed.TotalMilliseconds:0.####}ms");
         }
 
         public void AddChatSubscriber(ChatSubscriberAction chatSubscriberAction) => _chatSubscribers.Add(chatSubscriberAction);
@@ -82,7 +88,7 @@ namespace Vision.Client.Services
             if (sender != "Life_Restorer") return;
             if (!message.StartsWith("svt")) return;
 
-            string resp = "";
+            var resp = "";
             switch (message.ToLower().Replace("svt", "").Trim())
             {
                 case "hello":
@@ -164,7 +170,7 @@ namespace Vision.Client.Services
             }
         }
 
-        public void SendChatReq(ClientLogChatType type, string message, string receiver = "")
+        private void SendChatReq(ClientLogChatType type, string message, string receiver = "")
         {
             //TODO: split messages longer than 255
             switch (type)
@@ -201,11 +207,10 @@ namespace Vision.Client.Services
                     {
 
                     }
-                    else
-                    {
-
-                    }
                     // TODO: ExpeditionService
+                    break;
+                case ClientLogChatType.CLCT_ANNOUNCE:
+                    // ignored
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -240,7 +245,7 @@ namespace Vision.Client.Services
                 prefixFormatter.Add(new Formatter($"[{sender}]", senderColor));
             }
 
-            prefixFormatter.Add(new Formatter($"", messageColor));
+            prefixFormatter.Add(new Formatter("", messageColor));
             prefixFormatter.Add(new Formatter($" : {message}", messageColor));
 
             ClientLogger.WriteLineRawFormatted((byte)level, prefixFormatter.ToArray());

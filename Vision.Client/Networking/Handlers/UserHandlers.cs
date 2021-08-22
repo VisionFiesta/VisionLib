@@ -109,7 +109,7 @@ namespace Vision.Client.Networking.Handlers
             // ReSharper disable once CoVariantArrayConversion
             var avatarStr = string.Join(", ", (object[])result.Avatars);
 
-            connection.Account.AccountID = result.AccountID;
+            connection.Account.AccountId = result.AccountID;
 
             foreach (var ava in result.Avatars)
             {

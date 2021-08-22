@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Vision.Core.Enums;
 using Vision.Core.Networking;
 using Vision.Core.Networking.Packet;
@@ -7,6 +8,8 @@ using Vision.Game.Structs.Announce;
 
 namespace Vision.Client.Networking.Handlers
 {
+    [SuppressMessage("ReSharper", "UnusedType.Global")]
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class AnnounceHandlers
     {
         [NetPacketHandler(NetCommand.NC_ANNOUNCE_W2C_CMD, NetConnectionDestination.NCD_CLIENT)]

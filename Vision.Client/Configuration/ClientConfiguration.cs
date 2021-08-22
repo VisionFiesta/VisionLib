@@ -5,6 +5,8 @@ namespace Vision.Client.Configuration
 {
     public class ClientConfiguration : Configuration<StaticClientData>
     {
-        public ClientConfiguration(string configFolderPath = "") : base(configFolderPath) {}
+        public ClientConfiguration(string configFolderPath, bool useDefaults = false) : base(configFolderPath, useDefaults) { }
+
+        protected override StaticClientData GetDataDefault() => new();
     }
 }

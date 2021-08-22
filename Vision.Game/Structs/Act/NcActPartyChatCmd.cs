@@ -29,7 +29,7 @@ namespace Vision.Game.Structs.Act
             Chat.Write(writer);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_ACT_PARTYCHAT_CMD;
         }

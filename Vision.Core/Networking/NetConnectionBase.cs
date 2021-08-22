@@ -5,21 +5,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Authentication.ExtendedProtection;
 using System.Threading;
-using System.Threading.Tasks;
 using Vision.Core.Collections;
 using Vision.Core.Extensions;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking.Crypto;
 using Vision.Core.Networking.Packet;
-using Vision.Core.Utils;
 
 namespace Vision.Core.Networking
 {
     public abstract class NetConnectionBase<T> : VisionObject where T : NetConnectionBase<T>
     {
-        private readonly SocketLog Logger;
+        private readonly SocketLog _logger;
 
         /// <summary>
         /// The maximum buffer size allowed.
@@ -30,16 +27,6 @@ namespace Vision.Core.Networking
         /// The crypto to use for this connection
         /// </summary>
         public INetCrypto Crypto { get; }
-
-        /// <summary>
-        /// The connection's unique identifier.
-        /// </summary>
-        public string Guid { get; protected set; }
-
-        /// <summary>
-        /// The client's handle.
-        /// </summary>
-        public ushort Handle { get; protected set; }
 
         /// <summary>
         /// Returns true if the connection exists.
@@ -83,6 +70,7 @@ namespace Vision.Core.Networking
         /// </summary>
         public GameRegion Region { get; }
 
+        // TODO: actually impl this
         /// <summary>
         /// Time of the connection's last heartbeat.
         /// </summary>
@@ -167,19 +155,18 @@ namespace Vision.Core.Networking
 
         protected NetConnectionBase(NetConnectionDestination txDest, NetConnectionDestination rxDest, GameRegion region = GameRegion.GR_NA, INetCrypto crypto = null)
         {
-            Logger = new SocketLog(GetType());
+            _logger = new SocketLog(GetType());
 
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             TransmitDestinationType = txDest;
             ReceiveDestinationType = rxDest;
             Region = region;
             IsEstablished = true;
-            Guid = System.Guid.NewGuid().ToString().Replace("-", "");
-            Handle = (ushort)MathUtils.Random(ushort.MaxValue); // TODO: Create handles in a range based on their destination/source
             _receiveStream = new MemoryStream();
             _awaitingBuffers = new List<byte[]>();
 
             // default to 2020 NA crypto TODO: handle region cryptos separate
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             Crypto = Crypto == null ? new NetCryptoNa2020() : crypto;
         }
 
@@ -220,7 +207,7 @@ namespace Vision.Core.Networking
                 dc.Invoke(TransmitDestinationType, RemoteEndPoint);
             }
 
-            Logger.Info($"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+            _logger.Info($"Disconnected from target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
             _socket?.Close(); // Close() will call Dispose() automatically for us.
             _socket = null;
         }
@@ -247,7 +234,7 @@ namespace Vision.Core.Networking
 
             if (bytesToSend >= ReceiveBufferSize)
             {
-                Logger.Debug("Exceeded max message size while sending data to a connection.");
+                _logger.Debug("Exceeded max message size while sending data to a connection.");
             }
 
             while (bytesSent < bytesToSend)
@@ -255,7 +242,7 @@ namespace Vision.Core.Networking
                 bytesSent += _socket.Send(buffer, bytesSent, bytesToSend - bytesSent, SocketFlags.None);
 
                 if (bytesSent <= bytesToSend) continue;
-                Logger.Warning($"BUFFER OVERFLOW OCCURRED - Sent {bytesSent - bytesToSend} bytes more than expected.");
+                _logger.Warning($"BUFFER OVERFLOW OCCURRED - Sent {bytesSent - bytesToSend} bytes more than expected.");
                 break;
             }
         }
@@ -277,7 +264,7 @@ namespace Vision.Core.Networking
 
             if (bytesToSend >= ReceiveBufferSize)
             {
-                Logger.Debug("Exceeded max message size while sending data to a connection.");
+                _logger.Debug("Exceeded max message size while sending data to a connection.");
                 return;
             }
 
@@ -294,7 +281,7 @@ namespace Vision.Core.Networking
             }
             catch (SocketException ex)
             {
-                Logger.Info($"Socket not prepared for send! {ex.Message}");
+                _logger.Info($"Socket not prepared for send! {ex.Message}");
                 return;
             }
 
@@ -353,12 +340,12 @@ namespace Vision.Core.Networking
                     c.Invoke(TransmitDestinationType, RemoteEndPoint);
                 }
 
-                Logger.Info($"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
+                _logger.Info($"Connected to target: {TransmitDestinationType.ToMessage()}, Endpoint: {RemoteEndPoint.ToSimpleString()}");
                 BeginReceivingData();
             }
             catch
             {
-                Logger.Warning("Remote socket connection attempt failed. Trying again...");
+                _logger.Warning("Remote socket connection attempt failed. Trying again...");
                 Thread.Sleep(3000); // 3 seconds.
                 Connect((IPEndPoint)e.AsyncState);
             }
@@ -434,10 +421,8 @@ namespace Vision.Core.Networking
             var chunk = new byte[size];
             var pointer = 0;
 
-            for (var i = 0; i < bufferList.Count; i++)
+            foreach (var buffer in bufferList)
             {
-                var buffer = bufferList[i];
-
                 Array.Copy(buffer, 0, chunk, pointer, buffer.Length);
                 pointer += buffer.Length;
             }
@@ -512,38 +497,44 @@ namespace Vision.Core.Networking
             return true;
         }
 
-        protected void GetAndRunHandler(NetPacket packet, T connection)
+        private void GetAndRunHandler(NetPacket packet, T connection)
         {
             var hasHandler =
                 NetPacketHandlerLoader<T>.TryGetHandler(packet.Command, out var handler, out var destinations);
             var isForThisDest = destinations?.Contains(connection.ReceiveDestinationType) ?? false;
 
-            if (hasHandler && isForThisDest)
+            switch (hasHandler)
             {
-                if (!NetPacket.DebugSkipCommands.Contains(packet.Command))
+                case true when isForThisDest:
                 {
-                    var watch = Stopwatch.StartNew();
-                    handler(packet, connection);
-                    watch.Stop();
-                    var millisString = $"{watch.Elapsed.TotalMilliseconds:N2}";
-                    Logger.Debug($"Handler for {packet.Command} took {millisString}ms to complete.");
+                    if (!NetPacket.DebugSkipCommands.Contains(packet.Command))
+                    {
+                        var watch = Stopwatch.StartNew();
+                        handler(packet, connection);
+                        watch.Stop();
+                        var millisString = $"{watch.Elapsed.TotalMilliseconds:N2}";
+                        _logger.Debug($"Handler for {packet.Command} took {millisString}ms to complete.");
+                    }
+                    else
+                    {
+                        // quiet handle
+                        handler(packet, connection);
+                    }
+
+                    break;
                 }
-                else
+                // not this dest
+                case true:
+                    _logger.Warning($"Got handled command from {connection.TransmitDestinationType} NOT FOR {connection.ReceiveDestinationType} : {packet.Command}");
+                    break;
+                default:
                 {
-                    // quiet handle
-                    handler(packet, connection);
+                    var commandHex = $"0x{packet.Command:x}";
+                    var commandName = Enum.GetName(typeof(NetCommand), packet.Command);
+                    if (string.IsNullOrEmpty(commandName)) commandName = "Unknown";
+                    _logger.Unhandled($"Got unhandled command from {connection.TransmitDestinationType}: {commandHex} | {commandName}");
+                    break;
                 }
-            }
-            else if (hasHandler) // not this dest
-            {
-                Logger.Warning($"Got handled command from {connection.TransmitDestinationType} NOT FOR {connection.ReceiveDestinationType} : {packet.Command}");
-            }
-            else
-            {
-                var commandHex = $"0x{packet.Command:x}";
-                var commandName = Enum.GetName(typeof(NetCommand), packet.Command);
-                if (string.IsNullOrEmpty(commandName)) commandName = "Unknown";
-                Logger.Unhandled($"Got unhandled command from {connection.TransmitDestinationType}: {commandHex} | {commandName}");
             }
         }
     }

@@ -66,7 +66,7 @@ namespace Vision.Game.Structs.BriefInfo
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_REGENMOVER_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_REGENMOVER_CMD;
 
         public override string ToString()
         {

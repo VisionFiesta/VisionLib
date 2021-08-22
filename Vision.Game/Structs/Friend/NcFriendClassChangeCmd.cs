@@ -25,6 +25,6 @@ namespace Vision.Game.Structs.Friend
             writer.Write((byte) Level);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_CLASS_CHANGE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_CLASS_CHANGE_CMD;
     }
 }

@@ -43,9 +43,9 @@ namespace Vision.Game.Structs.User
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_USER_WORLD_STATUS_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_USER_WORLD_STATUS_ACK;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
 
         public override string ToString()
         {

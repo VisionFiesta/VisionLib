@@ -24,6 +24,6 @@ namespace Vision.Game.Structs.Friend
             writer.Write(RequesterCharID);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_SET_CONFIRM_REQ;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_SET_CONFIRM_REQ;
     }
 }

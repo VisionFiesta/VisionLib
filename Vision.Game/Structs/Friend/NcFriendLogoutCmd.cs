@@ -21,7 +21,7 @@ namespace Vision.Game.Structs.Friend
             writer.Write(CharID, NameN.Name5Len);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_LOGOUT_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_LOGOUT_CMD;
 
         public override string ToString() => $"{nameof(CharID)}: {CharID}"; }
 }

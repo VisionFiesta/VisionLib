@@ -27,7 +27,7 @@ namespace Vision.Game.Structs.Friend
             writer.Write(Error);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_SET_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_SET_ACK;
 
         public override string ToString() => $"{nameof(CharID)}: {CharID}, {nameof(FriendID)}: {FriendID}, {nameof(Error)}: {Error}";
     }

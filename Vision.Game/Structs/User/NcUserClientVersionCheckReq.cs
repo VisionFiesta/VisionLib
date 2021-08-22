@@ -6,24 +6,22 @@ namespace Vision.Game.Structs.User
 {
     public class NcUserClientVersionCheckReq : NetPacketStruct
     {
-        internal const int ClientBinMD5Len = 32;
-        internal const int ExtraDataLen = 32;
+        private const int ClientBinMd5Len = 32;
+        private const int ExtraDataLen = 32;
 
-        public string ClientBinMD5 { get; private set; }
+        private string ClientBinMd5 { get; set; }
         public byte[] ExtraData { get; private set; }
-        private int AllDataLen = 0;
-
-        public NcUserClientVersionCheckReq() { }
+        private int _allDataLen;
 
         public NcUserClientVersionCheckReq(byte[] allData)
         {
             ExtraData = allData;
-            AllDataLen = 64;
+            _allDataLen = 64;
         }
 
         public NcUserClientVersionCheckReq(string clientBinMd5, byte[] allExtraData)
         {
-            ClientBinMD5 = clientBinMd5;
+            ClientBinMd5 = clientBinMd5;
             ExtraData = allExtraData;
         }
 
@@ -46,25 +44,25 @@ namespace Vision.Game.Structs.User
 
         public override void Read(ReaderStream reader)
         {
-            ClientBinMD5 = reader.ReadString(ClientBinMD5Len);
+            ClientBinMd5 = reader.ReadString(ClientBinMd5Len);
             ExtraData = reader.ReadBytes(ExtraDataLen);
-            AllDataLen = 0;
+            _allDataLen = 0;
         }
 
         public override void Write(WriterStream writer)
         {
-            if (AllDataLen != 0)
+            if (_allDataLen != 0)
             {
-                writer.Write(ExtraData, AllDataLen);
+                writer.Write(ExtraData, _allDataLen);
             }
             else
             {
-                writer.Write(ClientBinMD5, ClientBinMD5Len);
+                writer.Write(ClientBinMd5, ClientBinMd5Len);
                 writer.Write(ExtraData, ExtraDataLen);
             }
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_USER_CLIENT_VERSION_CHECK_REQ;
         }

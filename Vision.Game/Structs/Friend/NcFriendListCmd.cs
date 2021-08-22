@@ -13,7 +13,7 @@ namespace Vision.Game.Structs.Friend
 
         public override int GetSize()
         {
-            int len = Friends?.Length ?? 0;
+            var len = Friends?.Length ?? 0;
             return 1 + len * FriendInfo.Size;
         }
 
@@ -41,9 +41,9 @@ namespace Vision.Game.Structs.Friend
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_LIST_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_LIST_CMD;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
 
         [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()

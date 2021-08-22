@@ -38,7 +38,7 @@ namespace Vision.Game.Structs.Bat
             writer.Write(Index);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_BAT_SKILLBASH_HIT_OBJ_START_CMD;
         }

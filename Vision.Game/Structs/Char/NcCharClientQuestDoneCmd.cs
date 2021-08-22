@@ -48,8 +48,8 @@ namespace Vision.Game.Structs.Char
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_QUEST_DONE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_QUEST_DONE_CMD;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
     }
 }

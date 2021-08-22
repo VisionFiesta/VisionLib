@@ -26,7 +26,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(CharSlotNum);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHANGEDECORATE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHANGEDECORATE_CMD;
 
         public override string ToString() => $"{nameof(Handle)}: {Handle}, {nameof(Item)}: {Item}, {nameof(CharSlotNum)}: {CharSlotNum}";
     }

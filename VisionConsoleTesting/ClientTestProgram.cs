@@ -1,22 +1,21 @@
-﻿
-using System;
-using Vision.Client;
+﻿using Vision.Client;
 using Vision.Client.Configuration;
 using Vision.Core.Logging.Loggers;
-using Vision.Game.Structs.Act;
 using Console = Colorful.Console;
 
 namespace VisionConsoleTesting
 {
-    public class ClientTestProgram
+    public static class ClientTestProgram
     {
         private const int ConsoleWidth = 200;
         private const int ConsoleHeight = 50;
 
+        private const string ConfigDir = "./Config";
+
         public static void Main(string[] arg)
         {
-            Console.SetWindowSize(ConsoleWidth, ConsoleHeight);
-            Console.SetBufferSize(ConsoleWidth, short.MaxValue - 1);
+            // Console.SetWindowSize(ConsoleWidth, ConsoleHeight);
+            // Console.SetBufferSize(ConsoleWidth, short.MaxValue - 1);
 
             ClientLog.SetLogLevel(ClientLogLevel.CLL_ERROR);
             EngineLog.SetLogLevel(EngineLogLevel.ELL_ERROR);
@@ -27,14 +26,17 @@ namespace VisionConsoleTesting
 #else
             Console.WriteLine("USING 2021 PACKETS");
 #endif
-            // if (ClientConfiguration.Load(out _) && UserConfiguration.Load(out _))
-            // {
-            // var cud = UserConfiguration.Instance.Data;
-            // var client = new FiestaClient(cud[1]);
-            // client.LoginService.UpdateState(Vision.Client.Services.LoginServiceTrigger.LST_TRY_CONNECT);
-            // }
+            var userConf = new UserConfiguration(ConfigDir);
+            var clientConf = new ClientConfiguration(ConfigDir, true);
 
-            Console.ReadLine();
+            var client = new FiestaClient(userConf.Data[0], clientConf.Data);
+            while (!client.Ready) { }
+            client.Login();
+
+            for (;;)
+            {
+                client.BusyLoop();
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Vision.Game.Structs.Map
             LoginPosition.Write(writer);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_MAP_LOGIN_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_MAP_LOGIN_ACK;
 
         public override string ToString() => $"{nameof(Handle)}: {Handle}";
     }

@@ -39,7 +39,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(Radius);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_MAGICFIELDSPREAD_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_MAGICFIELDSPREAD_CMD;
 
         public override string ToString() => $"{nameof(Handle)}: {Handle}, {nameof(Caster)}: {Caster}, {nameof(SkillID)}: {SkillID}, {nameof(Position)}: {Position}, {nameof(Radius)}: {Radius}";
     }

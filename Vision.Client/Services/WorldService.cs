@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Stateless;
 using Vision.Game.Structs.Char;
@@ -14,7 +15,9 @@ namespace Vision.Client.Services
 
         public WorldService(FiestaClient client) : base(client)
         {
-
+            var watch = Stopwatch.StartNew();
+            ClientLogger.Debug("Initializing...");
+            
             #region State machine setup
             _worldStateMachine.OnTransitioned(transition =>
             {
@@ -92,8 +95,9 @@ namespace Vision.Client.Services
             // ClientLogger.Debug(UmlDotGraph.Format(_worldStateMachine.GetInfo()));
 
             #endregion
-
-            ClientLogger.Info("Initialized");
+            
+            watch.Stop();
+            ClientLogger.Info($"Initialized in {watch.Elapsed.TotalMilliseconds:0.####}ms");
         }
 
         public WorldServiceState GetState => _worldStateMachine.State;
@@ -179,7 +183,8 @@ namespace Vision.Client.Services
             {
                 ClientLogger.Info($"Connecting to zone with character {matchingAvatar.CharName}");
                 var selected = Client.ClientSessionData.ClientAccount.SelectAvatar(matchingAvatar.CharNo);
-                new NcCharLoginReq(matchingAvatar.Slot).Send(WorldConnection);
+                if (selected) new NcCharLoginReq(matchingAvatar.Slot).Send(WorldConnection);
+                else ClientLogger.Error("Failed to select avatar!");
             }
             else
             {
@@ -196,7 +201,7 @@ namespace Vision.Client.Services
         private void OnJoiningZoneEntry()
         {
             ClientLogger.Info("Zone connecting...");
-            _ = ZoneService.UpdateState(ZoneServiceTrigger.ZST_TRY_CONNECT);
+            _ = ZoneService.UpdateStateAsync(ZoneServiceTrigger.ZST_TRY_CONNECT);
         }
 
         private void OnZoneConnectedEntry()

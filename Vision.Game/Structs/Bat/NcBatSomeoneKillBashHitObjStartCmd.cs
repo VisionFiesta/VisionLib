@@ -33,7 +33,7 @@ namespace Vision.Game.Structs.Bat
             CastInfo.Write(writer);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_BAT_SOMEONESKILLBASH_HIT_OBJ_START_CMD;
         }

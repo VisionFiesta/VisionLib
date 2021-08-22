@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Vision.Client.Services;
 using Vision.Core.Logging.Loggers;
 using Vision.Core.Networking;
@@ -8,6 +9,7 @@ using static Vision.Client.Services.ZoneCharacterDataManager;
 
 namespace Vision.Client.Networking.Handlers
 {
+    [SuppressMessage("ReSharper", "UnusedType.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class CharHandlers
     {

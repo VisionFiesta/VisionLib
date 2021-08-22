@@ -41,7 +41,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(Scale);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_EFFECTBLAST_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_EFFECTBLAST_CMD;
 
         public override string ToString() => $"{nameof(Handle)}: {Handle}, {nameof(EffectName)}: {EffectName}, {nameof(Coordinates)}: {Coordinates}, {nameof(Detach)}: {Detach}, {nameof(Scale)}: {Scale}";
     }

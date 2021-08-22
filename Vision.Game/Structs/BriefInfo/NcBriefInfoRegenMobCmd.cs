@@ -27,12 +27,12 @@ namespace Vision.Game.Structs.BriefInfo
 
         public ushort Handle;
         public byte Mode;
-        public ushort MobID;
-        public ShineXYR Position = new();
-        public MobFlag Flags = new();
+        public ushort MobId;
+        public readonly ShineXYR Position = new();
+        public readonly MobFlag Flags = new();
         public string Animation; //Name32Byte
         public byte AnimationLevel;
-        public KQTeamType KQTeam;
+        public KQTeamType KqTeam;
         public bool RegenAni;
 
         public override int GetSize() => 2 + 1 + 2 + ShineXYR.Size + MobFlag.Size + NameN.Name32ByteLen + 1 + 1 + 1;
@@ -41,14 +41,14 @@ namespace Vision.Game.Structs.BriefInfo
         {
             Handle = reader.ReadUInt16();
             Mode = reader.ReadByte();
-            MobID = reader.ReadUInt16();
+            MobId = reader.ReadUInt16();
 
             Position.Read(reader);
             Flags.Read(reader);
 
             Animation = reader.ReadString(NameN.Name32ByteLen);
             AnimationLevel = reader.ReadByte();
-            KQTeam = (KQTeamType) reader.ReadByte();
+            KqTeam = (KQTeamType) reader.ReadByte();
             RegenAni = reader.ReadBoolean();
         }
 
@@ -56,15 +56,15 @@ namespace Vision.Game.Structs.BriefInfo
         {
             writer.Write(Handle);
             writer.Write(Mode);
-            writer.Write(MobID);
+            writer.Write(MobId);
             Position.Write(writer);
             Flags.Write(writer);
             writer.Write(Animation, NameN.Name32ByteLen);
             writer.Write(AnimationLevel);
-            writer.Write((byte)KQTeam);
+            writer.Write((byte)KqTeam);
             writer.Write(RegenAni);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_REGENMOB_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_REGENMOB_CMD;
     }
 }

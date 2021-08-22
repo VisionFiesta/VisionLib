@@ -24,7 +24,7 @@ namespace Vision.Game.Structs.Friend
             writer.Write(IsParty);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_PARTY_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_PARTY_CMD;
 
         public override string ToString() => $"{nameof(CharID)}: {CharID}, {nameof(IsParty)}: {IsParty}";
     }

@@ -12,6 +12,6 @@ namespace Vision.Game.Structs.CharOption
 
         public override void Write(WriterStream writer) { }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_OPTION_DB_GET_SHORTCUTSIZE_REQ;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_OPTION_DB_GET_SHORTCUTSIZE_REQ;
     }
 }

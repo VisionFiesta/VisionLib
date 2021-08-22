@@ -23,7 +23,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(Slot);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_UNEQUIP_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_UNEQUIP_CMD;
 
         public override string ToString()
         {

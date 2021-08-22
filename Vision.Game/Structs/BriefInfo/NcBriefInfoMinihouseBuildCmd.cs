@@ -44,7 +44,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(Title, 21);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_MINIHOUSEBUILD_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_MINIHOUSEBUILD_CMD;
 
         public override string ToString() => $"{nameof(Handle)}: {Handle}, {nameof(Camp)}: {Camp}, {nameof(CharID)}: {CharID}, {nameof(Coordinates)}: {Coordinates}, {nameof(Title)}: {Title}";
     }

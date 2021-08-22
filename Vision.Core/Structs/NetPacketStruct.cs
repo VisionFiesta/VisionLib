@@ -11,7 +11,7 @@ namespace Vision.Core.Structs
     {
         private static readonly EngineLog Logger = new(typeof(NetPacketStruct));
 
-        public abstract NetCommand GetCommand();
+        protected abstract NetCommand GetCommand();
 
         public void Read(NetPacket packet)
         {
@@ -30,6 +30,13 @@ namespace Vision.Core.Structs
             try
             {
                 Read(packet.Reader);
+
+                var leftoverBytes = packet.Reader.RemainingBytes;
+                if (leftoverBytes == 0) return;
+                
+                Logger.Warning($"Eating {leftoverBytes} extra bytes for opcode {GetCommand()}");
+                // eat leftover bytes to ensure safe read of next struct
+                packet.Reader.ReadBytes(packet.Reader.RemainingBytes);
             }
             catch (EndOfStreamException)
             {
@@ -54,6 +61,6 @@ namespace Vision.Core.Structs
             });
         }
 
-        public virtual bool HasMaximumSize() => true;
+        protected virtual bool HasMaximumSize() => true;
     }
 }

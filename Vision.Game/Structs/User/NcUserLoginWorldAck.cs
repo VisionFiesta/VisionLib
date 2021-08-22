@@ -45,8 +45,8 @@ namespace Vision.Game.Structs.User
             writer.Write(CharacterCount);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_USER_LOGINWORLD_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_USER_LOGINWORLD_ACK;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
     }
 }

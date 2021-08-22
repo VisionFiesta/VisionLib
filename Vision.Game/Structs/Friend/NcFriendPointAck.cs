@@ -20,7 +20,7 @@ namespace Vision.Game.Structs.Friend
             writer.Write(FriendPoints);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_POINT_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_POINT_ACK;
 
         public override string ToString() => $"{nameof(FriendPoints)}: {FriendPoints}";
     }

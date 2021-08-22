@@ -30,7 +30,7 @@ namespace Vision.Game.Structs.Friend
             writer.Write(NumOfItem);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_UES_FRIEND_POINT_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_UES_FRIEND_POINT_ACK;
 
         public override string ToString() => $"{nameof(Error)}: {Error}, {nameof(FriendPoints)}: {FriendPoints}, {nameof(ItemID)}: {ItemID}, {nameof(NumOfItem)}: {NumOfItem}";
     }

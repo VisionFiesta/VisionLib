@@ -35,8 +35,8 @@ namespace Vision.Game.Structs.Char
             writer.Write(NeedClear);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_QUEST_DOING_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_QUEST_DOING_CMD;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
     }
 }

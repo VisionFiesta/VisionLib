@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using Vision.Core.Logging.Loggers;
 using Vision.Game.Characters;
-using Vision.Game.Structs.Common;
 
 namespace Vision.Game
 {
     public class Account
     {
-        private static readonly EngineLog Logger = new(typeof(Account));
+        private static EngineLog Logger { get; } = new(typeof(Account));
 
-        public ushort AccountID;
+        public ushort AccountId;
 
         public string AccountName;
 
         private readonly Dictionary<uint, WorldCharacter> _avatarsByCharNo = new();
         private readonly ConcurrentDictionary<uint, Character> _charactersByCharNo = new();
 
-        public IReadOnlyCollection<WorldCharacter> Avatars => _avatarsByCharNo.Values.ToImmutableList();
-        public IReadOnlyCollection<Character> Characters => _charactersByCharNo.Values.ToImmutableList();
+        public IEnumerable<WorldCharacter> Avatars => _avatarsByCharNo.Values.ToImmutableList();
+        public IEnumerable<Character> Characters => _charactersByCharNo.Values.ToImmutableList();
 
         public WorldCharacter ActiveAvatar { get; private set; }
         public Character ActiveCharacter { get; private set; }

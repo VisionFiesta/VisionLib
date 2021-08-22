@@ -31,7 +31,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(SlotNum);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHANGEUPGRADE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHANGEUPGRADE_CMD;
 
         public override string ToString()
         {

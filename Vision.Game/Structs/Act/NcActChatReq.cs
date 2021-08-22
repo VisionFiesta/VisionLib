@@ -34,6 +34,6 @@ namespace Vision.Game.Structs.Act
             writer.Write(Message, MessageLength);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_ACT_CHAT_REQ;
+        protected override NetCommand GetCommand() => NetCommand.NC_ACT_CHAT_REQ;
     }
 }

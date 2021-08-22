@@ -27,8 +27,8 @@ namespace Vision.Game.Structs.Announce
             writer.Write(Message, MessageLength);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_ANNOUNCE_W2C_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_ANNOUNCE_W2C_CMD;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
     }
 }

@@ -41,7 +41,7 @@ namespace Vision.Game.Structs.CharOption
             }
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_CHAR_OPTION_IMPROVE_GET_KEYMAP_CMD;
         }

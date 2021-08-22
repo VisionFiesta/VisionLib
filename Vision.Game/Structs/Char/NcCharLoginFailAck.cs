@@ -16,6 +16,6 @@ namespace Vision.Game.Structs.Char
 
         public override void Write(WriterStream writer) => writer.Write(Error);
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_LOGINFAIL_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_LOGINFAIL_ACK;
     }
 }

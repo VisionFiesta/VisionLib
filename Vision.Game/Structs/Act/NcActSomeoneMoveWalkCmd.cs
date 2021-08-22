@@ -37,6 +37,6 @@ namespace Vision.Game.Structs.Act
             writer.Write(MoveAttributes);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_ACT_SOMEONEMOVEWALK_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_ACT_SOMEONEMOVEWALK_CMD;
     }
 }

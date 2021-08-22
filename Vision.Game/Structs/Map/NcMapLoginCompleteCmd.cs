@@ -12,6 +12,6 @@ namespace Vision.Game.Structs.Map
 
         public override void Write(WriterStream writer) { }
 
-        public override NetCommand GetCommand() => NetCommand.NC_MAP_LOGINCOMPLETE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_MAP_LOGINCOMPLETE_CMD;
     }
 }

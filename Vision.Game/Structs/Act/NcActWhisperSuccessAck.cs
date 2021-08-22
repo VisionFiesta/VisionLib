@@ -35,7 +35,7 @@ namespace Vision.Game.Structs.Act
             writer.Write(Message, MessageLength);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_ACT_WHISPERSUCCESS_ACK;
         }

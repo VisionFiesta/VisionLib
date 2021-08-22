@@ -98,6 +98,6 @@ namespace Vision.Game.Structs.Char
             writer.Fill(8, 0x00); // Unk03 from NA capture
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_BASE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_BASE_CMD;
     }
 }

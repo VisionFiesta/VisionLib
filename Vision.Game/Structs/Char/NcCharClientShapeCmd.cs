@@ -33,6 +33,6 @@ namespace Vision.Game.Structs.Char
             raw.Write(writer);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_SHAPE_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_CLIENT_SHAPE_CMD;
     }
 }

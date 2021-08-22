@@ -14,7 +14,7 @@ namespace Vision.Game.Content
         public Mob(NcBriefInfoRegenMobCmd data) : base(data.Handle, GameObjectType.GOT_MOB)
         {
             Position = data.Position;
-            MobID = data.MobID;
+            MobID = data.MobId;
 
             var hasInfo = MobInfo.GetMobInfoById(MobID, out var mobInfo);
             if (!hasInfo) return;

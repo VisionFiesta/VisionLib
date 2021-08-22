@@ -293,7 +293,7 @@ namespace Vision.Client.Networking.Handlers
                 }
                 else
                 {
-                    Logger.Error("BI_REGENMOBER: Failed to add Mover - Handle: {mob.Handle} already present");
+                    Logger.Error("BI_REGENMOVER: Failed to add Mover - Handle: {mob.Handle} already present");
                 }
             }
             else

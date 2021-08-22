@@ -37,7 +37,7 @@ namespace Vision.Game.Structs.Map
             writer.Write(SHNHash);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_MAP_LOGIN_REQ;
         }

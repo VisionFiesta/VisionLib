@@ -5,85 +5,116 @@ using Vision.Core.Logging.Loggers;
 
 namespace Vision.Core.Configuration
 {
-    public class Configuration<T>
+    public abstract class Configuration<T>
     {
-        // private const string ConfigFolder = "Config";
+        private static readonly EngineLog Logger = new(typeof(Configuration<T>));
 
-        protected static readonly EngineLog Logger = new(typeof(Configuration<T>));
+        public T Data { get; protected set; }
 
-        public T ConfigurationData { get; private set; }
-        private readonly string configFolderPath;
+        public bool Initialized { get; protected set; }
+        
+        private readonly string _configFolderPath;
+        private readonly string _shortConfigName;
+        private readonly string _configFilePath;
 
-        public Configuration(string configFolderPath)
+        protected Configuration(string configFolderPath, bool useDefaults = false)
         {
-            this.configFolderPath = configFolderPath;
+            if (useDefaults)
+            {
+                // Actually safe as this shall never call any child members, only other-class `new()`s
+                // ReSharper disable once VirtualMemberCallInConstructor
+                Data = GetDataDefault();
+                Initialized = true;
+                return;
+            }
+            
+            _configFolderPath = Path.GetFullPath(configFolderPath);
+            // remove namespace and Configuration descriptor from typename
+            _shortConfigName = GetType().Name.Replace("Vision.Core.Configuration.", "").Replace("Configuration", "");
+            _configFilePath = Path.Join(_configFolderPath, $"{_shortConfigName}.json");
+
+            Data = Initialize(out var ret);
+            Initialized = ret;
+
         }
 
-        protected bool Load(out string message)
+        protected abstract T GetDataDefault();
+        
+        public bool Reload()
         {
-            ConfigurationData = Initialize(out message);
-            return message == string.Empty;
+            // attempt reload - fails safe to existing data
+            var result = Initialize(out var ret);
+            if (ret) Data = result;
+            return ret;
         }
-
-        private bool WriteJson(string configName = null)
+        
+        protected bool Write()
         {
-            if (!Directory.Exists(configFolderPath)) return false;
-
-            var path = Path.Combine(configFolderPath, $"{configName ?? typeof(T).Name}.json");
-
+            if (WriteDataToFile()) return true;
+            Logger.Error(
+                $"Failed to write to JSON file: {_shortConfigName}.json! Ensure destination directory \"{_configFolderPath}\" exists");
+            return false;
+        }
+        
+        private bool WriteDataToFile()
+        {
+            if (!Directory.Exists(_configFolderPath)) return false;
+            
             var writer = new JsonSerializer();
-            using var file = new StreamWriter(path);
+            using var file = new StreamWriter(_configFilePath);
             writer.Formatting = Formatting.Indented;
-            writer.Serialize(file, ConfigurationData);
+            writer.Serialize(file, Data);
 
             return true;
         }
 
-        private T ReadJson(string configName = null)
+        private T LoadDataFromFile()
         {
             var settings = new JsonSerializerSettings
             {
                 ContractResolver = new PrivateSetterContractResolver()
             };
 
-            var path = Path.Combine(configFolderPath, $"{configName ?? typeof(T).Name}.json");
-            if (!File.Exists(path)) return default;
+            if (!File.Exists(_configFilePath)) return default;
 
-            using var file = File.OpenText(path);
-            var text = file.ReadToEnd();
-            var obj = JsonConvert.DeserializeObject<T>(text, settings);
-            return obj;
+            using var file = File.OpenText(_configFilePath);
+            return JsonConvert.DeserializeObject<T>(file.ReadToEnd(), settings);
         }
-
-        private T Initialize(out string message)
+        
+        private T Initialize(out bool status)
         {
-            var fullTypeName = typeof(T).FullName?.Replace("Vision.Core.Configuration.", "");
-            var shortTypeName = fullTypeName?.Replace("Configuration", "");
+            status = false;
 
             try
             {
-                var instance = ReadJson(shortTypeName);
-                if (instance != null)
+                if (!File.Exists(_configFilePath))
                 {
-                    Logger.Info($"Successfully read {shortTypeName} config.");
-                    message = "";
-                    return instance;
+                    Data = GetDataDefault();
+                    if (!WriteDataToFile())
+                    {
+                        Logger.Error($"Failed to write to JSON file: {_shortConfigName}.json! Ensure destination directory \"{_configFolderPath}\" exists");
+                        return Data;
+                    }
+                    
+                    Logger.Info($"Generated missing {_shortConfigName} config. This may need to be edited for proper operation.");
+                    status = true;
+                    return Data;
                 }
 
-                if (!WriteJson())
+                var data = LoadDataFromFile();
+                if (data != null)
                 {
-                    message= $"Failed to write to JSON file: {shortTypeName}.json - Ensure destination directory exists";
-                    return default;
+                    Logger.Info($"Successfully read {_shortConfigName} config.");
+                    status = true;
+                    return data;
                 }
-
-                Logger.Info($"Successfully generated {shortTypeName} config.");
-                message = $"No {fullTypeName} found! Please edit generated config.";
+                
+                Logger.Error($"Failed to generate {_shortConfigName} for unknown reason! Using default ctor.");
                 return default;
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to load {shortTypeName} config:\n {0}", ex);
-                message = $"Failed to load {fullTypeName}:\n {ex.StackTrace}";
+                Logger.Error($"Failed to load {_shortConfigName} config:\n {0}", ex);
                 return default;
             }
         }

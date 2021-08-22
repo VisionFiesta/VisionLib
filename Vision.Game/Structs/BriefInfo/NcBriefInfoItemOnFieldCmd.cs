@@ -35,7 +35,7 @@ namespace Vision.Game.Structs.BriefInfo
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_ITEMONFIELD_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_ITEMONFIELD_CMD;
 
         [SuppressMessage("ReSharper", "CoVariantArrayConversion")]
         public override string ToString()
@@ -44,6 +44,6 @@ namespace Vision.Game.Structs.BriefInfo
             return $"{nameof(ItemNum)}: {ItemNum}, {nameof(Items)}: {itemsString}";
         }
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
     }
 }

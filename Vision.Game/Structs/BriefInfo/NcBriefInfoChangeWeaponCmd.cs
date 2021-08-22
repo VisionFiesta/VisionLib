@@ -28,7 +28,7 @@ namespace Vision.Game.Structs.BriefInfo
             writer.Write(CurrentKillLevel);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHANGEWEAPON_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_CHANGEWEAPON_CMD;
 
         public override string ToString()
         {

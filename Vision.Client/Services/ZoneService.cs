@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Stateless;
 using Vision.Game.Structs.Map;
@@ -14,6 +15,9 @@ namespace Vision.Client.Services
 
         public ZoneService(FiestaClient client) : base(client)
         {
+            var watch = Stopwatch.StartNew();
+            ClientLogger.Debug("Initializing...");
+            
             #region State machine setup
             _zoneStateMachine.OnTransitioned(transition =>
             {
@@ -59,11 +63,21 @@ namespace Vision.Client.Services
                 .SubstateOf(ZoneServiceState.ZSS_LOGGED_IN)
                 .OnEntryAsync(OnLoggedInMapEntry);
             #endregion
+            
+            watch.Stop();
+            ClientLogger.Info($"Initialized in {watch.Elapsed.TotalMilliseconds:0.####}ms");
         }
 
         public ZoneServiceState GetState => _zoneStateMachine.State;
 
-        public async Task UpdateState(ZoneServiceTrigger trigger)
+        public void UpdateState(ZoneServiceTrigger trigger)
+        {
+            _zoneStateMachine.Deactivate();
+            _zoneStateMachine.Fire(trigger);
+            _zoneStateMachine.Activate();
+        }
+        
+        public async Task UpdateStateAsync(ZoneServiceTrigger trigger)
         {
             await _zoneStateMachine.DeactivateAsync();
             await _zoneStateMachine.FireAsync(trigger);
@@ -94,10 +108,10 @@ namespace Vision.Client.Services
             WorldService.UpdateState(WorldServiceTrigger.WST_CONNECT_ZONE_OK);
 
             var acct = ClientSessionData.ClientAccount;
-            if (Client.SHNHash != null)
+            if (Client.ShnHash != null)
             {
                 ClientLogger.Debug("Sending MapLoginReq");
-                new NcMapLoginReq(acct.AccountID, acct.ActiveAvatar.CharName, Client.SHNHash).Send(ZoneConnection);
+                new NcMapLoginReq(acct.AccountId, acct.ActiveAvatar.CharName, Client.ShnHash).Send(ZoneConnection);
             }
             else
             {
@@ -111,7 +125,7 @@ namespace Vision.Client.Services
             await WorldService.UpdateStateAsync(WorldServiceTrigger.WST_LOGIN_ZONE_OK);
             await MapService.LoadMap("RouCos01", 
                 (ignored) => { },
-                async millis => await UpdateState(ZoneServiceTrigger.ZST_MAP_LOAD_OK));
+                async millis => await UpdateStateAsync(ZoneServiceTrigger.ZST_MAP_LOAD_OK));
         }
 
         private void OnLoggedInExit()
@@ -135,7 +149,7 @@ namespace Vision.Client.Services
 
             if (_charClientDataStatus.ReceivedAll)
             {
-                _ = UpdateState(ZoneServiceTrigger.ZST_LOGIN_OK);
+                _ = UpdateStateAsync(ZoneServiceTrigger.ZST_LOGIN_OK);
             }
         }
 

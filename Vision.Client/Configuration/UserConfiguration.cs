@@ -6,19 +6,8 @@ namespace Vision.Client.Configuration
 {
     public class UserConfiguration : Configuration<List<ClientUserData>>
     {
-        public UserConfiguration(string configFolderPath) : base(configFolderPath) {}
+        public UserConfiguration(string configFolderPath) : base(configFolderPath) { }
 
-        public void Load()
-        {
-            if (Load(out var message))
-            {
-                Logger.Info(message);
-            }
-            else
-            {
-                Logger.Warning(message);
-                ConfigurationData.Add(new ClientUserData());
-            }
-        }
+        protected override List<ClientUserData> GetDataDefault() => new() { new ClientUserData() };
     }
 }

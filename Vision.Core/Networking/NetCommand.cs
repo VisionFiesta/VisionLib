@@ -1,6 +1,5 @@
-﻿// ReSharper disable InconsistentNaming
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+// ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
 namespace Vision.Core.Networking
@@ -359,9 +358,9 @@ namespace Vision.Core.Networking
         NC_USER_CONNECTCUT_CMD = 0x0C17,
         NC_USER_NORMALLOGOUT_CMD = 0x0C18,
         NC_USER_CONNECTCUT2ZONE_CMD = 0x0C19,
-        NC_USER_CONNECTCUT2WORLDMANAGER_CMD = 0x0C1A,
-        NC_USER_WORLD_STATUS_REQ = 0x0C1B,
-        NC_USER_WORLD_STATUS_ACK = 0x0C1C,
+        NC_USER_WORLD_STATUS_REQ = 0x0C1A,
+        NC_USER_WORLD_STATUS_ACK = 0x0C1B,
+        NC_USER_CONNECTCUT2WORLDMANAGER_CMD = 0x0C1C,
         NC_USER_LOGIN_NETMARBLE_REQ = 0x0C1D,
         NC_USER_LOGIN_NETMARBLE_DB_REQ = 0x0C1E,
         NC_USER_AVATAR_LIST_REQ = 0x0C1F,
@@ -375,8 +374,8 @@ namespace Vision.Core.Networking
         NC_USER_TEENAGER_REMAIN_MIN_CMD = 0x0C29,
         NC_USER_IS_IP_BLOCK_REQ = 0x0C2A,
         NC_USER_IS_IP_BLOCK_ACK = 0x0C2B,
-        NC_USER_POSSIBLE_NEW_CONNECT_CMD = 0x0C31,
-        NC_USER_USE_BEAUTY_SHOP_CMD = 0x0C32,
+        // NC_USER_POSSIBLE_NEW_CONNECT_CMD = 0x0C31,
+        // NC_USER_USE_BEAUTY_SHOP_CMD = 0x0C32,
         NC_USER_WILL_WORLD_SELECT_REQ = 0x0C33,
         NC_USER_WILL_WORLD_SELECT_ACK = 0x0C34,
         NC_USER_CREATE_OTP_REQ = 0x0C35,
@@ -678,7 +677,7 @@ namespace Vision.Core.Networking
         NC_CHAR_SELL_ITEM_INFO_ZONE_CMD = 0x1130,
         NC_GAMIGO_NEW_TUTORIAL_STORE_STEP_REQ = 0x1142,
         NC_CHAR_ANI_FILE_CHECK_CMD = 0x1143,
-
+        NC_CHAR_HASHCHECK = 0x1145,
 #endregion
 
         NC_UNK00 = 0x114B,
@@ -3020,9 +3019,9 @@ namespace Vision.Core.Networking
         NC_MATCH_INSTANCE_DUNGEON_UNK02_REQ = 0xC010,
         NC_MATCH_INSTANCE_DUNGEON_UNK02_ACK = 0xC011,
 
-        #endregion
+#endregion
 
-        #region NC_COLLECT
+#region NC_COLLECT
 
         NC_COLLECT_NULL = 0xC400,
         NC_COLLECT_PEEPING_REQ = 0xC401,

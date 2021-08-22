@@ -47,7 +47,7 @@ namespace Vision.Core.Networking.Packet
 		/// </summary>
 		public WriterStream Writer { get; }
 
-        public int Size { get; protected set; }
+		private int Size { get; }
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="NetPacket"/> class.
@@ -112,7 +112,7 @@ namespace Vision.Core.Networking.Packet
 		/// Returns a byte array representing the message.
 		/// </summary>
 		/// <returns></returns>
-		public byte[] ToArray<T>(T connection = null) where T : NetConnectionBase<T>
+		private byte[] ToArray<T>(T connection = null) where T : NetConnectionBase<T>
 		{
 			byte[] ret;
 			var buffer = _stream.ToArray();

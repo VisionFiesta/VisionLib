@@ -24,7 +24,7 @@ namespace Vision.Game.Structs.Friend
             writer.Write(Level);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_FRIEND_LEVEL_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_FRIEND_LEVEL_CMD;
 
         public override string ToString() => $"{nameof(CharID)}: {CharID}, {nameof(Level)}: {Level}";
     }

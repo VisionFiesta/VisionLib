@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using Vision.Client.Data;
 using Vision.Client.Networking;
 using Vision.Client.Services;
@@ -41,25 +43,32 @@ namespace Vision.Client
         private readonly SHNManager _shnManager;
         private readonly SHNHashManager _shnHashManager;
 
-        public readonly string SHNHash;
+        public readonly string ShnHash;
 
         public readonly ClientSessionData ClientSessionData = new();
 
-        public FiestaClient(ClientUserData userData)
+        public bool Ready { get; }
+        
+        public FiestaClient(ClientUserData userData, StaticClientData clientData = null)
         {
-
+            var ctorWatch = Stopwatch.StartNew();
+            _clientLog.Info("Initializing Client...");
+            
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
             UserData = userData;
-            StaticClientData = new StaticClientData();
+            StaticClientData = clientData ?? new StaticClientData();
 
             _shnManager = new SHNManager(StaticClientData.ShinePath, new SHNCrypto());
             _shnHashManager = new SHNHashManager(_shnManager, UserData.Region == GameRegion.GR_NA);
 
-            LoadSHN();
+            LoadShn();
+            
+            _clientLog.Info("SHNs loaded");
 
-            _engineLog.Debug("Loaded SHN hash for client.");
-            SHNHash = StaticClientData.SHNHash;
+            _engineLog.Debug("Loaded SHN hash for client. (WARNING: Using static hash!)");
+            ShnHash = StaticClientData.ShnHash;
             // _shnHashManager.LoadRemainingHashes();
             // if (_shnHashManager.GetFullHash(out SHNHash))
             // {
@@ -77,6 +86,9 @@ namespace Vision.Client
             WorldClient = new NetClientConnection(this, NetConnectionDestination.NCD_WORLDMANAGER);
             ZoneClient = new NetClientConnection(this, NetConnectionDestination.NCD_ZONE);
 
+            var serviceWatch = Stopwatch.StartNew();
+            _clientLog.Info("Initializing Client Services...");
+
             // Network services
             LoginService = new LoginService(this);
             WorldService = new WorldService(this);
@@ -87,14 +99,27 @@ namespace Vision.Client
             MapService = new MapService(this);
             MovementService = new MovementService(this);
 
-            _clientLog.Info("Initialized Client Services");
+            serviceWatch.Stop();
+            _clientLog.Info($"Initialized Client Services in {serviceWatch.Elapsed.TotalMilliseconds:0.####}ms");
 
-            LoginClient.AddDisconnectCallback((dest, endPoint) =>
+            LoginClient.AddDisconnectCallback((_, _) =>
                 LoginService.UpdateState(LoginServiceTrigger.LST_DISCONNECT));
-            WorldClient.AddDisconnectCallback((dest, endPoint) =>
+            WorldClient.AddDisconnectCallback((_, _) =>
                 WorldService.UpdateState(WorldServiceTrigger.WST_DISCONNECT));
-            ZoneClient.AddDisconnectCallback((dest, endPoint) =>
-                _ = ZoneService.UpdateState(ZoneServiceTrigger.ZST_DISCONNECT));
+            ZoneClient.AddDisconnectCallback((_, _) =>
+                ZoneService.UpdateState(ZoneServiceTrigger.ZST_DISCONNECT));
+            
+            // _clientLog.Info("Initialized Client NetConn Callbacks");
+            
+            ctorWatch.Stop();
+            _clientLog.Info($"Initialized Client in {ctorWatch.Elapsed.TotalMilliseconds:0.####}ms");
+            Ready = true;
+        }
+
+        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            _engineLog.Info("Got ProcessExit, logging out!");
+            Logout();
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -102,7 +127,7 @@ namespace Vision.Client
             _engineLog.Error($"Unhandled Exception in context {sender?.GetType().Name}", (Exception) e.ExceptionObject);
         }
 
-        private void LoadSHN()
+        private void LoadShn()
         {
 
             #region AbnormalState
@@ -137,11 +162,27 @@ namespace Vision.Client
             #endregion
         }
 
+        public void Login()
+        {
+            LoginService.UpdateState(LoginServiceTrigger.LST_TRY_CONNECT);
+        }
+        
         public void Logout()
         {
             var logoutPacket = new NetPacket(NetCommand.NC_USER_NORMALLOGOUT_CMD);
             logoutPacket.Send(WorldClient);
             logoutPacket.Send(ZoneClient);
+        }
+
+        private void OnExit()
+        {
+            _clientLog.Info("Logging out before shutdown!");
+            Logout();
+        }
+
+        public void BusyLoop()
+        {
+            Thread.Sleep(1);
         }
     }
 
@@ -151,7 +192,7 @@ namespace Vision.Client
         public readonly List<NcUserWorldStatusAck.WorldStatusStruct> Worlds = new();
         public IPEndPoint SelectedWorldEndPoint;
 
-        public ClientGameTime GameTime = new();
+        public readonly ClientGameTime GameTime = new();
         public Account ClientAccount = new();
         public byte[] WorldAuthBytes;
 

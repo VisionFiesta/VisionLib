@@ -34,8 +34,8 @@ namespace Vision.Game.Structs.BriefInfo
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_MOB_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_BRIEFINFO_MOB_CMD;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
     }
 }

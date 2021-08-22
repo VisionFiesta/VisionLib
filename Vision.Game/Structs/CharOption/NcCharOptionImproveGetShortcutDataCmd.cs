@@ -38,8 +38,8 @@ namespace Vision.Game.Structs.CharOption
             }
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_OPTION_IMPROVE_GET_SHORTCUTDATA_CMD;
 
-        public override bool HasMaximumSize() => false;
+        protected override bool HasMaximumSize() => false;
     }
 }

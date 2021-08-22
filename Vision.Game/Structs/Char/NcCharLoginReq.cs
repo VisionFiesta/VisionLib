@@ -28,7 +28,7 @@ namespace Vision.Game.Structs.Char
             writer.Write(CharSlot);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_CHAR_LOGIN_REQ;
         }

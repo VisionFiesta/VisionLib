@@ -45,6 +45,6 @@ namespace Vision.Game.Structs.Char
             writer.Write(ZonePort);
         }
 
-        public override NetCommand GetCommand() => NetCommand.NC_CHAR_LOGIN_ACK;
+        protected override NetCommand GetCommand() => NetCommand.NC_CHAR_LOGIN_ACK;
     }
 }

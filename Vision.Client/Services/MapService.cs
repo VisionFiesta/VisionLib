@@ -9,7 +9,11 @@ namespace Vision.Client.Services
 
         public MapService(FiestaClient client) : base(client)
         {
-            ClientLogger.Info("Initialized");
+            var watch = Stopwatch.StartNew();
+            ClientLogger.Debug("Initializing...");
+            
+            watch.Stop();
+            ClientLogger.Info($"Initialized in {watch.Elapsed.TotalMilliseconds:0.####}ms");
         }
 
         private const int MapLoadTimeMillis = 500;

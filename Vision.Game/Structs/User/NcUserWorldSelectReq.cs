@@ -28,7 +28,7 @@ namespace Vision.Game.Structs.User
             writer.Write(WorldID);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_USER_WORLDSELECT_REQ;
         }

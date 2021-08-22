@@ -47,7 +47,7 @@ namespace Vision.Game.Structs.User
             writer.Write(SpawnApp, StartupAppLen);
         }
 
-        public override NetCommand GetCommand()
+        protected override NetCommand GetCommand()
         {
             return NetCommand.NC_USER_US_LOGIN_REQ;
         }

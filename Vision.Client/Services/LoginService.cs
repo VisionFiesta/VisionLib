@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using Stateless;
 using Vision.Core;
@@ -15,18 +15,20 @@ namespace Vision.Client.Services
         private readonly StateMachine<LoginServiceState, LoginServiceTrigger> _loginStateMachine =
             new(LoginServiceState.LSS_DISCONNECTED, FiringMode.Queued);
 
-        private LoginServiceTrigger lastTrigger;
+        private LoginServiceTrigger _lastTrigger;
 
         private readonly Timer _worldListUpdateTimer = new(ClientTimings.WorldListUpdatePeriod.TotalMilliseconds);
         
         public LoginService(FiestaClient client) : base(client)
         {
-
+            var watch = Stopwatch.StartNew();
+            ClientLogger.Debug("Initializing...");
+            
             #region State machine setup
             _loginStateMachine.OnTransitioned(transition =>
             {
                 if (transition.Source == transition.Destination) return;
-                lastTrigger = transition.Trigger;
+                _lastTrigger = transition.Trigger;
                 ClientLogger.Debug(
                     $"State Change - From {transition.Source} to {transition.Destination} because {transition.Trigger}");
             });
@@ -98,7 +100,8 @@ namespace Vision.Client.Services
             _worldListUpdateTimer.Enabled = false;
             _worldListUpdateTimer.Elapsed += OnWorldsUpdateTick;
 
-            ClientLogger.Info("Initialized");
+            watch.Stop();
+            ClientLogger.Info($"Initialized in {watch.Elapsed.TotalMilliseconds:0.####}ms");
         }
 
         public LoginServiceState GetState => _loginStateMachine.State;
