@@ -9,7 +9,7 @@ namespace Vision.Game.Structs.BriefInfo
         public byte MobCount;
         public NcBriefInfoRegenMobCmd[] Mobs;
 
-        public override int GetSize() => 1 + MobCount * 161;
+        public override int GetSize() => 1 + MobCount * 167;
 
         public override void Read(ReaderStream reader)
         {

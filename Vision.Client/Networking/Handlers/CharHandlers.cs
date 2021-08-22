@@ -37,6 +37,17 @@ namespace Vision.Client.Networking.Handlers
             connection.UpdateWorldService(WorldServiceTrigger.WST_CHAR_LOGIN_FAIL);
         }
 
+        [NetPacketHandler(NetCommand.NC_CHAR_HASHCHECK, NetConnectionDestination.NCD_CLIENT)]
+        public static void NC_CHAR_HASHCHECK(NetPacket packet, NetClientConnection connection)
+        {
+            var cmd = new NcCharHashCheck();
+            cmd.Read(packet); // for shits. no clue what the fuck to do with this gibberish data
+
+            var respPrefix = new List<byte> { 0x4E, 0x00 /*, 0x02, 0x00, 0xB0, 0x02, 0x00, 0x00, 0x08, 0x00, 0xC0*/};
+            var resp = new NcCharHashCheck(respPrefix);
+            resp.Send(connection); // totally doesn't work
+        }
+
         #endregion
 
         #region From Zone

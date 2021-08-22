@@ -23,6 +23,8 @@ namespace Vision.Game.Structs.Friend
 
             Friends = new FriendInfo[FriendNum];
 
+            _ = reader.ReadByte(); // unk00
+
             for (var i = 0; i < FriendNum; i++)
             {
                 Friends[i] = new FriendInfo();
@@ -34,9 +36,8 @@ namespace Vision.Game.Structs.Friend
         {
             writer.Write(FriendNum);
 
-            for (var i = 0; i < Friends.Length; i++)
+            foreach (var friendInfo in Friends)
             {
-                var friendInfo = Friends[i];
                 friendInfo.Write(writer);
             }
         }

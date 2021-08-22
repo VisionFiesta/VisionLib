@@ -35,7 +35,7 @@ namespace Vision.Game.Structs.BriefInfo
         public KQTeamType KqTeam;
         public bool RegenAni;
 
-        public override int GetSize() => 2 + 1 + 2 + ShineXYR.Size + MobFlag.Size + NameN.Name32ByteLen + 1 + 1 + 1;
+        public override int GetSize() => 2 + 1 + 2 + ShineXYR.Size + MobFlag.Size + NameN.Name32ByteLen + 1 + 1 + 1 + (5 /* pad to 167 for idk why*/);
 
         public override void Read(ReaderStream reader)
         {
